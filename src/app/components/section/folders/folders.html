@@ -1,0 +1,42 @@
+    <section class="section">
+    <div class="diagonalWrapper index2"></div>
+    <h3 class="title text-color-primary index2">Les Dossiers du développeur 68000<br /></h3>
+    <p class="description text-color-white index2">Ressources téléchargeables pour tes projets</p>
+
+    <header class="bg-color-dark index2">
+        <div class="tabs">
+            <button class="tab" [class.active]="activeTab() === 'freemium'" (click)="setActiveTab('freemium')">
+                Freemium
+            </button>
+            <button class="tab" [class.active]="activeTab() === 'premium'" (click)="setActiveTab('premium')">
+                premium
+            </button>
+        </div>
+    </header>
+
+<main class="main index2">
+    <div id="freemium-content" class="content index2" [class.active]="activeTab() === 'freemium'">
+        <ul class="grid">
+            <li app-folder [icon]="colorIcons.computer" [name]="'Coding'" [desc]="'Comprendre la machine, sa mémoire, son language... etc.'"></li>            
+            <li app-folder [icon]="colorIcons.paper" [name]="'Documentation'" [desc]="`Documentation technique de l'Atari ST, traduite en français.`"></li>
+            <li app-folder [icon]="colorIcons.tools" [name]="'Tutoriel'" [desc]="`Savoir utiliser les outils (d'aujourd'hui ou de l'époque).`"></li>
+            <li app-folder [icon]="colorIcons.download" [name]="'Ressources'" [desc]="`Téléchargement de softwares utiles pour l'Atari ST.`"></li>
+        </ul>
+    </div>
+    
+    <div id="premium-content" class="content index2" [class.active]="activeTab() === 'premium'">
+        <ul class="grid">
+            <li app-folder [icon]="colorIcons.computer" [name]="'Coding'" [desc]="'Comprendre la machine, sa mémoire, son language... etc.'"></li>            
+            <li app-folder [icon]="colorIcons.paper" [name]="'Documentation'" [desc]="`Documentation technique de l'Atari ST, traduite en français.`"></li>
+            <li app-folder [icon]="colorIcons.tools" [name]="'Tutoriel'" [desc]="`Savoir utiliser les outils (d'aujourd'hui ou de l'époque).`"></li>
+            <li app-folder [icon]="colorIcons.download" [name]="'Ressources'" [desc]="`Téléchargement de softwares utiles pour l'Atari ST.`"></li>
+            <li app-folder [icon]="colorIcons.floppy" [name]="'Source .ASM'" [desc]="'Sources complet et commentés des cours.'"></li>
+            <li app-folder [icon]="colorIcons.mario" [name]="'Sprites .IFF'" [desc]="'Banque de sprites avec leur masque.'"></li>
+            <li app-folder [icon]="colorIcons.picture" [name]="'Écrans .PI1'" [desc]="'Banque de screens de jeux lisible sur Atari ST.'"></li>
+            <li app-folder [icon]="colorIcons.waves" [name]="'Samples .SND'" [desc]="'Samples de musiques ou sfx lisible sur Atari ST.'"></li>
+            <li app-folder [icon]="colorIcons.midi" [name]="'Musiques .MID'" [desc]="`Fichier MIDI prêt à l'utilisation pour les Trackers.`"></li>
+            <li app-folder [icon]="colorIcons.project" [name]="'Projets'" [desc]="'Développer un projet de A à Z.'"></li>
+        </ul>
+    </div>
+</main>
+</section>

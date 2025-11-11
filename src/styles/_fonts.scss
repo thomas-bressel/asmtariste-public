@@ -1,0 +1,58 @@
+$orbitronRegular :'Orbitron-Regular';
+$orbitronBold :'Orbitron-Bold';
+$orbitronBlack :'Orbitron-Black';
+
+@font-face {
+  font-family: 'Orbitron-Regular';
+  src: url('/fonts/Orbitron-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Orbitron-Bold';
+  src: url('/fonts/Orbitron-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Orbitron-Black';
+  src: url('/fonts/Orbitron-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+
+$interRegular :'Inter-Regular';
+$interMedium :'Inter-Medium';
+$interBold :'Inter-Bold';
+
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('/fonts/Inter-Regular.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter-Medium';
+  src: url('/fonts/Inter-Medium.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter-Bold';
+  src: url('/fonts/Inter-Bold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}

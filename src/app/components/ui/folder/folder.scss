@@ -1,0 +1,50 @@
+@use "colors" as color;
+@use "spacing" as space;
+@use "fonts" as font;
+@use "animations";
+
+
+:host {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: space.$sm;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: color.$primary;
+            transform: translateY(-2px);
+        }
+
+
+
+.icon {
+    font-size: 2rem;
+    margin-bottom: space.$xs;
+}
+
+
+
+.name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: white;
+}
+
+.desc {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+
+
+       @media (min-width: 768px) {
+            :host {
+                padding: space.$md;
+            }
+        }

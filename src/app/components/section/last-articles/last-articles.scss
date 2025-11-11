@@ -1,0 +1,63 @@
+@use "colors" as color;
+@use "spacing" as space;
+@use "fonts" as font;
+@use "animations";
+
+
+
+.diagonalWrapper {
+    padding: 2.5rem;
+    clip-path: polygon(0 100%, 100% 0%, 100% 100%, 0% 100%);
+    background: color.$bg-dark;
+    margin-bottom: -1px;
+}
+
+
+.title {
+    background: color.$bg-dark;
+    font-family: font.$orbitronBlack;
+    font-size: 1.75rem;
+    font-weight: 900;
+    padding: 2rem 2rem 0 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+}
+
+
+.description {
+    background: color.$bg-dark;
+    font-family: font.$interRegular;
+    font-weight: 100;
+        margin-bottom: space.$sm;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+
+
+.item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: space.$sm;
+}
+
+
+
+@media (min-width: 640px) {
+    .item {
+        grid-template-columns: repeat(2, 1fr);
+        gap: space.$md;
+    }
+}
+
+
+
+@media (min-width: 1024px) {
+    .item {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+
+}

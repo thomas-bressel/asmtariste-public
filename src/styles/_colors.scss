@@ -1,0 +1,43 @@
+// Text color
+$text-dark: #1A1A1A;
+$text-gray: #6B7280;
+$text-light: #9CA3AF;
+$text-primary: #00D084;
+$text-white: #E5E7EB;
+
+.text-color-primary {
+    color: $text-primary !important;
+}
+.text-color-dark {
+    color: $text-dark !important;
+}
+.text-color-gray {
+    color: $text-gray !important;
+}
+.text-color-white {
+    color: $text-white !important;
+}
+
+
+// Background color
+$bg-light: #FAFAFA;
+$bg-light-alpha: #fafafaf2;
+$bg-dark: #0F0F0F;
+
+
+.bg-color-dark {
+    background-color: $bg-dark;
+}
+
+// Border color
+$border-white: #E5E7EB;
+
+// Button color
+$primary: #00D084;
+$primary-hover: #00B872;
+
+
+// Shadow color
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+$shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+$shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);

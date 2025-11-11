@@ -1,0 +1,121 @@
+@use "colors" as color;
+@use "spacing" as space;
+@use "fonts" as font;
+@use "animations";
+
+
+
+.diagonalWrapper {
+    padding: 2.5rem;
+    clip-path: polygon(0 100%, 100% 0%, 100% 100%, 0% 100%);
+    background: color.$bg-dark;
+    margin-bottom: -1px;
+}
+
+
+
+
+.title {
+    background: color.$bg-dark;
+    font-family: font.$orbitronBlack;
+    font-size: 1.75rem;
+    font-weight: 900;
+    padding: 2rem 2rem 0 2rem;
+    text-transform: uppercase;
+    margin-bottom: -1px;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+}
+
+.description {
+    background: color.$bg-dark;
+    font-family: font.$interRegular;
+    font-weight: 100;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.tabs {
+    display: flex;
+    gap: space.$xs;
+    margin-bottom: space.$md;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab {
+    padding: space.$xs space.$sm;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: font.$orbitronBold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.tab.active {
+    color: color.$text-white;
+    border-bottom-color: color.$primary;
+}
+
+
+
+.main {
+    background: color.$bg-dark;
+padding: 0 1rem;
+padding-bottom: 2rem;
+
+}
+
+.content {
+    display: none;
+    background: color.$bg-dark;
+}
+
+.content.active {
+    display: grid;
+}
+
+
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: space.$sm;
+}
+
+
+
+
+@media (min-width: 480px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: space.$md;
+    }
+}
+
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+
+
+}

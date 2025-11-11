@@ -1,0 +1,22 @@
+
+@use "spacing" as space;
+
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  gap: space.$sm;
+  margin-top: space.$xl;
+  margin-bottom: space.$md;
+}
+
+
+@media (min-width: 768px) {
+
+    .cta {
+    flex-direction: row;
+    gap: space.$md;
+  }
+
+}
+

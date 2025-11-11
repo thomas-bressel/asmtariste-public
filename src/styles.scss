@@ -1,0 +1,139 @@
+@use "reset";
+@use 'aos/dist/aos.css';
+@use "fonts" as font;
+@use "colors" as color;
+@use 'animations' as anim;
+@use 'spacing' as space;
+
+
+
+/* ===== RESET & BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    background: color.$bg-light;
+    color: color.$text-dark;
+    line-height: 1.6;
+    overflow-x: hidden;
+    max-width: 1400px;
+    margin: auto;
+    font-family: font.$interRegular;
+}
+
+.section {
+    font-family: font.$interRegular;
+    padding: space.$sm;
+        display: flex
+;
+    flex-direction: column;
+}
+
+.margin-top {
+    margin-top: space.$xl;
+}
+
+code,
+.mono {
+    font-family: 'Courier New', monospace;
+}
+
+/* ===== SCANLINES DISCRÈTES ===== */
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    background: repeating-linear-gradient(0deg,
+            rgba(0, 208, 132, 0.5) 0px,
+            rgba(0, 208, 132, 0.5) 1px,
+            transparent 1px, transparent 2px);
+    opacity: 0.5;
+}
+
+/* ===== UTILITIES ===== */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.index2 {
+    position: relative;
+    z-index: 2;
+}
+.index0 {
+    position: relative;
+    z-index: 0;
+}
+
+
+.btn {
+    display: inline-block;
+    padding: 0.625rem 1.25rem;
+    border-radius: space.$btn-radius;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+
+.btn--primary {
+    background: color.$primary;
+    border: 2px solid color.$primary;
+}
+
+.btn--ghost {
+    background: transparent;
+    border: 2px solid color.$border-white;
+}
+
+
+.logo {
+    font-family: font.$orbitronRegular;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+}
+
+
+@media (min-width: 768px) {
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9375rem;
+    }
+
+
+    .btn--ghost:hover {
+        transition: ease-in-out 300ms;
+        border-color: color.$bg-dark;
+    }
+
+    .btn--primary:hover {
+        background: color.$primary-hover;
+        transition: ease-in-out 300ms;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+}

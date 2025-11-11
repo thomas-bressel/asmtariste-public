@@ -1,0 +1,22 @@
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Installer Angular CLI globalement
+RUN npm install -g @angular/cli@20.0.0
+
+# Copier les fichiers de configuration des dépendances
+COPY package*.json ./
+
+# Installer les dépendances
+RUN npm install
+
+# Exposer le port
+EXPOSE 4200
+
+# Configuration pour le hot reload avec polling
+# et permettre l'accès depuis l'extérieur du container
+CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
+
+# Ngrok command tto authorise 
+# CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--public-host", "7b65b6e27e6a.ngrok-free.app/"]

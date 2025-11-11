@@ -1,0 +1,84 @@
+@use "colors.scss" as color;
+@use "spacing.scss" as space;
+@use "fonts.scss" as font;
+@use "animations.scss";
+
+
+
+
+/* ===== FOOTER ===== */
+.footer {
+    font-family: font.$interRegular;
+    padding: space.$lg 0 space.$md;
+}
+
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: space.$md;
+    padding-bottom: space.$md;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: space.$md;
+}
+.logo {
+    padding: 0 1rem
+}
+
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: space.$sm;
+    justify-content: center;
+}
+
+
+.link {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+.link:hover {
+    color: color.$primary;
+}
+
+.copy {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+
+     .footer {
+        padding: space.$xl 0 space.$md;
+    }
+
+    .content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .links {
+        padding: 0 1rem;
+        gap: space.$md;
+        justify-content: flex-start;
+    }
+
+    .logo a {
+        font-size: 1.5rem;
+    }
+
+    .link {
+        font-size: 0.875rem;
+    }
+
+    .copy {
+        font-size: 0.875rem;
+    }
+}
