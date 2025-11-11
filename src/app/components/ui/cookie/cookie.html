@@ -1,0 +1,118 @@
+@if (shouldShowModal()) {
+<div class="overlay">
+  <div class="modal">
+    <div class="header">
+      <h3 class="title">
+        <span class="text-color-primary">[$COOKIE]</span> Gestion des cookies
+      </h3>
+    </div>
+
+    <div class="content">
+      <p class="text">
+        ASMtariste.fr utilise des cookies <strong>strictement nécessaires</strong> pour 
+        fonctionner correctement. Ces cookies permettent de :
+      </p>
+
+      <ul class="featureList">
+        <li>✓ Mémoriser vos préférences de navigation</li>
+        <li>✓ Comptabiliser vos visites pour améliorer le site</li>
+        <li>✓ Maintenir votre session de connexion</li>
+        <li>✓ Accéder au contenu premium (si contributeur)</li>
+      </ul>
+
+      @if (showDetails()) {
+      <div class="details">
+        <h4 class="subtitle">Données collectées :</h4>
+        <ul class="list">
+          <li>🌍 <strong>Langue du navigateur</strong> - pour adapter le contenu</li>
+          <li>📊 <strong>Nombre total de visites</strong> - pour améliorer le site</li>
+          <li>📅 <strong>Dates de première et dernière visite</strong> - statistiques</li>
+        </ul>
+        <p class="note">
+          Ces données sont stockées <strong>uniquement sur votre appareil</strong> (localStorage) 
+          et ne sont jamais transmises à des tiers.
+        </p>
+      </div>
+      }
+
+      <button class="detailsBtn" (click)="toggleDetails()">
+        {{ showDetails() ? '▲ Masquer les détails' : '▼ Voir les détails' }}
+      </button>
+
+      <div class="warning">
+        ⚠️ <strong>Important :</strong> Sans ces cookies, vous ne pourrez pas accéder 
+        au contenu du site.
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btnAccept btn--primary text-color-white" (click)="handleAccept()">
+        ✓ Accepter et continuer
+      </button>
+      <button class="btn btnRefuse btn--ghost text-color-dark" (click)="handleRefuse()">
+        ✗ Refuser (bloque l'accès)
+      </button>
+    </div>
+
+    <div class="footer">
+      <a routerLink="/mentions-legales" class="link">Mentions légales</a>
+      <span class="separator">•</span>
+      <a routerLink="/politique-confidentialite" class="link">Politique de confidentialité</a>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Cookie Wall (écran de blocage) -->
+@if (shouldShowWall()) {
+<div class="wallOverlay">
+  <div class="wallContainer">
+    <div class="wallContent">
+      <div class="wallIcon">🔒</div>
+      
+      <h2 class="wallTitle">
+        <span class="text-color-primary">[$ACCESS_DENIED]</span><br />
+        Accès au contenu refusé
+      </h2>
+      
+      <p class="wallText">
+        Vous avez refusé les cookies nécessaires au fonctionnement d'ASMtariste.fr.
+      </p>
+      
+      <div class="wallBox">
+        <h3 class="wallBoxTitle">Pourquoi des cookies ?</h3>
+        <ul class="wallList">
+          <li>📊 <strong>Compteur de visites</strong> - Pour améliorer le site</li>
+          <li>🌍 <strong>Préférences de langue</strong> - Pour adapter l'affichage</li>
+          <li>🔐 <strong>Session utilisateur</strong> - Pour accéder au contenu premium</li>
+        </ul>
+        <p class="wallNote">
+          Ces cookies sont stockés <strong>uniquement sur votre appareil</strong> 
+          (localStorage) et ne sont <strong>jamais partagés</strong> avec des tiers.
+        </p>
+      </div>
+
+      <div class="wallActions">
+        <button class="btn btn--primary text-color-white wallBtnAccept" (click)="handleAccept()">
+          ✓ Accepter les cookies et accéder au site
+        </button>
+        
+        <button class="btn btn--ghost text-color-dark wallBtnInfo" (click)="reopenBanner()">
+          📋 Voir les détails
+        </button>
+      </div>
+
+      <div class="wallFooter">
+        <p class="wallFooterText">
+          Sans cookies, vous ne pouvez accéder qu'aux mentions légales
+        </p>
+        <div class="wallFooterLinks">
+          <a routerLink="/mentions-legales" class="wallLink">Mentions légales</a>
+          <span class="separator">•</span>
+          <a routerLink="/politique-confidentialite" class="wallLink">Confidentialité</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}
