@@ -1,3 +1,4 @@
+<!-- Modale de consentement (première visite) -->
 @if (shouldShowModal()) {
 <div class="overlay">
   <div class="modal">
@@ -63,55 +64,47 @@
 </div>
 }
 
-<!-- Cookie Wall (écran de blocage) -->
+<!-- Mur de blocage (après refus des cookies) -->
 @if (shouldShowWall()) {
-<div class="wallOverlay">
-  <div class="wallContainer">
-    <div class="wallContent">
-      <div class="wallIcon">🔒</div>
-      
-      <h2 class="wallTitle">
-        <span class="text-color-primary">[$ACCESS_DENIED]</span><br />
-        Accès au contenu refusé
-      </h2>
-      
-      <p class="wallText">
-        Vous avez refusé les cookies nécessaires au fonctionnement d'ASMtariste.fr.
+<div class="overlay">
+  <div class="modal wall">
+    <div class="header">
+      <h3 class="title">
+        <span class="text-color-primary">🚫</span> Accès bloqué
+      </h3>
+    </div>
+
+    <div class="content">
+      <p class="text">
+        Vous avez <strong>refusé les cookies</strong> nécessaires au fonctionnement du site.
       </p>
       
-      <div class="wallBox">
-        <h3 class="wallBoxTitle">Pourquoi des cookies ?</h3>
-        <ul class="wallList">
-          <li>📊 <strong>Compteur de visites</strong> - Pour améliorer le site</li>
-          <li>🌍 <strong>Préférences de langue</strong> - Pour adapter l'affichage</li>
-          <li>🔐 <strong>Session utilisateur</strong> - Pour accéder au contenu premium</li>
-        </ul>
-        <p class="wallNote">
-          Ces cookies sont stockés <strong>uniquement sur votre appareil</strong> 
-          (localStorage) et ne sont <strong>jamais partagés</strong> avec des tiers.
-        </p>
-      </div>
+      <p class="text">
+        Sans ces cookies, ASMtariste.fr ne peut pas :
+      </p>
 
-      <div class="wallActions">
-        <button class="btn btn--primary text-color-white wallBtnAccept" (click)="handleAccept()">
-          ✓ Accepter les cookies et accéder au site
-        </button>
-        
-        <button class="btn btn--ghost text-color-dark wallBtnInfo" (click)="reopenBanner()">
-          📋 Voir les détails
-        </button>
-      </div>
+      <ul class="featureList">
+        <li>✗ Mémoriser vos préférences</li>
+        <li>✗ Améliorer votre expérience de navigation</li>
+        <li>✗ Vous permettre d'accéder au contenu</li>
+      </ul>
 
-      <div class="wallFooter">
-        <p class="wallFooterText">
-          Sans cookies, vous ne pouvez accéder qu'aux mentions légales
-        </p>
-        <div class="wallFooterLinks">
-          <a routerLink="/mentions-legales" class="wallLink">Mentions légales</a>
-          <span class="separator">•</span>
-          <a routerLink="/politique-confidentialite" class="wallLink">Confidentialité</a>
-        </div>
+      <div class="warning">
+        💡 <strong>Pour accéder au site :</strong> Vous devez accepter les cookies 
+        strictement nécessaires.
       </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btnAccept btn--primary text-color-white" (click)="reopenBanner()">
+        ✓ Modifier mon choix
+      </button>
+    </div>
+
+    <div class="footer">
+      <a routerLink="/mentions-legales" class="link">Mentions légales</a>
+      <span class="separator">•</span>
+      <a routerLink="/politique-confidentialite" class="link">Politique de confidentialité</a>
     </div>
   </div>
 </div>

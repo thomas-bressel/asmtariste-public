@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { CookieService } from '@services/cookie.service';
 
 @Component({
-  selector: 'app-cookie',
+  selector: 'section[app-cookie]',
   imports: [CommonModule, RouterLink],
   templateUrl: './cookie.html',
   styleUrl: './cookie.scss'
@@ -17,12 +17,13 @@ export class Cookie implements OnInit {
   protected showDetails = signal<boolean>(false);
   protected isBlocked = signal<boolean>(false);
 
-  // Computed
-  protected shouldShowModal = computed(() => 
-    this.showBanner() && !this.isBlocked()
+  // Display the modal IF banner visible AND content blocked
+  public shouldShowModal = computed(() => 
+    this.showBanner() && this.isBlocked()
   );
   
-  protected shouldShowWall = computed(() => 
+  // Display the blocking wall IF blocked BUT banner hidden (after refusal)
+  public shouldShowWall = computed(() => 
     this.isBlocked() && !this.showBanner()
   );
 
@@ -30,43 +31,62 @@ export class Cookie implements OnInit {
     this.initCookieConsent();
   }
 
+  /**
+   * Initialize cookie consent state
+   */
   private initCookieConsent(): void {
     const consent = this.cookieService.getConsent();
     
     if (!consent) {
-      // Première visite
+
+      // First visit : display modal AND block access
       this.showBanner.set(true);
       this.isBlocked.set(true);
     } else if (!consent.accepted) {
-      // L'utilisateur a refusé
+
+      // Cookies refudsed : display wall of blocking
       this.isBlocked.set(true);
       this.showBanner.set(false);
     } else {
-      // L'utilisateur a accepté
+
+      // Cookies accepted : allow everything
       this.isBlocked.set(false);
+      this.showBanner.set(false);
       this.cookieService.incrementVisit();
     }
   }
 
+  /**
+   * Handle user accepting cookies
+   */
   protected handleAccept(): void {
     this.cookieService.setConsent(true);
     this.showBanner.set(false);
     this.isBlocked.set(false);
-    // Recharge pour débloquer le contenu
     window.location.reload();
   }
 
+  /**
+   * Handle user refusing cookies
+   */
   protected handleRefuse(): void {
     this.cookieService.setConsent(false);
     this.showBanner.set(false);
     this.isBlocked.set(true);
   }
 
+  /**
+   * Toggle details view
+   */
   protected toggleDetails(): void {
     this.showDetails.update(value => !value);
   }
 
+  /**
+   * Reopen the cookie banner
+   */
   protected reopenBanner(): void {
     this.showBanner.set(true);
+    this.isBlocked.set(true);
   }
 }
