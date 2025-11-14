@@ -20,7 +20,7 @@ export class AuthApi {
     const sessionToken = localStorage.getItem('session_token');
     if (sessionToken) headers.append('Authorization', `Bearer ${sessionToken}`);
 
-    const response = await fetch(`${this.baseUrl}/user/v1/admin/login`, { method: 'POST', headers, credentials: 'include', body: JSON.stringify(credentials) });
+    const response = await fetch(`${this.baseUrl}/user/v1/public/login`, { method: 'POST', headers, credentials: 'include', body: JSON.stringify(credentials) });
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
@@ -44,7 +44,7 @@ export class AuthApi {
     const sessionToken = localStorage.getItem('session_token');
     if (sessionToken) headers.append('Authorization', `Bearer ${sessionToken}`);
 
-    const response = await fetch(`${this.baseUrl}/user/v1/admin/logout`, { method: 'POST', headers, credentials: 'include' });
+    const response = await fetch(`${this.baseUrl}/user/v1/public/logout`, { method: 'POST', headers, credentials: 'include' });
     const data = await response.json();
     console.log('Logout response data:', data);
 
@@ -64,7 +64,7 @@ export class AuthApi {
     const sessionToken = localStorage.getItem('session_token');
     if (sessionToken)  headers.append('Authorization', `Bearer ${sessionToken}`);
 
-    const response = await fetch(`${this.baseUrl}/user/v1/admin/verify`, { headers, credentials: 'include'});
+    const response = await fetch(`${this.baseUrl}/user/v1/public/verify`, { headers, credentials: 'include'});
 
     if (!response.ok)  throw new Error(`Profil inaccessible: ${response.status}`);
 
