@@ -20,6 +20,26 @@
     <a class="nav__item text-color-gray" href="#documentation">Documentation</a>
     <a class="nav__item text-color-gray" href="#tutoriel">Tutoriels</a>
     <a class="nav__item text-color-gray" href="#ressource">Ressources</a>
-    <a class="nav__item btn btn--ghost text-color-dark" href="#" (click)="openLoginModal()">Connexion</a>
-    <a class="nav__item btn btn--primary text-color-white" href="#">S'inscrire</a>
+    
+    <!-- Affichage conditionnel selon l'état de connexion -->
+    @if (auth.isAuthenticated()) {
+        <!-- Utilisateur connecté -->
+        <button  class="nav__item btn btn--ghost text-color-dark"  (click)="handleLogout($event)" type="button">
+            Déconnexion
+        </button>
+        <a  class="nav__item avatar"  [routerLink]="['/profil']" [title]="getUserFullName()">
+            <img [src]="getAvatarUrl()" [alt]="getUserFullName()"class="avatar-img" />
+        </a>
+    } @else {
+        <!-- Utilisateur non connecté -->
+        <a  class="nav__item btn btn--ghost text-color-dark"  href="#"  (click)="openLoginModal($event)">
+            Connexion
+        </a>
+        <a  class="nav__item btn btn--primary text-color-white"  href="#">
+            S'inscrire
+        </a>
+    }
 </nav>
+
+<!-- Composant modal de connexion -->
+<app-login-modal></app-login-modal>
