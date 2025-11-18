@@ -1,0 +1,91 @@
+@use "colors" as color;
+@use "spacing" as space;
+
+:host {
+  position: fixed;
+  bottom: 6rem;
+  right: .8rem;
+  z-index: 998;
+  
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  background: color.$primary;
+  border: 2px solid color.$primary;
+  color: white;
+  
+  cursor: pointer;
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.8);
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  box-shadow: 0 4px 16px rgba(0, 208, 132, 0.3);
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  &:hover {
+    background: color.$primary-hover;
+    border-color: color.$primary-hover;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(0, 208, 132, 0.5);
+
+    svg {
+      animation: bounce 0.6s ease infinite;
+    }
+  }
+
+  &:active {
+    transform: translateY(-2px) scale(0.95);
+    box-shadow: 0 4px 12px rgba(0, 208, 132, 0.4);
+  }
+
+  svg {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (min-width: 768px) {
+  :host {
+    width: 64px;
+    height: 64px;
+
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  :host {
+    width: 48px;
+    height: 48px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

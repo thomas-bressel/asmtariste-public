@@ -1,0 +1,16 @@
+<button class="btn btn--primary"
+    [ngClass]="['background-' + bgColor(), 'border-' + borderColor(), 'color-' + txtColor(), 'shadow-' + shadowColor()]"
+    [type]="type() === 'submit' ? 'submit' : 'button'" (click)="handleClick()">
+
+    @if(icon()) {
+    <img class="btn__icn" [src]="`./icons/${iconColor()}/${icon()}`" alt="">
+    }
+    @if(img()) {
+    <img class="btn__img" [src]="`./logos/${img()}.webp`" alt="">
+    }
+    <span class="btn__text">{{text()}}</span>
+
+    @if(hover()) {
+    <span class="btn__hover">{{hover()}}</span>
+    }
+</button>

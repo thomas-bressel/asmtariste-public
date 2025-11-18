@@ -1,1 +1,24 @@
-<p>forbidden works!</p>
+<div class="error-container index2">
+  <div class="glitch-wrapper">
+    <div class="glitch" [attr.data-text]="errorCode">{{errorCode}}</div>
+  </div>
+  
+  <h1 class="error-title">
+    <span class="text-color-primary">[$SECURITY]</span> {{errorMessage}}
+  </h1>
+  
+  <p class="error-description text-color-gray">{{description}}</p>
+  
+  <div class="memory-address text-color-gray">
+    <code>[$0000-$FFFF] • ERREUR SÉCURITÉ • ZONE PROTÉGÉE</code>
+  </div>
+  
+  <div class="cta">
+    <a [routerLink]="['accueil']" class="btn btn--primary text-color-white">
+      ← Retour à l'accueil
+    </a>
+    <a [routerLink]="['a-propos']" class="btn btn--ghost text-color-dark">
+      Contacter le support
+    </a>
+  </div>
+</div>

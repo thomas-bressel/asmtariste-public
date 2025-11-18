@@ -21,5 +21,5 @@
 // `).join('')}
 // </urlset>`;
 
-// writeFileSync('dist/browser/sitemap.xml', sitemap);
+// writeFileSync('dist/public/sitemap.xml', sitemap);
 // console.log('✅ Sitemap généré !');

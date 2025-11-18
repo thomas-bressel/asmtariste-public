@@ -3,7 +3,6 @@
 @use "fonts" as font;
 @use "animations";
 
-
 :host {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -11,29 +10,43 @@
     padding: space.$sm;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-}
+    cursor: pointer;
 
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: color.$primary;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 208, 132, 0.3);
 
-        .card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: color.$primary;
-            transform: translateY(-2px);
+        .icon {
+            transform: scale(1.1) rotate(5deg);
         }
 
+        .name {
+            color: color.$primary;
+        }
+    }
 
+    &:active {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 208, 132, 0.2);
+    }
+}
 
 .icon {
     font-size: 2rem;
     margin-bottom: space.$xs;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
-
-
 
 .name {
     font-size: 1rem;
     font-weight: 700;
     margin-bottom: 0.25rem;
     color: white;
+    transition: color 0.3s ease;
 }
 
 .desc {
@@ -41,10 +54,8 @@
     color: rgba(255, 255, 255, 0.6);
 }
 
-
-
-       @media (min-width: 768px) {
-            :host {
-                padding: space.$md;
-            }
-        }
+@media (min-width: 768px) {
+    :host {
+        padding: space.$md;
+    }
+}

@@ -1,21 +1,26 @@
-<!-- <article  class="article fade-in index2" [class.visible]="isArticleVisible()"> -->
-            <div class="image">
-                <img class="index0" src="/images/img1.webp" alt=""/>
-            </div>
+<div class="category">
+    <p>{{category_name()}}</p>
+</div>
+<div class="image">
+    <img class="index0" [src]="baseUrlAPI + '/articles/' + id_articles()+ '/' + cover()" alt="" />
+</div>
 
-            <div class="content">
-                <div class="meta">
-                    <span class="addr text-color-primary">$0000</span>
-                    <span class="date text-color-gray">27 juin 2024</span>
-                </div>
-                <h3 class="title">Configurer les outils</h3>
-                <p class="excerpt text-color-gray">
-                    Avant toute chose, pour commencer à écrire du code, tu auras besoin de plusieurs outils.
-                    Ce guide complet te montre comment installer et configurer ton environnement.
-                </p>
-                <div class="tags">
-                    <span class="tag color-text-dark">ÉMULATEURS</span>
-                    <span class="tag color-text-dark">SETUP</span>
-                </div>
-            </div>
-        <!-- </article> -->
+<div class="content">
+    <div class="meta">
+        <span class="addr text-color-primary">$0000</span>
+        <span class="date text-color-gray">{{ creation_date() | date:'dd MMM yyy': 'fr' }}</span>
+    </div>
+    <h3 class="title">{{title()}}</h3>
+    <p class="excerpt text-color-gray">
+        {{description()}}
+    </p>
+    <div class="meta">
+        <span></span>
+        <span class="date text-color-gray">mis à jour le  : {{ update_date() | date:'dd MMM yyy': 'fr' }}</span>
+    </div>
+    <div class="tags">
+        @for(tag of tags() ; track tag.id_tags){
+            <span [class]="`tag ${tag.color} ${tag.background_color}`">#{{tag.label}}</span>
+        }
+    </div>
+</div>

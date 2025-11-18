@@ -20,7 +20,7 @@ export class Accueil  implements OnInit  {
       title: 'Accueil - ASMtariSTe.fr, apprendre l’assembleur 68000 sur Atari ST',
       description: `Découvrez ASMtariSTe.fr, la plateforme dédiée à l'apprentissage de l'assembleur Motorola 68000 sur Atari ST.
         Articles, dossiers et ressources pour comprendre le fonctionnement de cette machine mythique.`,
-      keywords: 'Atari ST, assembleur 68000, programmation, rétro-informatique, tutoriels, cours, jeux, démos',
+      keywords: 'Atari ST, assembleur 68000, programmation, rétro-informatique, tutoriel, cours, jeux, démos',
       image: 'https://asmtariste.fr/assets/home-og.jpg'
     });
 
@@ -29,7 +29,7 @@ export class Accueil  implements OnInit  {
       '@type': 'WebSite',
       'name': 'ASMtariste',
       'url': 'https://asmtariste.fr',
-      'description': 'Apprenez à programmer en assembleur 68000 sur Atari ST grâce à des cours et tutoriels clairs et complets.'
+      'description': 'Apprenez à programmer en assembleur 68000 sur Atari ST grâce à des cours et tutoriel clairs et complets.'
     });
   }
 

@@ -42,10 +42,6 @@
 
 
 
-.link:hover {
-    color: color.$primary;
-}
-
 .copy {
     text-align: center;
     color: rgba(255, 255, 255, 0.4);
@@ -70,13 +66,25 @@
         justify-content: flex-start;
     }
 
+    
+    
     .logo a {
         font-size: 1.5rem;
+      &:hover {
+        cursor: pointer;
+      }
+    
     }
-
+    
     .link {
         font-size: 0.875rem;
+    
+    
+    &:hover {
+        cursor: pointer;
+        color: color.$primary;
     }
+}
 
     .copy {
         font-size: 0.875rem;

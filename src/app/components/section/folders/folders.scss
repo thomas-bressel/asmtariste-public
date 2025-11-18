@@ -12,10 +12,27 @@
     margin-bottom: -1px;
 }
 
+.illustration {
+    width: 30%;
+    min-width: 100px;
+    position: absolute;
+    animation: outch 2s linear 1s infinite alternate;
+}
 
-
+@keyframes outch {
+    0% {
+        transform: rotate(-1deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(1deg);
+    }
+}
 
 .title {
+
     background: color.$bg-dark;
     font-family: font.$orbitronBlack;
     font-size: 1.75rem;
@@ -75,14 +92,10 @@ padding-bottom: 2rem;
 }
 
 .content {
-    display: none;
+        display: grid;
+
     background: color.$bg-dark;
 }
-
-.content.active {
-    display: grid;
-}
-
 
 
 .grid {

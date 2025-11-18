@@ -1,26 +1,26 @@
 import { Injectable, Signal, inject } from '@angular/core';
 import { AuthStore } from '@services/store/auth-store.service';
-import { LoginCredentials, User } from '@models/auth.model';
+import { LoginCredentials, SignInCredentials, ConfirmSignupCredentials, User } from '@models/auth.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private authStore = inject(AuthStore);
-  
+
   // Exposer les sélecteurs publiquement
   get user(): Signal<User | null> {
     return this.authStore.user;
   }
-  
+
   get isLoading(): Signal<boolean> {
     return this.authStore.isLoading;
   }
-  
+
   get error(): Signal<string | null> {
     return this.authStore.error;
   }
-  
+
   get isAuthenticated(): Signal<boolean> {
     return this.authStore.isAuthenticated;
   }
@@ -32,12 +32,26 @@ export class AuthService {
   get refreshToken(): Signal<string | null> {
     return this.authStore.refreshToken;
   }
-  
+
   /**
    * Connexion avec identifiants
    */
   async login(credentials: LoginCredentials): Promise<void> {
     return this.authStore.login(credentials);
+  }
+
+  /**
+ * Inscription avec nickname et email
+ */
+  async signIn(credentials: SignInCredentials): Promise<void> {
+    return this.authStore.signIn(credentials);
+  }
+
+    /**
+   * Confirmer l'inscription avec token et password
+   */
+  async confirmSignup(credentials: ConfirmSignupCredentials): Promise<void> {
+    return this.authStore.confirmSignup(credentials);
   }
   
   /**
@@ -46,14 +60,14 @@ export class AuthService {
   async loginWithGoogle(): Promise<string> {
     return this.authStore.loginWithGoogle();
   }
-  
+
   /**
    * Déconnexion
    */
   async logout(): Promise<void> {
     return this.authStore.logout();
   }
-  
+
   /**
    * Effacer les erreurs
    */

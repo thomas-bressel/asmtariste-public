@@ -1,17 +1,69 @@
 import { Routes } from '@angular/router';
+import { signupTokenGuard } from '@guards/signup-token-guard';
 
 
 export const routes: Routes = [
-
     {
         path: '',
         loadComponent: async () =>
             (await import('./views/public/layout/layout')).Layout,
         children: [
+             {
+                path: '',
+                redirectTo: 'accueil',
+                pathMatch: 'full'
+            },
             {
                 path: 'accueil',
                 loadComponent: async () =>
                     (await import('./views/public/accueil/accueil')).Accueil
+            },
+            {
+                path: 'actualite',
+                loadComponent: async () =>
+                    (await import('./views/public/actualite/actualite')).Actualite,
+            },
+            {
+                path: 'actualite/article/:slug',
+                loadComponent: async () =>
+                    (await import('./views/public/article/article')).Article
+            },
+            {
+                path: 'documentation',
+                loadComponent: async () =>
+                    (await import('./views/public/documentations/documentations')).Documentation,
+            },
+            {
+                path: 'documentation/article/:slug',
+                loadComponent: async () =>
+                    (await import('./views/public/article/article')).Article
+            },
+            {
+                path: 'coding',
+                loadComponent: async () =>
+                    (await import('./views/public/coding/coding')).Coding
+            },
+            {
+                path: 'coding/article/:slug',
+                loadComponent: async () =>
+                    (await import('./views/public/article/article')).Article
+            },
+            {
+                path: 'tutoriel',
+                loadComponent: async () =>
+                    (await import('./views/public/tutorials/tutorials')).Tutorials
+            },
+            {
+                path: 'tutoriel/article/:slug',
+                loadComponent: async () =>
+                    (await import('./views/public/article/article')).Article
+            },
+            {
+                path: 'ressources/:slug',
+                loadComponent: async () =>
+                    (await import('./views/public/ressources/ressources')).Ressources,
+                loadChildren: async () =>
+                    (await import('./views/public/ressources/ressources.routes')).routes,
             },
             {
                 path: 'a-propos',
@@ -33,12 +85,14 @@ export const routes: Routes = [
                 loadComponent: async () =>
                     (await import('./views/public/politique-de-confidentialite/politique-de-confidentialite')).PolitiqueDeConfidentialite
             },
+            {
+                path: 'finaliser-inscription',
+                loadComponent: async () =>
+                    (await import('./views/private/finalize-signup/finalize-signup')).FinalizeSignup,
+                canActivate: [signupTokenGuard]
+            },
         ]
     },
-
-
-  
-    // Route 404
     {
         path: '**',
         loadComponent: async () =>

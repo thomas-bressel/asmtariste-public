@@ -1,1 +1,24 @@
-<p>not-found works!</p>
+<div class="error-container index2">
+  <div class="glitch-wrapper">
+    <div class="glitch" [attr.data-text]="errorCode">{{errorCode}}</div>
+  </div>
+  
+  <h1 class="error-title">
+    <span class="text-color-primary">[$ERROR]</span> {{errorMessage}}
+  </h1>
+  
+  <p class="error-description text-color-gray">{{description}}</p>
+  
+  <div class="memory-address text-color-gray">
+    <code>[$0000-$FFFF] • ERREUR MÉMOIRE • ADRESSE INVALIDE</code>
+  </div>
+  
+  <div class="cta">
+    <a [routerLink]="['/accueil']" class="btn btn--primary text-color-white">
+      ← Retour à l'accueil
+    </a>
+    <a [routerLink]="['/a-propos']" class="btn btn--ghost text-color-dark">
+      À propos
+    </a>
+  </div>
+</div>

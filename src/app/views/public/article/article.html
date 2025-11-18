@@ -1,0 +1,135 @@
+@if(isLoading()) {
+  <div class="loading">
+    <span class="spinner"></span>
+    <p>Chargement de l'article...</p>
+  </div>
+}
+
+@if(error()) {
+  <div class="error">
+    <span class="icon">⚠️</span>
+    <p>{{ error() }}</p>
+  </div>
+}
+
+@if(articleData() && !isLoading()) {
+  @let article = articleData();
+  @let imageUrl = baseUrlAPI + '/articles/' + article!.id_articles + '/';
+
+  <article class="article">
+    <!-- Pagination (top) -->
+    @if(totalPages() > 1) {
+      <section app-pagination></section>
+    }
+
+    <!-- Header (only on page 1) -->
+    @if(currentPage() === 1) {
+      <header class="header__article">
+        <span class="label">[$ARTICLE]</span>
+        <h1 class="header__article-ttl">{{ article!.title }}</h1>
+        
+        <div class="header__article-bloc">
+          <div class="header__article-txt">
+            <p class="header__article-description">{{ article!.description }}</p>
+
+            <div class="header__credits">
+              <address>rédigé par <span class="header__credits-author">{{ article!.author_nickname }}</span></address>
+              <p>publié le <time class="header__credits-date">{{ article!.creation_date | date:'dd MMMM yyyy':'fr' }}</time></p>
+              <p>dernière édition réalisée le <time class="header__credits-date">{{ article!.update_date | date:'dd MMMM yyyy':'fr' }}</time></p>
+            </div>
+          </div>
+
+          @if(article!.cover && article!.cover !== 'default-image.webp') {
+            <img class="header__article-img" [src]="imageUrl + article!.cover" [alt]="article!.title">
+          }
+        </div>
+      </header>
+    }
+
+    <!-- Current page content -->
+    @if(currentPageContent()) {
+      @let pageData = currentPageContent();
+      @let pageImageUrl = imageUrl + 'pages/' + pageData!.page + '/';
+
+      <section class="page" [attr.data-page]="pageData!.page">
+        @for(content of pageData!.contents; track content.id_contents) {
+          <div class="content" [id]="content.id_contents">
+            <main class="content__main">
+              
+              <!-- Iterate over columns (positions 0, 1, 2) -->
+              @for(column of content.columns; track column.position) {
+
+                <!-- LEFT column (position 0) -->
+                @if(column.position === 0) {
+                  <div class="content__main--left">
+                    @if(column.title_text) {
+                      <h2 class="content__main--left-title">{{ column.title_text }}</h2>
+                    }
+
+                    @if(column.text_content) {
+                      <div class="content__main--left-text" [innerHTML]="column.text_content"></div>
+                    }
+
+                    @if(column.image_filename) {
+                      <img class="content__main--left-image" 
+                           [src]="pageImageUrl + column.image_filename"
+                           [alt]="column.image_filename">
+                    }
+                  </div>
+                }
+
+                <!-- CENTER column (position 1) -->
+                @if(column.position === 1) {
+                  <div class="content__main--center">
+                    @if(column.title_text) {
+                      <h2 class="content__main--center-title">{{ column.title_text }}</h2>
+                    }
+
+                    @if(column.text_content) {
+                      <div class="content__main--center-text" [innerHTML]="column.text_content"></div>
+                    }
+
+                    @if(column.image_filename) {
+                      <img class="content__main--center-image" 
+                           [src]="pageImageUrl + column.image_filename"
+                           [alt]="column.image_filename">
+                    }
+                  </div>
+                }
+
+                <!-- RIGHT column (position 2) -->
+                @if(column.position === 2) {
+                  <div class="content__main--right">
+                    @if(column.title_text) {
+                      <h2 class="content__main--right-title">{{ column.title_text }}</h2>
+                    }
+
+                    @if(column.text_content) {
+                      <div class="content__main--right-text" [innerHTML]="column.text_content"></div>
+                    }
+
+                    @if(column.image_filename) {
+                      <img class="content__main--right-image" 
+                           [src]="pageImageUrl + column.image_filename"
+                           [alt]="column.image_filename">
+                    }
+                  </div>
+                }
+              }
+              <!-- End columns loop -->
+            </main>
+          </div>
+        }
+      </section>
+    }
+
+    <!-- Pagination (bottom) -->
+    @if(totalPages() > 1) {
+      <section app-pagination></section>
+    }
+
+    <div class="memory">
+      <code>[$FFFF] • {{ article!.title }} • Page {{ currentPage() }}/{{ totalPages() }} • ASMtariste.fr</code>
+    </div>
+  </article>
+}

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LoginCredentials, LoginResponse, GoogleAuthResponse, User } from '@models/auth.model';
+import { LoginCredentials, LoginResponse, GoogleAuthResponse, User, SignInCredentials,
+          SignInResponse,  ConfirmSignupCredentials, TokenValidationResponse } from '@models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,100 @@ export class AuthApi {
   }
 
 
+
+
+
+
+
+  /**
+   * Sign in with nickname and email
+   * @param credentials SignInCredentials (nickname, email)
+   * @returns SignInResponse
+   */
+  public async signIn(credentials: SignInCredentials): Promise<SignInResponse> {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+
+    const response = await fetch(`${this.baseUrl}/user/v1/public/signin`, { 
+      method: 'POST', 
+      headers, 
+      credentials: 'include', 
+      body: JSON.stringify(credentials) 
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || `${response.status}: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+
+
+
+
+
+
+
+
+
+/**
+   * Validate signup token
+   * @param token Token from URL
+   * @returns TokenValidationResponse
+   */
+  public async validateSignupToken(token: string): Promise<TokenValidationResponse> {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+
+    const response = await fetch(`${this.baseUrl}/user/v1/public/validate-signup-token`, { 
+      method: 'POST', 
+      headers, 
+      credentials: 'include', 
+      body: JSON.stringify({ token }) 
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || `${response.status}: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+
+
+
+
+
+
+
+/**
+   * Confirm signup with token and password
+   * @param credentials ConfirmSignupCredentials (token, password)
+   * @returns SignInResponse
+   */
+  public async confirmSignup(credentials: ConfirmSignupCredentials): Promise<SignInResponse> {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+
+    const response = await fetch(`${this.baseUrl}/user/v1/public/confirm-signup`, { 
+      method: 'POST', 
+      headers, 
+      credentials: 'include', 
+      body: JSON.stringify(credentials) 
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || `${response.status}: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+
+
+
+  
 
 
 

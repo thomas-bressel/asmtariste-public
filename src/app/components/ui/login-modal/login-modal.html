@@ -4,7 +4,10 @@
         <!-- Header -->
         <div class="header">
             <div class="titleWrapper">
-                <h2 class="title"><span class="text-color-primary">[$AUTH]</span> Connexion</h2>
+                <h2 class="title">
+                    <span class="text-color-primary">[$AUTH]</span> 
+                    {{ mode() === 'login' ? 'Connexion' : 'Inscription' }}
+                </h2>
             </div>
 
             <button 
@@ -20,7 +23,9 @@
         </div>
 
         <!-- Subtitle -->
-        <p class="subtitle">Accédez à votre espace personnel et au contenu premium</p>
+        <p class="subtitle">
+            {{ mode() === 'login' ? 'Accédez à votre espace personnel et au contenu premium' : 'Créez votre compte pour accéder au contenu premium' }}
+        </p>
 
         <!-- Content -->
         <div class="content">
@@ -44,6 +49,21 @@
                         required />
                 </div>
 
+                @if (mode() === 'signIn') {
+                <div class="inputGroup">
+                    <label for="email" class="label">Email</label>
+                    <input 
+                        id="email" 
+                        type="email" 
+                        formControlName="email" 
+                        class="input" 
+                        placeholder="votre@email.fr"
+                        autocomplete="email" 
+                        required />
+                </div>
+                }
+
+                @if (mode() === 'login') {
                 <div class="inputGroup">
                     <label for="password" class="label">Mot de passe</label>
                     <input 
@@ -59,6 +79,7 @@
                 <div class="forgotPassword">
                     <a [routerLink]="['/mot-de-passe-oublie']" class="link">Mot de passe oublié ?</a>
                 </div>
+                }
 
                 <button
                     type="submit"
@@ -66,13 +87,14 @@
                     [disabled]="loginForm.invalid || auth.isLoading()">
                     @if (auth.isLoading()) {
                     <span class="spinner"></span>
-                    Connexion...
+                    {{ mode() === 'login' ? 'Connexion...' : 'Inscription...' }}
                     } @else {
-                    ✓ Se connecter
+                    {{ mode() === 'login' ? '✓ Se connecter' : '✓ S\'inscrire' }}
                     }
                 </button>
             </form>
 
+            @if (mode() === 'login') {
             <!-- Séparateur -->
             <div class="divider">
                 <span>ou</span>
@@ -96,13 +118,16 @@
                 </svg>
                 Continuer avec Google
             </button>
+            }
         </div>
 
         <!-- Footer -->
         <div class="footer">
             <p class="footerText">
-                Pas encore de compte ?
-                <a href="#" class="footerLink">S'inscrire</a>
+                {{ mode() === 'login' ? 'Pas encore de compte ?' : 'Déjà un compte ?' }}
+                <a href="#" class="footerLink" (click)="toggleMode(); $event.preventDefault()">
+                    {{ mode() === 'login' ? 'S\'inscrire' : 'Se connecter' }}
+                </a>
             </p>
         </div>
     </div>

@@ -1,0 +1,263 @@
+@use './article-colors' as color;
+@use './mixins' as *;
+@use './fonts' as font;
+
+.color-red {
+    color: red;
+}
+
+.color-blue {
+    color: blue;
+}
+
+.color-green {
+    color: green;
+}
+
+.color-yellow {
+    color: yellow;
+}
+
+.color-orange {
+    color: orange;
+}
+
+.color-purple {
+    color: purple;
+}
+
+.color-black {
+    color: black;
+}
+
+.color-white {
+    color: white;
+}
+
+.color-brown {
+    color: #A86954;
+}
+
+.background-red {
+    background-color: red;
+}
+
+.background-blue {
+    background-color: blue;
+}
+
+.background-green {
+    background-color: green;
+}
+
+.background-yellow {
+    background-color: yellow;
+}
+
+.background-orange {
+    background-color: orange;
+}
+
+.background-purple {
+    background-color: purple;
+}
+
+.background-black {
+    background-color: black;
+}
+
+.background-white {
+    background-color: white;
+}
+
+.background-grey {
+    background-color: grey;
+}
+
+
+
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.hashtag {
+    font-weight: bold;
+    &::before { content: '#'; }
+}
+
+.link {
+    color: #00994d;
+    font-weight: 500;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: #00552d;
+        text-decoration: underline;
+        transition: color 0.3s ease;
+    }
+}
+
+.file {
+    text-shadow: 4px 3px 4px black;
+    transition: 300ms;
+
+    &:hover {
+        color: green;
+        transition: 300ms;
+        text-shadow: 4px 3px 4px rgb(26, 206, 71);
+    }
+
+    &::before {
+        content: '💾 < ';
+        margin-right: 5px;
+    }
+}
+
+.code {
+  display: block;
+  font-family: font.$gemLowRes;
+  font-size: -0.05rem !important;
+  color: #1e1e1e;
+  background: #f7f9fb;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  box-sizing: border-box;
+  overflow-x: auto;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.code::before {
+  content: "CODE";
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #555;
+  background-color: #eaeef2;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  width: fit-content;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+// .code {
+//     display: block;
+//     font-family: 'courrier';
+//     color: black;
+//     background-color: aliceblue;
+//     line-height: 1rem;
+//     border: 1px solid grey;
+//     border-radius: 5px;
+//     font-size: 1rem;
+//     padding: 5px;
+//     white-space: pre-wrap;
+//     box-sizing: border-box;
+// }
+
+.warning {
+    padding: 10px;
+    display: block;
+    padding: 1rem;
+    margin-top: 1rem;
+        margin-left: 1rem;
+    margin-right: 1rem;
+    background-color: #fdefe1;
+
+    &::before {
+        content: url('public/icons/colored/warning.svg');
+        position: relative;
+        top: -30px;
+        left: -30px;
+    }
+
+    p {
+        margin-top: -20px;
+    }
+}
+
+.information {
+        display: block;
+    margin-top: 1rem;
+        margin-left: 1rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: #e6f4fa;
+
+    &::before {
+        content: url('public/icons/colored/information.svg');
+        position: relative;
+        top: -30px;
+        left: -30px;
+    }
+
+    p {
+        margin-top: -20px;
+    }
+}
+
+.question {
+        display: block;
+    margin-top: 1rem;
+        margin-left: 1rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: #f4f4f4;
+
+    &::before {
+        content: url('public/icons/colored/question.svg');
+        position: relative;
+        top: -30px;
+        left: -30px;
+    }
+
+    p {
+        margin-top: -20px;
+    }
+}
+
+
+.keyboard-key {
+    @include standard-border($size: 2px, $shape: solid, $color: color.$greylight, $radius: 5px);
+    @include text($size: 1rem, $align: center, $color: color.$black);
+    background-color: color.$white;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2), -2px -2px 5px rgba(255, 255, 255, 0.8);
+    padding: .2rem .4rem;
+    transition: all 0.2s ease;
+}
+
+
+.list {
+    @include flex($direction: column);
+}
+
+.list-item {
+    position: relative;
+    margin-left: 10px;
+    padding: 5px;
+
+    &::before {
+        content: '•';
+        position: absolute;
+        left: -10px;
+    }
+}
+
+
+@media screen and (min-width: 550px) {
+
+
+
+
+}

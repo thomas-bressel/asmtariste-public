@@ -1,0 +1,46 @@
+@if (showPagination() || config().alwaysShow) {
+<nav class="pagination" [attr.aria-label]="config().ariaLabel">
+
+  <!-- First page button (optional) -->
+  @if (config().showFirstLast) {
+    <div app-button [class.disabled]="isPreviousDisabled()" 
+  [attr.aria-label]="config().firstButtonLabel" [type]="'button'"
+  [icon]="'chevron-double-left.svg'" [iconColor]="'white'" [shadowColor]="'purple'"
+  (click)="goToFirst()"></div>
+  }
+
+  <!-- Previous button -->
+  <div app-button [class.disabled]="isPreviousDisabled()" 
+  [attr.aria-label]="config().previousButtonLabel" [type]="'button'" 
+  [icon]="'chevron-simple-left.svg'" [iconColor]="'white'"  [shadowColor]="'purple'"
+  (click)="previousPage()"></div>
+
+
+  <!-- Page numbers -->
+  <div class="pagination__numbers">
+    @for (item of paginationNumbers(); track $index) {
+      @if (item.type === 'page') {
+      <button type="button" class="pagination__numbers-number" [class.active]="item.active" (click)="goToPage(item.value!)"
+        [attr.aria-label]="'Page ' + item.value" [attr.aria-current]="item.active ? 'page' : null">
+        {{ item.value }}
+      </button>
+      } @else { <span class="pagination__number-dots">{{ config().dotsText }}</span> }
+    }
+  </div>
+
+  <!-- Next button -->
+  <div app-button [class.disabled]="isNextDisabled()" 
+  [attr.aria-label]="config().previousButtonLabel" [type]="'button'"
+  [icon]="'chevron-simple-right.svg'" [iconColor]="'white'" [shadowColor]="'purple'"
+  (click)="nextPage()"></div>
+
+
+  <!-- Last page button (optional) -->
+  @if (config().showFirstLast) {
+  <div app-button [class.disabled]="isNextDisabled()" 
+  [attr.aria-label]="config().firstButtonLabel" [type]="'button'"
+  [icon]="'chevron-double-right.svg'" [iconColor]="'white'" [shadowColor]="'purple'"
+  (click)="goToLast()"></div>
+  }
+</nav>
+}

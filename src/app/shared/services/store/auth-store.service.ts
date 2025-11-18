@@ -1,6 +1,6 @@
 import { Injectable, Signal, computed, effect, inject, signal } from '@angular/core';
 import { AuthApi } from '@services/api/auth-api.service';
-import { AuthState, LoginCredentials, User } from '@models/auth.model';
+import { AuthState, LoginCredentials, SignInCredentials, ConfirmSignupCredentials, User } from '@models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -86,6 +86,66 @@ export class AuthStore {
       throw error;
     }
   }
+
+
+
+
+
+
+
+
+
+
+  /**
+   * Sign in with nickname and email
+   * @param credentials SignInCredentials (nickname, email)
+   */
+  async signIn(credentials: SignInCredentials): Promise<void> {
+    this.clearError();
+    this.state.update(state => ({ ...state, isLoading: true }));
+
+    try {
+      await this.authApi.signIn(credentials);
+      this.state.update(state => ({ ...state, isLoading: false, error: null }));
+    } catch (error) {
+      this.state.update(state => ({ 
+        ...state, 
+        isLoading: false, 
+        error: error instanceof Error ? error.message : 'Échec de l\'inscription' 
+      }));
+      throw error;
+    }
+  }
+
+
+
+
+
+
+
+
+
+  /**
+   * Confirm signup with token and password
+   * @param credentials ConfirmSignupCredentials (token, password)
+   */
+  async confirmSignup(credentials: ConfirmSignupCredentials): Promise<void> {
+    this.clearError();
+    this.state.update(state => ({ ...state, isLoading: true }));
+
+    try {
+      await this.authApi.confirmSignup(credentials);
+      this.state.update(state => ({ ...state, isLoading: false, error: null }));
+    } catch (error) {
+      this.state.update(state => ({ 
+        ...state, 
+        isLoading: false, 
+        error: error instanceof Error ? error.message : 'Échec de la confirmation' 
+      }));
+      throw error;
+    }
+  }
+
 
 
 

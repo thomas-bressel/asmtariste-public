@@ -1,0 +1,27 @@
+<button class="toggle" (click)="togglePanel()" type="button" aria-label="Dossiers">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8z"/>
+  </svg>
+</button>
+
+<div class="panel">
+  <div class="header">
+    <!-- <h3 class="title">Dossiers</h3> -->
+    <button class="closeBtn" (click)="togglePanel()" type="button" aria-label="Fermer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="list">
+    @for(folder of folders(); track folder.id_folder) {
+      <button  class="item"  (click)="navigateToFolder(folder.id_folder, folder.title)" type="button" [title]="folder.title">
+        <img class="icon" [src]="baseUrlAPI + '/folders/' + folder.id_folder + '/icon.svg'" [alt]="folder.title">
+        <!-- <span class="label">{{ folder.title }}</span> -->
+      </button>
+    }
+  </div>
+</div>
+
+<div class="overlay" (click)="togglePanel()"></div>

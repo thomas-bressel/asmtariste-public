@@ -1,0 +1,35 @@
+<div class="fileWrapper">
+
+  <img class="filePreview"
+    [src]="baseUrl + '/folders/' + id_folder() + '/labels/' + id_label() + '/files/' + id_file() + '/thumbnails/thumbnail.webp'"
+    alt="">
+  <div class="fileContent">
+    <h3 class="fileName">{{ name() }}</h3>
+
+    <div class="fileMeta">
+      <span class="fileLabel">{{ label() }}</span>
+      <span class="fileBadge" [class]="getLevelColor()">
+        {{ getLevelBadge() }}
+      </span>
+    </div>
+  </div>
+
+  <button class="downloadBtn" type="button" aria-label="Télécharger" [disabled]="serviceFile.isDownloading(id_file())"
+    (click)="handleDownloadFile(id_file())">
+
+
+    @if(!serviceFile.isDownloading(id_file())) {
+    <!-- Icône normale -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 16L7 11l1.4-1.4l2.6 2.6V4h2v8.2l2.6-2.6L17 11zm-6 4v-2h12v2z" />
+    </svg>
+    } @else {
+    <svg class="spinner" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8a8 8 0 0 1-8 8z"
+        opacity=".5" />
+      <path fill="currentColor" d="M20 12h2A10 10 0 0 0 12 2v2a8 8 0 0 1 8 8z" />
+    </svg>
+    }
+
+  </button>
+</div>

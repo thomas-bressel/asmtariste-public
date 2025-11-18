@@ -1,7 +1,13 @@
-import { Component, ViewChild, signal, inject } from '@angular/core';
-import { RouterLink } from "@angular/router";
-import { LoginModal } from '@components/ui/login-modal/login-modal';
+// Angular imports
+import { Component, ViewChild, signal, inject, computed, OnInit, OnDestroy, effect } from '@angular/core';
+import { RouterLink, Router, NavigationEnd } from "@angular/router";
+import { filter } from 'rxjs/operators';
+
+// Service imports
 import { AuthService } from '@services/auth.service';
+
+// Component imports
+import { LoginModal } from '@components/ui/login-modal/login-modal';
 
 @Component({
   selector: 'header[app-header]',
@@ -12,23 +18,99 @@ import { AuthService } from '@services/auth.service';
     'class': 'header'
   }
 })
-export class Header  {
-    public auth = inject(AuthService);
-    public isOpen = signal<boolean>(false);
-  
-  // Référence au composant login modal
+export class Header implements OnInit, OnDestroy {
   @ViewChild(LoginModal) loginModal!: LoginModal;
-  
-  // Variable pour stocker une référence au composant au chargement initial
-  private loginModalInstance: LoginModal | null = null;
+  private readonly avatarBaseUrl = 'http://localhost:5002/avatars/';
 
-    // Base URL pour les avatars
-  private avatarBaseUrl = 'http://localhost:5002/avatars/';
+  // Dependency injections
+  public auth = inject(AuthService);
+  private router = inject(Router);
+
+
+  // Signal properties
+  public isOpen = signal<boolean>(false);
+  public scrollProgress = signal<number>(0);
+  public showQuickNav = signal<boolean>(false);
+
+
+  // Computed properties
+  public readonly avatarUrl = computed(() => {
+    const user = this.auth.user();
+    return user?.avatar ? `${this.avatarBaseUrl}${user.avatar}` : '/assets/default-avatar.png';
+  });
+
+  public readonly userFullName = computed(() => {
+    const user = this.auth.user();
+    return user ? `${user.firstname} ${user.lastname}` : '';
+  });
+
+
+
+  // Build
+  constructor() {
+    effect(() => {
+      if (this.router.url === '/accueil') {
+        this.showQuickNav.set(true);
+      } else {
+        this.showQuickNav.set(false);
+      }
+    });
+  }
+
+
+  /**
+   * On component initialisation
+   */
+  ngOnInit(): void {
+    this.updateScrollProgress();
+    window.addEventListener('scroll', this.updateScrollProgress);
+
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.showQuickNav.set(this.router.url === '/accueil');
+      });
+  }
+
 
 
 
   /**
-   * Toggle the mobile menu
+   * On component destruction
+   */
+  ngOnDestroy(): void {
+    window.removeEventListener('scroll', this.updateScrollProgress);
+  }
+
+
+
+
+
+
+  /**
+   * 
+   */
+  private updateScrollProgress = (): void => {
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.scrollY;
+    const scrollableHeight = documentHeight - windowHeight;
+    
+    if (scrollableHeight > 0) {
+      const progress = (scrollTop / scrollableHeight) * 100;
+      this.scrollProgress.set(Math.min(progress, 100));
+    } else {
+      this.scrollProgress.set(0);
+    }
+  }
+
+
+
+
+
+
+  /**
+   * 
    */
   public toggleMenu(): void {
     this.isOpen.set(!this.isOpen());
@@ -38,62 +120,52 @@ export class Header  {
 
 
 
+
   /**
-   * Open the login modal
-   * @param event Optional event to prevent default
+   * Open the login modal when the user click on SignUp button
+   * @param event 
    */
   public openLoginModal(event?: Event): void {
     if (event) event.preventDefault();
-    
-    // Si on a déjà la référence via ViewChild (après le premier rendu)
     if (this.loginModal) this.loginModal.open();
-    
-    this.isOpen.set(false); // Ferme le menu mobile si ouvert
+    this.isOpen.set(false);
   }
-  
-  
-  
 
-/**
-   * Déconnexion de l'utilisateur
+
+
+
+
+    /**
+   * Open the register modal when the user click on SignIn button
+   * @param event 
+   */
+  public openSignInModal(event?: Event): void {
+    if (event) event.preventDefault();
+    if (this.loginModal) this.loginModal.openSignIn();
+    this.isOpen.set(false);
+  }
+
+
+
+
+
+
+
+  /**
+   * 
+   * @param event 
    */
   public async handleLogout(event?: Event): Promise<void> {
-    if (event) {
-      event.preventDefault();
-    }
-    
+    if (event) event.preventDefault();
+
     try {
       await this.auth.logout();
-      this.isOpen.set(false); // Ferme le menu mobile si ouvert
+      this.router.navigateByUrl('/accueil', { replaceUrl: true }).then(() => {
+        location.reload();
+      });
+      this.isOpen.set(false);
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     }
   }
-
-
-
-  
-  /**
-   * Obtenir l'URL complète de l'avatar
-  */
- public getAvatarUrl(): string {
-    const user = this.auth.user();
-    console.log('User :', user);
-
-    return user?.avatar ? `${this.avatarBaseUrl}${user.avatar}` : '/assets/default-avatar.png';
-  }
-
-
-
-  /**
-   * Obtenir le nom complet de l'utilisateur
-   */
-  public getUserFullName(): string {
-    const user = this.auth.user();
-    return user ? `${user.firstname} ${user.lastname}` : '';
-  }
-
-
-
-
 }

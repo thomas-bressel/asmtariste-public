@@ -1,0 +1,59 @@
+@use 'colors.scss' as color;
+@use 'mixins' as *;
+
+
+
+.navigation {
+    @include position($position: fixed, $bottom: 0, $left: 0, $zindex: 100);
+    margin-top: 5rem;
+    width: 100%;
+    padding: 1rem;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
+
+    &__list {
+        @include flex($justify: space-between);
+        width: 100%;
+    }
+
+    &__item {
+        width: fit-content;
+        
+    }
+
+    &__action {
+        opacity: 0.2;
+        
+        &--insert {
+            border-radius: .9rem;
+           
+        }
+        
+        &--disabled {
+            margin: 25px;
+        }
+
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .navigation {
+        &__action {   
+            &:hover {
+                cursor: not-allowed;
+            }
+        }
+
+                &--insert:hover {
+                cursor: pointer !important;
+                opacity: 1 !important;
+            
+        }
+
+
+
+    }
+
+    
+}

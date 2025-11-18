@@ -1,0 +1,40 @@
+
+
+@mixin flex($direction: row, $justify: null, $align: null, $gap: null, $wrap: null) {
+  display: flex;
+  @if $direction !=null { flex-direction: $direction;}
+  @if $justify !=null { justify-content: $justify;}
+  @if $align !=null { align-items: $align;}
+  @if $gap !=null { gap: $gap;}
+  @if $wrap !=null { flex-wrap: $wrap}
+}
+  
+  
+@mixin text($font: null, $size: null, $align: null, $transform: null, $color: black, $weight: null, $letter: null, $line: null) {
+  @if $font !=null {font-family: $font;}
+  @if $color !=null {color: $color;}
+  @if $size !=null {font-size: $size;}
+  @if $align !=null {text-align: $align;}
+  @if $transform !=null {text-transform: $transform;}
+  @if $weight !=null {font-weight: $weight;}
+  @if $letter !=null {letter-spacing: $letter;}
+  @if $line !=null {line-height: $line;}
+}
+
+
+
+@mixin standard-border($size: .25rem, $shape: solid, $radius: 1rem, $color: transparent) {
+  border: $size, $shape, $color;
+  border-radius: $radius;
+}
+
+@mixin position($position: null, $top: null, $right: null, $bottom: null, $left: null, $zindex: null) {
+  @if $position !=null {position: $position}
+  @if $top !=null {top: $top;}
+  @if $right !=null {right: $right;}
+  @if $bottom !=null {bottom: $bottom;}
+  @if $left !=null {left: $left;}
+  @if $zindex !=null {z-index: $zindex;}
+}
+
+  

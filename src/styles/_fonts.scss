@@ -56,3 +56,15 @@ $interBold :'Inter-Bold';
   font-style: normal;
   font-display: swap;
 }
+
+
+
+
+
+$gemLowRes: 'GemLowRes';
+
+@font-face {
+    font-family: 'GemLowRes';
+    src: url('/fonts/GemLowRes.woff2') format('woff2');
+    font-weight: 500;
+}

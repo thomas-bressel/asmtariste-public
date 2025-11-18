@@ -1,0 +1,57 @@
+<div class="container">
+  <h3 class="title">Soutenir le projet ?</h3>
+  <p class="subtitle">Contribuez à la pérennité du projet selon vos moyens</p>
+  
+  <div class="plans">
+    @for(plan of plans; track plan.name) {
+      <div class="plan" [class.highlighted]="plan.highlighted">
+        @if(plan.highlighted) {
+          <span class="badge">Le plus populaire</span>
+        }
+        
+        <h4 class="planName">{{ plan.name }}</h4>
+        
+        <div class="pricing">
+          <span class="price">{{ plan.price }}</span>
+          <span class="period">{{ plan.period }}</span>
+        </div>
+        
+        @if(plan.monthlyPrice) {
+          <p class="monthly">Soit {{ plan.monthlyPrice }} par mois</p>
+        }
+        
+        <ul class="features">
+          @for(feature of plan.features; track feature.text) {
+            <li class="feature" [class.unavailable]="!feature.available">
+              <span class="icon">{{ feature.available ? '✓' : '✗' }}</span>
+              <span class="text">{{ feature.text }}</span>
+            </li>
+          }
+        </ul>
+
+        @if(plan.ctaText) {
+
+          <a href="https://www.paypal.com/donate/?hosted_button_id=P3W7XZXJ5Y4WN" target="_blank">
+            <button class="btn" [class.btn--primary]="plan.highlighted" [class.btn--ghost]="!plan.highlighted">
+              {{ plan.ctaText }}
+            </button>
+          </a>
+        }
+      </div>
+    }
+  </div>
+  
+  <p class="note">
+    💚 Votre contribution permet de couvrir les frais d'hébergement et soutient la création de contenu exclusif. 
+    Une barre de progression indique la couverture des coûts annuels en toute transparence.<br />
+        (Hostinger - serveur VPS, offre KVM1)
+  </p>
+   <div class="donation-progress">
+        <div class="progress-header">
+            <span class="progress-label">Frais d'hébergement annuels 2026 - 2027</span>
+            <span class="progress-value">{{progressPercentage()}}%</span>
+        </div>
+        <progress class="progress-bar" [value]="progressPercentage()" max="100">{{progressPercentage()}}%</progress>
+        <p class="progress-info text-color-gray">{{currentAmount()}}€ / {{targetAmount()}}€ collectés</p>
+    </div>
+</div>

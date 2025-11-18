@@ -1,0 +1,199 @@
+@use "colors" as color;
+@use "spacing" as space;
+@use "fonts" as font;
+
+:host {
+  display: block;
+  background: color.$bg-dark;
+  padding: space.$lg space.$sm;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.title {
+              position: relative;
+        z-index: 2;
+        filter: drop-shadow(2px 4px 6px black);
+  font-family: font.$orbitronBlack;
+  font-size: 1.75rem;
+  color: color.$text-primary;
+  text-align: center;
+  margin-bottom: space.$xs;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.subtitle {
+  font-family: font.$interRegular;
+  font-size: 1rem;
+  color: color.$text-white;
+  text-align: center;
+  margin-bottom: space.$lg;
+  opacity: 0.8;
+}
+
+.plans {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: space.$md;
+}
+
+.plan {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: space.$xs;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: color.$primary;
+    box-shadow: 0 8px 32px rgba(0, 208, 132, 0.2);
+  }
+
+  &.highlighted {
+    border-color: color.$primary;
+    background: rgba(0, 208, 132, 0.05);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: 16px 16px 0 0;
+    }
+  }
+}
+
+.badge {
+  position: absolute;
+  top: -12px;
+  right: space.$md;
+  background: color.$primary;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: font.$interBold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.planName {
+  font-family: font.$orbitronBold;
+  color: color.$text-white;
+  text-align: center;
+  margin-bottom: space.$sm;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pricing {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: space.$md;
+}
+
+.price {
+  font-family: font.$orbitronBlack;
+  font-size: 2.5rem;
+  color: color.$text-primary;
+}
+
+.period {
+  font-family: font.$interRegular;
+  font-size: 1rem;
+  color: color.$text-white;
+  opacity: 0.6;
+}
+
+.monthly {
+  font-family: font.$interRegular;
+  color: color.$text-white;
+  text-align: center;
+  margin-bottom: space.$md;
+  opacity: 0.7;
+}
+
+.features {
+  list-style: none;
+  margin-bottom: space.$md;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: space.$xs;
+  padding: space.$xs 0;
+  font-family: font.$interRegular;
+  font-size: 0.9375rem;
+  color: color.$text-white;
+
+  &.unavailable {
+    opacity: 0.4;
+
+    .icon {
+      color: color.$text-gray;
+    }
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: color.$primary;
+  font-weight: bold;
+}
+
+.text {
+  flex: 1;
+}
+
+.btn {
+  width: 100%;
+}
+
+.note {
+  font-family: font.$interRegular;
+  font-size: 0.875rem;
+  color: color.$text-white;
+  text-align: center;
+  margin-top: space.$lg;
+  padding: space.$md;
+  background: rgba(0, 208, 132, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid color.$primary;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+@media (min-width: 768px) {
+  .plans {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+  }
+
+  .plan {
+    padding: space.$md;
+  }
+}

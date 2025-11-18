@@ -17,6 +17,7 @@
     "module": "preserve",
     "paths": {
      "@services/*": ["src/app/shared/services/*"],
+     "@guards/*": ["src/app/shared/guards/*"],
      "@pipes/*": ["src/app/shared/pipes/*"],
      "@models/*": ["src/app/shared/models/*"],
      "@components/*": ["src/app/components/*"],

@@ -1,0 +1,249 @@
+@use 'article-colors.scss' as color;
+@use '_mixins.scss' as *;
+
+
+:host {
+    margin: 10rem 0;
+    width: 100%;
+}
+
+.page {
+    margin-top: 5rem;
+}
+
+
+.header__article {
+    position: relative;
+    min-height: 400px;
+    max-height: fit-content;
+    padding: 2rem;
+
+    &-ttl {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        text-align: center;
+        font-weight: 700;
+        margin: 1.5rem auto;
+        max-width: 1400px;
+        padding: 0 1rem;
+    }
+
+    &-bloc {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1rem;
+        border: 1rem, solid, #f1f1f1;
+        border-radius: 12px;
+        background-color: #FFFFFF;
+        transition: all 0.3s ease;
+        min-width: 0;
+        word-wrap: break-word;
+    }
+    
+        &-txt {
+            order: 1;
+            @include flex($direction: column, $gap: 1.5rem);
+        }
+        &-description {
+            @include text($font: 1.1rem, $line: 1.6, $color: color.$greydark);
+        }
+
+    &-img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+}
+
+.header__credits {
+    @include flex($wrap: wrap, $gap: 1rem);
+    @include text($size: .875rem, $color: color.$greydark);
+    padding-top: 1rem;
+    border-top: 1px solid color.$white2;
+
+    &>* {
+        margin: 0;
+    }
+
+    &-author,
+    &-date {
+        @include text($weight: 600, $color: color.$black2);
+    }
+}
+
+
+@media screen and (min-width: 768px) {
+    .header__article {
+
+        &-bloc {
+            grid-template-columns: 2fr 1fr;
+        }
+
+        &-img {
+            order: 2;
+            height: 250px;
+        }
+
+        &-txt {
+            order: 1;
+        }
+    }
+}
+
+.content {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 5rem;
+
+    &__main {
+
+        display: grid;
+        grid-template-columns: 1fr;
+        // gap: 1.5rem;
+
+        width: 100%;
+        max-width: 1400px;
+        margin-bottom: 0;
+        padding: 0 1rem;
+
+
+
+        // @include standard-border($size: 1px, $shape: solid, $color: color.$greylight, $radius: 12px);
+
+        &--left,
+        &--center,
+        &--right {
+            background: color.$white;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            min-width: 0;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+
+        }
+
+        &--left-title,
+        &--center-title,
+        &--right-title {
+            @include flex($align: center, $gap: .5rem);
+            @include text($size: clamp(1.125rem, 3vw, 1.375rem), $weight: 700, $color: color.$bluedark);
+            margin-bottom: 1rem;
+            word-break: break-word;
+
+            &::before {
+                content: '';
+                width: 4px;
+                min-width: 4px;
+                height: 1.5rem;
+                background: linear-gradient(to bottom, color.$bluedark, color.$bluelight);
+                border-radius: 2px;
+            }
+        }
+
+        &--left-text,
+        &--center-text,
+        &--right-text {
+            line-height: 1.7;
+            color: color.$greydark;
+            margin-bottom: 1rem;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        &--left-image,
+        &--center-image,
+        &--right-image {
+            width: 100%;
+            max-width: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: block;
+
+        }
+
+
+    }
+
+    &__options {
+        display: flex;
+        gap: 1rem;
+
+        opacity: 0;
+        position: relative;
+        margin-top: -25px;
+    }
+
+
+
+    &__debug {
+        @include text($size: 0.75rem, $font: monospace, $color: color.$greylight);
+        // display: inline-block;
+        margin-bottom: 0.25rem;
+        padding: .5rem 0;
+    }
+
+
+}
+
+@media (min-width: 768px) {
+
+
+    :host {
+        margin: 15rem 0;
+    }
+
+
+    .content {
+
+        &__main {
+
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+            &--left,
+            &--center,
+            &--right {
+                padding: 1.5rem;
+            }
+        }
+    }
+}
+
+
+
+
+
+// Empty state for tags
+.content-empty {
+    margin-top: 5rem;
+    @include flex($direction: column, $justify: center, $align: center);
+    padding: 2rem;
+
+    &__container {
+        @include flex($direction: column, $align: center, $gap: 1rem);
+        @include standard-border($size: 2px, $shape: solid, $color: color.$greylight, $radius: 15px);
+        padding: 2rem 3rem;
+        background-color: color.$white;
+    }
+
+    &__message {
+        @include text($size: 1rem, $weight: 500, $color: color.$greylight, $align: center);
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .content-empty {
+        margin-top: 12rem;
+
+        &__message {
+            @include text($size: 1.2rem);
+        }
+    }
+}

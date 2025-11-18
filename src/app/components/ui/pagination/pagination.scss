@@ -1,0 +1,47 @@
+@use '_article-colors.scss' as color;
+@use '_mixins.scss' as *;
+
+
+
+:host {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  width: 100%;
+  padding: 1rem;
+  background: rgba(250, 250, 250, 0.6);
+}
+
+.pagination {
+  @include flex($justify: space-between, $align: center);
+  width: 100%;
+
+  &__numbers {
+    @include flex($gap: 1rem);
+
+    &-number {
+      cursor: pointer;
+      @include text($size: 1.2rem, $color: color.$purpleblue);
+    }
+  }
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.active {
+  cursor: not-allowed;
+  @include text($size: 1.3rem, $weight: 600);
+  @include standard-border($size: 1px, $shape: solid, $color: color.$purpleblue, $radius: 8px);
+  padding: .5rem;
+}
+
+
+
