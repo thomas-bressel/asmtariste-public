@@ -1,16 +1,16 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '@services/auth.service';
 import { AuthApi } from '@services/api/auth-api.service';
 
 @Component({
-  selector: 'app-finalize-signup',
-  templateUrl: './finalize-signup.html',
-  styleUrls: ['./finalize-signup.scss'],
+  selector: 'app-setup-password',
+  templateUrl: './setup-password.html',
+  styleUrls: ['./setup-password.scss'],
   imports: [ReactiveFormsModule]
 })
-export class FinalizeSignup implements OnInit {
+export class SetupPassword implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -26,26 +26,28 @@ export class FinalizeSignup implements OnInit {
   signupForm!: FormGroup;
 
   ngOnInit(): void {
-    this.token.set(this.route.snapshot.queryParamMap.get('token') || '');
+    this.token.set(this.route.snapshot.queryParamMap.get('session') || '');
 
-    this.signupForm = this.fb.group({
-      password: new FormControl('', { 
-        validators: [
-          Validators.required, 
-          Validators.minLength(8),
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-        ], 
-        nonNullable: true 
-      }),
-      confirmPassword: new FormControl('', { 
-        validators: [Validators.required], 
-        nonNullable: true 
-      })
+    this.signupForm = this.fb.nonNullable.group({
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+      ]],
+      confirmPassword: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
 
     this.loadTokenInfo();
   }
 
+
+
+
+
+
+  /**
+   * 
+   */
   private async loadTokenInfo(): Promise<void> {
     try {
       const response = await this.authApi.validateSignupToken(this.token());
@@ -58,20 +60,60 @@ export class FinalizeSignup implements OnInit {
     }
   }
 
-  private passwordMatchValidator(group: FormGroup): { [key: string]: boolean } | null {
-    const password = group.get('password')?.value;
-    const confirmPassword = group.get('confirmPassword')?.value;
+
+
+
+
+
+  /**
+   *
+   * @param control
+   * @returns
+   */
+  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
+
+
+
+
+
+  /**
+   * 
+   * @param group 
+   * @returns 
+   */
   public togglePasswordVisibility(): void {
     this.showPassword.update(v => !v);
   }
 
+
+
+
+
+
+  /**
+   * 
+   * @param group 
+   * @returns 
+   */
   public toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword.update(v => !v);
   }
 
+
+
+
+
+
+  /**
+   * 
+   * @param group 
+   * @returns 
+   */
   public async handleSubmit(): Promise<void> {
     if (this.signupForm.invalid || this.auth.isLoading()) return;
 

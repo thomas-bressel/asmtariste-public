@@ -86,9 +86,20 @@ export const routes: Routes = [
                     (await import('./views/public/politique-de-confidentialite/politique-de-confidentialite')).PolitiqueDeConfidentialite
             },
             {
-                path: 'finaliser-inscription',
+                path: 'setup-password',
                 loadComponent: async () =>
-                    (await import('./views/private/finalize-signup/finalize-signup')).FinalizeSignup,
+                    (await import('./views/private/setup-password/setup-password')).SetupPassword,
+                canActivate: [signupTokenGuard]
+            },
+            {
+                path: 'mot-de-passe-oublie',
+                loadComponent: async () =>
+                    (await import('./views/public/mot-de-passe-oublie/mot-de-passe-oublie')).MotDePasseOublie
+            },
+            {
+                path: 'reinit-password',
+                loadComponent: async () =>
+                    (await import('./views/private/reinit-password/reinit-password')).ReinitPassword,
                 canActivate: [signupTokenGuard]
             },
         ]

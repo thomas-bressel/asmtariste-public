@@ -261,4 +261,48 @@ export class AuthStore {
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user_data');
   }
+
+  /**
+   * Forgot password - request password reset
+   * @param email User's email address
+   */
+  public async forgotPassword(email: string): Promise<void> {
+    this.clearError();
+    this.state.update(state => ({ ...state, isLoading: true }));
+
+    try {
+      await this.authApi.forgotPassword(email);
+      this.state.update(state => ({ ...state, isLoading: false, error: null }));
+    } catch (error) {
+      this.state.update(state => ({ ...state, isLoading: false,
+        error: error instanceof Error ? error.message : 'Échec de la demande de réinitialisation'
+      }));
+      throw error;
+    }
+  }
+
+
+
+
+
+
+  
+  /**
+   * Reset password with token
+   * @param credentials ResetPasswordCredentials (token, password)
+   */
+ public async resetPassword(credentials: { token: string; password: string }): Promise<void> {
+    this.clearError();
+    this.state.update(state => ({ ...state, isLoading: true }));
+
+    try {
+      await this.authApi.resetPassword(credentials);
+      this.state.update(state => ({ ...state, isLoading: false, error: null }));
+    } catch (error) {
+      this.state.update(state => ({ ...state, isLoading: false,
+        error: error instanceof Error ? error.message : 'Échec de la réinitialisation'
+      }));
+      throw error;
+    }
+  }
 }

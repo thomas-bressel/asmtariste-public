@@ -195,8 +195,8 @@ export class AuthApi {
 
 /**
  * Forgot password
- * @param email 
- * @returns 
+ * @param email
+ * @returns
  */
   public async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
     const headers = new Headers({
@@ -206,9 +206,66 @@ export class AuthApi {
     const sessionToken = localStorage.getItem('session_token');
     if (sessionToken) headers.append('Authorization', `Bearer ${sessionToken}`);
 
-    const response = await fetch(`${this.baseUrl}/auth/forgot-password`, { method: 'POST', headers, credentials: 'include', body: JSON.stringify({ email }) });
+    const response = await fetch(`${this.baseUrl}/user/v1/public/forgot-password`, { method: 'POST', headers, credentials: 'include', body: JSON.stringify({ email }) });
 
     if (!response.ok)  throw new Error(`Échec de réinitialisation: ${response.status}`);
+
+    return response.json();
+  }
+
+
+
+
+
+  /**
+   * Validate reset token
+   * @param token Token from URL
+   * @returns TokenValidationResponse
+   */
+  public async validateResetToken(token: string): Promise<TokenValidationResponse> {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+
+    const response = await fetch(`${this.baseUrl}/user/v1/public/validate-reset-token`, {
+      method: 'POST',
+      headers,
+      credentials: 'include',
+      body: JSON.stringify({ token })
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || `${response.status}: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+
+
+
+
+  /**
+   * Reset password with token
+   * @param credentials ResetPasswordCredentials (token, password)
+   * @returns Success response
+   */
+  public async resetPassword(credentials: { token: string; password: string }): Promise<{ success: boolean; message: string }> {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+
+    const response = await fetch(`${this.baseUrl}/user/v1/public/reset-password`, {
+      method: 'POST',
+      headers,
+      credentials: 'include',
+body: JSON.stringify({
+      token: credentials.token,
+      password: credentials.password
+    })  
+      });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || `${response.status}: ${response.statusText}`);
+    }
 
     return response.json();
   }

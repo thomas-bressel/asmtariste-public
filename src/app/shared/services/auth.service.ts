@@ -40,6 +40,12 @@ export class AuthService {
     return this.authStore.login(credentials);
   }
 
+
+
+
+
+
+  
   /**
  * Inscription avec nickname et email
  */
@@ -47,12 +53,24 @@ export class AuthService {
     return this.authStore.signIn(credentials);
   }
 
+
+
+
+
+
+  
     /**
    * Confirmer l'inscription avec token et password
    */
   async confirmSignup(credentials: ConfirmSignupCredentials): Promise<void> {
     return this.authStore.confirmSignup(credentials);
   }
+  
+
+
+
+
+
   
   /**
    * Connexion avec Google
@@ -61,6 +79,12 @@ export class AuthService {
     return this.authStore.loginWithGoogle();
   }
 
+
+
+
+
+
+  
   /**
    * Déconnexion
    */
@@ -68,10 +92,42 @@ export class AuthService {
     return this.authStore.logout();
   }
 
+
+
+
+
+
+  
   /**
    * Effacer les erreurs
    */
   clearError(): void {
     this.authStore.clearError();
+  }
+
+
+
+
+
+
+  
+  /**
+   * Demander la réinitialisation du mot de passe
+   */
+  async forgotPassword(email: string): Promise<void> {
+    return this.authStore.forgotPassword(email);
+  }
+
+
+
+
+
+
+
+  /**
+   * Réinitialiser le mot de passe avec token
+   */
+  async resetPassword(credentials: { token: string; password: string }): Promise<void> {
+    return this.authStore.resetPassword(credentials);
   }
 }

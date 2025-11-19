@@ -8,7 +8,7 @@ export const signupTokenGuard: CanActivateFn = async (route: ActivatedRouteSnaps
   const router = inject(Router);
   const authApi = inject(AuthApi);
 
-  const token = route.queryParamMap.get('token');
+  const token = route.queryParamMap.get('session');
 
   if (!token) {
     console.error('Token manquant');

@@ -1,0 +1,89 @@
+<div class="overlay">
+  <div class="modal">
+    <!-- Header -->
+    <div class="header">
+      <div class="titleWrapper">
+        <h2 class="title">
+          <span class="text-color-primary">[$RESET]</span> Mot de passe oublié
+        </h2>
+      </div>
+
+      <button
+        class="closeBtn"
+        (click)="goHome()"
+        aria-label="Fermer"
+        type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"
+            d="m8 8l4 4m0 0l4 4m-4-4l4-4m-4 4l-4 4" />
+        </svg>
+      </button>
+    </div>
+
+    @if (!emailSent()) {
+      <!-- Subtitle -->
+      <p class="subtitle">
+        Entrez votre adresse email pour recevoir un lien de réinitialisation de mot de passe.
+      </p>
+
+      <!-- Content -->
+      <div class="content">
+        @if (auth.error()) {
+        <div class="error">⚠️ {{ auth.error() }}</div>
+        }
+
+        <form [formGroup]="forgotPasswordForm" (ngSubmit)="handleSubmit()" class="form">
+          <div class="inputGroup">
+            <label for="email" class="label">Adresse email</label>
+            <input id="email" type="email" formControlName="email" class="input" placeholder="votre@email.com" autocomplete="email" required />
+            @if (forgotPasswordForm.get('email')?.touched && forgotPasswordForm.get('email')?.invalid) {
+            <div class="field-error">
+              @if (forgotPasswordForm.get('email')?.errors?.['required']) {
+                L'email est requis
+              } @else if (forgotPasswordForm.get('email')?.errors?.['email']) {
+                Email invalide
+              }
+            </div>
+            }
+          </div>
+
+          <div class="info-message">
+            <p>Si un compte existe avec cette adresse email, vous recevrez un lien de réinitialisation dans quelques instants.</p>
+          </div>
+
+          <button type="submit" class="submitBtn btn btn--primary text-color-white" [disabled]="forgotPasswordForm.invalid || isSubmitting()">
+            @if (isSubmitting()) {
+            <span class="spinner"></span>
+            Envoi en cours...
+            } @else {
+            ✉️ Envoyer le lien
+            }
+          </button>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p class="footerText">
+          Vous vous souvenez de votre mot de passe ?
+          <a href="#" class="footerLink" (click)="goHome(); $event.preventDefault()">Retour à l'accueil</a>
+        </p>
+      </div>
+    } @else {
+      <!-- Success Content -->
+      <div class="content success-content">
+        <div class="success-icon">✓</div>
+        <h3 class="success-title">Email envoyé !</h3>
+        <p class="success-message">Si un compte existe avec cette adresse email, vous recevrez un lien de réinitialisation dans quelques minutes.</p>
+        <p class="success-note">Pensez à vérifier vos spams si vous ne recevez pas l'email.</p>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <button type="button" class="footerBtn btn btn--primary text-color-white" (click)="goHome()">
+          Retour à l'accueil
+        </button>
+      </div>
+    }
+  </div>
+</div>
