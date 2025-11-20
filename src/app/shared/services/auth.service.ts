@@ -1,6 +1,6 @@
 import { Injectable, Signal, inject } from '@angular/core';
 import { AuthStore } from '@services/store/auth-store.service';
-import { LoginCredentials, SignInCredentials, ConfirmSignupCredentials, User } from '@models/auth.model';
+import { LoginCredentials, SignInCredentials, ConfirmSignupCredentials, User, ProfileResponse } from '@models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,19 @@ export class AuthService {
 
   get refreshToken(): Signal<string | null> {
     return this.authStore.refreshToken;
+  }
+
+  // Profile selectors
+  get profile(): Signal<ProfileResponse | null> {
+    return this.authStore.profile;
+  }
+
+  get profileLoading(): Signal<boolean> {
+    return this.authStore.profileLoading;
+  }
+
+  get profileError(): Signal<string | null> {
+    return this.authStore.profileError;
   }
 
   /**
@@ -129,5 +142,12 @@ export class AuthService {
    */
   async resetPassword(credentials: { token: string; password: string }): Promise<void> {
     return this.authStore.resetPassword(credentials);
+  }
+
+  /**
+   * Récupérer le profil complet de l'utilisateur
+   */
+  async getProfile(): Promise<ProfileResponse> {
+    return this.authStore.getProfile();
   }
 }

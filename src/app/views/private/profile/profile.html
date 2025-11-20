@@ -1,0 +1,80 @@
+<section class="profile-container">
+  <div class="profile-content">
+    <h1 class="profile-title">Mon Profil</h1>
+
+    @if (isLoading()) {
+      <div class="profile-loading">
+        <p>Chargement du profil...</p>
+      </div>
+    } @else if (error()) {
+      <div class="profile-error">
+        <p>{{ error() }}</p>
+      </div>
+    } @else if (profile()?.data; as userProfile) {
+      <div class="profile-card">
+        <div class="profile-header">
+          @if (userProfile.avatar) {
+            <img [src]="baseUrl + '/avatars/' + userProfile.avatar" alt="Avatar" class="profile-avatar" />
+          } @else {
+            <div class="profile-avatar-placeholder">
+              <span>{{ userProfile.firstname.charAt(0) }}{{ userProfile.lastname.charAt(0) }}</span>
+            </div>
+          }
+          <div class="profile-role-badge" [style.background-color]="userProfile.role_color">
+            {{ userProfile.role_name }}
+          </div>
+        </div>
+
+        <div class="profile-info">
+          <div class="profile-section">
+            <h2 class="profile-section-title">Informations personnelles</h2>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Pseudo</span>
+              <span class="profile-value">{{ userProfile.nickname }}</span>
+            </div>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Prénom</span>
+              <span class="profile-value">{{ userProfile.firstname }}</span>
+            </div>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Nom</span>
+              <span class="profile-value">{{ userProfile.lastname }}</span>
+            </div>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Email</span>
+              <span class="profile-value">{{ userProfile.email }}</span>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <h2 class="profile-section-title">Compte</h2>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Rôle</span>
+              <span class="profile-value">{{ userProfile.role_name }}</span>
+            </div>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Statut d'adhésion</span>
+              <span class="profile-value">{{ userProfile.membership_label }}</span>
+            </div>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Date d'inscription</span>
+              <span class="profile-value">{{ formatDate(userProfile.registration_date) }}</span>
+            </div>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Dernière connexion</span>
+              <span class="profile-value">{{ formatDate(userProfile.last_login) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

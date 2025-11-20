@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LoginCredentials, LoginResponse, GoogleAuthResponse, User, SignInCredentials,
-          SignInResponse,  ConfirmSignupCredentials, TokenValidationResponse } from '@models/auth.model';
+          SignInResponse,  ConfirmSignupCredentials, TokenValidationResponse, Profile, ProfileResponse } from '@models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -166,6 +166,27 @@ export class AuthApi {
     const data = await response.json();
     console.log('Profile data:', data);
     return data.user;
+  }
+
+  /**
+   * Get user profile with all information
+   * @returns Profile
+   */
+  public async getProfile(): Promise<ProfileResponse> {
+    const headers = new Headers({
+      'Content-Type': 'application/json'
+    });
+
+    const sessionToken = localStorage.getItem('session_token');
+    if (sessionToken) headers.append('Authorization', `Bearer ${sessionToken}`);
+
+    const response = await fetch(`${this.baseUrl}/user/v1/public/profile`, { headers, credentials: 'include' });
+
+    if (!response.ok) throw new Error(`Profil inaccessible: ${response.status}`);
+
+    const data: ProfileResponse = await response.json();
+    console.log('Full profile data:', data);
+    return data;
   }
 
 

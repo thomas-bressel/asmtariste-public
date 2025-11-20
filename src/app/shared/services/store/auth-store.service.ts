@@ -1,6 +1,6 @@
 import { Injectable, Signal, computed, effect, inject, signal } from '@angular/core';
 import { AuthApi } from '@services/api/auth-api.service';
-import { AuthState, LoginCredentials, SignInCredentials, ConfirmSignupCredentials, User } from '@models/auth.model';
+import { AuthState, LoginCredentials, SignInCredentials, ConfirmSignupCredentials, User, ProfileResponse } from '@models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,13 @@ export class AuthStore {
   // Intial state
   private state = signal<AuthState>({ user: null, sessionToken: null, refreshToken: null, isLoading: false, error: null });
 
+  // Profile state (separate from auth state)
+  private profileState = signal<{ profile: ProfileResponse | null; isLoading: boolean; error: string | null }>({
+    profile: null,
+    isLoading: false,
+    error: null
+  });
+
   // Exposed selectors
   readonly user: Signal<User | null> = computed(() => this.state().user);
   readonly sessionToken: Signal<string | null> = computed(() => this.state().sessionToken);
@@ -18,6 +25,11 @@ export class AuthStore {
   readonly isLoading: Signal<boolean> = computed(() => this.state().isLoading);
   readonly error: Signal<string | null> = computed(() => this.state().error);
   readonly isAuthenticated: Signal<boolean> = computed(() => !!this.state().sessionToken);
+
+  // Profile selectors
+  readonly profile: Signal<ProfileResponse | null> = computed(() => this.profileState().profile);
+  readonly profileLoading: Signal<boolean> = computed(() => this.profileState().isLoading);
+  readonly profileError: Signal<string | null> = computed(() => this.profileState().error);
 
   constructor() {
     // Check for existing token in localStorage
@@ -301,6 +313,33 @@ export class AuthStore {
     } catch (error) {
       this.state.update(state => ({ ...state, isLoading: false,
         error: error instanceof Error ? error.message : 'Échec de la réinitialisation'
+      }));
+      throw error;
+    }
+  }
+
+  /**
+   * Get user profile
+   * Calls API first, then persists data in store
+   */
+  public async getProfile(): Promise<ProfileResponse> {
+    this.profileState.update(state => ({ ...state, isLoading: true, error: null }));
+
+    try {
+      const profileData = await this.authApi.getProfile();
+      this.profileState.update(state => ({
+        ...state,
+        profile: profileData,
+        isLoading: false,
+        error: null
+      }));
+      return profileData;
+    } catch (error) {
+      this.profileState.update(state => ({
+        ...state,
+        profile: null,
+        isLoading: false,
+        error: error instanceof Error ? error.message : 'Impossible de charger le profil'
       }));
       throw error;
     }

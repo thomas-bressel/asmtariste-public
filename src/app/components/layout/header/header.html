@@ -25,7 +25,7 @@
         <button  class="nav__item btn btn--ghost text-color-dark"  (click)="handleLogout($event)" type="button">
             Déconnexion
         </button>
-        <a  class="nav__item avatar"  [routerLink]="['/profil']" [title]="userFullName()">
+        <a  class="nav__item avatar"  [routerLink]="['/profile']" [title]="userFullName()" (click)="toggleMenu()">
             <img [src]="avatarUrl()" [alt]="userFullName()" class="avatar-img" />
         </a>
     } @else {
