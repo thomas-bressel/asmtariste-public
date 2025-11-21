@@ -14,9 +14,11 @@ export interface ConfirmSignupCredentials {
 }
 
 export interface User {
-  firstname: string;
-  lastname: string;
-  avatar?: string;
+  user: {
+    firstname: string;
+    lastname: string;
+    avatar?: string;
+  }
 }
 
 export interface Profile {
@@ -30,6 +32,8 @@ export interface Profile {
   role_name: string;
   role_color: string;
   membership_label: string;
+  membership_start: string;
+  membership_end: string;
 }
 
 export interface ProfileResponse {
@@ -38,17 +42,28 @@ export interface ProfileResponse {
   data: Profile;
 }
 
+// ✅ VERSION JWT: Un seul token pour tout (User API + Content API)
+// Support des deux formats
 export interface LoginResponse {
-  firstname: string;
-  lastname: string;
+  success?: boolean;
+  data?: {
+    firstname: string;
+    lastname: string;
+    avatar?: string;
+  };
+  token?: string;  // Nouveau format
+  // Ancien format (compatibilité)
+  firstname?: string;
+  lastname?: string;
   avatar?: string;
-  sessionToken: string;
-  refreshToken: string;
+  sessionToken?: string;
+  refreshToken?: string;
 }
 
 export interface SignInResponse {
   success: boolean;
   message: string;
+  token?: string;  // JWT optionnel si signup direct
 }
 
 export interface TokenValidationResponse {

@@ -1,14 +1,14 @@
 import { Injectable, Signal, computed, effect, inject, signal } from '@angular/core';
 import { AuthApi } from '@services/api/auth-api.service';
 import { AuthState, LoginCredentials, SignInCredentials, ConfirmSignupCredentials, User, ProfileResponse } from '@models/auth.model';
-
+import chalk from "chalk";
 @Injectable({
   providedIn: 'root'
 })
 export class AuthStore {
   private authApi = inject(AuthApi);
 
-  // Intial state
+  // Initial state (VERSION JWT)
   private state = signal<AuthState>({ user: null, sessionToken: null, refreshToken: null, isLoading: false, error: null });
 
   // Profile state (separate from auth state)
@@ -24,7 +24,7 @@ export class AuthStore {
   readonly refreshToken: Signal<string | null> = computed(() => this.state().refreshToken);
   readonly isLoading: Signal<boolean> = computed(() => this.state().isLoading);
   readonly error: Signal<string | null> = computed(() => this.state().error);
-  readonly isAuthenticated: Signal<boolean> = computed(() => !!this.state().sessionToken);
+  readonly isAuthenticated: Signal<boolean> = computed(() => !!localStorage.getItem('session_token'));
 
   // Profile selectors
   readonly profile: Signal<ProfileResponse | null> = computed(() => this.profileState().profile);
@@ -32,24 +32,6 @@ export class AuthStore {
   readonly profileError: Signal<string | null> = computed(() => this.profileState().error);
 
   constructor() {
-    // Check for existing token in localStorage
-    const sessionToken = localStorage.getItem('session_token');
-    const refreshToken = localStorage.getItem('refresh_token');
-    const userJson = localStorage.getItem('user_data');
-
-    if (sessionToken && refreshToken) {
-      const user = userJson ? JSON.parse(userJson) : null;
-      this.state.update(state => ({ 
-        ...state, 
-        sessionToken, 
-        refreshToken, 
-        user, 
-        isLoading: true }));
-
-      // Check if the token is valid
-      this.checkAuth();
-    }
-
     // Effect to handle actions after authentication state updates
     effect(() => {
       const user = this.user();
@@ -65,30 +47,90 @@ export class AuthStore {
 
 
 
+
+
   /**
-   * Connection with credentials
+   * Initialize authentication state from JWT token in localStorage
+   * Called by APP_INITIALIZER to restore session on app startup
+   */
+  async initialize(): Promise<void> {
+    const token = localStorage.getItem('session_token');
+
+    if (token) {
+      try {
+        this.state.update(state => ({
+          ...state,
+          sessionToken: token,
+          isLoading: true
+        }));
+
+        // Vérifier si le token est valide
+        await this.checkSession();
+      } catch (error) {
+        console.error('Erreur lors de la vérification du token:', error);
+        // Token invalide, on le supprime
+        localStorage.removeItem('token');
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+  /**
+   * Connection with credentials (VERSION JWT)
+   * Le token est stocké dans localStorage par l'AuthApi
    * @param credentials connection credentials
    */
   async login(credentials: LoginCredentials): Promise<void> {
+    console.log(chalk.yellow('[STORE] - login() called :'));
     this.clearError();
     this.state.update(state => ({ ...state, isLoading: true }));
 
     try {
       const response = await this.authApi.login(credentials);
+      console.log(chalk.yellow('[STORE] - login() - reponse complète :', JSON.stringify(response, null, 2)));
+
+      // Support des deux formats de réponse
+      let userData: { firstname: string; lastname: string; avatar?: string };
+      let token: string;
+
+      if (response.data && (response.token || response.sessionToken)) {
+        // Nouveau format : { data: {...}, token: "..." }
+        userData = response.data;
+        token = response.token || response.sessionToken!;
+      } else if (response.firstname && response.sessionToken) {
+        // Ancien format : { firstname: "...", sessionToken: "..." }
+        userData = {
+          firstname: response.firstname,
+          lastname: response.lastname!,
+          avatar: response.avatar
+        };
+        token = response.sessionToken;
+      } else {
+        console.error(chalk.red('[STORE] - Structure de réponse invalide'));
+        console.error(chalk.red('[STORE] - Reçu:', response));
+        throw new Error('Format de réponse invalide du serveur');
+      }
 
       const user: User = {
-        firstname: response.firstname,
-        lastname: response.lastname,
-        avatar: response.avatar,
+        user: {
+          firstname: userData.firstname,
+          lastname: userData.lastname,
+          avatar: userData.avatar,
+        }
       };
-            this.setAuthData(response.sessionToken, response.refreshToken, user);
-
+      console.log(chalk.yellow('[STORE] - login() - user :', user));
 
       this.state.update(state => ({
         ...state,
         user,
-        sessionToken: response.sessionToken,
-        refreshToken: response.refreshToken,
+        sessionToken: token,
+        refreshToken: response.refreshToken || null,
         isLoading: false,
         error: null
       }));
@@ -214,21 +256,34 @@ export class AuthStore {
 
 
   /**
-   * Check the authentication status of the user
+   * Check the authentication status of the user (VERSION JWT)
    */
-  private async checkAuth(): Promise<void> {
+  private async checkSession(): Promise<void> {
+    console.log(chalk.yellow('[STORE] - checkSession() called'));
     try {
-      await this.authApi.checkSession();
+      const token = localStorage.getItem('session_token');
 
-      this.state.update(state => ({ ...state, isLoading: false }));
+      // Appeler l'API pour vérifier le token et récupérer les données utilisateur
+      const user = await this.authApi.checkSession();
+      console.log('\x1b[33m[STORE] - checkSession() - user : \x1b[0m', user);
+
+      // Mettre à jour l'état avec les données utilisateur
+      this.state.update(state => ({
+        ...state,
+        user,
+        sessionToken: token,
+        refreshToken: null,
+        isLoading: false
+      }));
     } catch (error) {
+      // Token invalide, on nettoie tout
       this.clearTokens();
-      this.state.update(state => ({ 
-        ...state, 
-        user: null, 
+      this.state.update(state => ({
+        ...state,
+        user: null,
         sessionToken: null,
         refreshToken: null,
-        isLoading: false 
+        isLoading: false
       }));
     }
   }
@@ -249,30 +304,25 @@ export class AuthStore {
 
 
 
-  /**
-   * Set authentication tokens
-   * @param sessionToken Session token to store
-   * @param refreshToken Refresh token to store
-   * @param user User data to store
-   */
-  private setAuthData(sessionToken: string, refreshToken: string, user: User): void {
-  localStorage.setItem('session_token', sessionToken);
-  localStorage.setItem('refresh_token', refreshToken);
-  localStorage.setItem('user_data', JSON.stringify(user));
-}
 
 
 
 
 
   /**
-   * Clear authentication tokens
+   * Clear authentication tokens (VERSION JWT)
+   * Supprime les tokens du localStorage
    */
   private clearTokens(): void {
     localStorage.removeItem('session_token');
     localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user_data');
   }
+
+
+
+
+
+
 
   /**
    * Forgot password - request password reset

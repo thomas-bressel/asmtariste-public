@@ -48,6 +48,16 @@
               <span class="profile-label">Email</span>
               <span class="profile-value">{{ userProfile.email }}</span>
             </div>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Date d'inscription</span>
+              <span class="profile-value">{{ formatDate(userProfile.registration_date) }}</span>
+            </div>
+
+            <div class="profile-info-row">
+              <span class="profile-label">Dernière connexion</span>
+              <span class="profile-value">{{ formatDate(userProfile.last_login) }}</span>
+            </div>
           </div>
 
           <div class="profile-section">
@@ -64,14 +74,10 @@
             </div>
 
             <div class="profile-info-row">
-              <span class="profile-label">Date d'inscription</span>
-              <span class="profile-value">{{ formatDate(userProfile.registration_date) }}</span>
+              <span class="profile-label">Fin de l'abonnement en cours</span>
+              <span class="profile-value">{{ formatDate(userProfile.membership_end) }}</span>
             </div>
 
-            <div class="profile-info-row">
-              <span class="profile-label">Dernière connexion</span>
-              <span class="profile-value">{{ formatDate(userProfile.last_login) }}</span>
-            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,4 @@
-import { Injectable, inject } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { Injectable } from '@angular/core';
 import { FileData } from '@models/file.model';
 import { CONTENT_API_URI } from '../../config-api';
 
@@ -7,25 +6,31 @@ import { CONTENT_API_URI } from '../../config-api';
   providedIn: 'root'
 })
 export class FileApiService {
-  private readonly authService = inject(AuthService);
 
-
-
+  /**
+   * Crée les headers avec le token Bearer depuis localStorage
+   */
+  private createAuthHeaders(): Headers {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const token = localStorage.getItem('session_token');
+    if (token) {
+      headers.append('Authorization', `Bearer ${token}`);
+    }
+    return headers;
+  }
 
 
 
 
   /**
-   * 
-   * @param folderId 
-   * @returns 
+   *
+   * @param folderId
+   * @returns
    */
   async getFilesByFolder(folderId: number): Promise<FileData[]> {
     const response = await fetch(`${CONTENT_API_URI}/content/v1/public/files/folder/${folderId}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${this.authService.sessionToken()}`
-      }
+      headers: this.createAuthHeaders()
     });
 
     if (!response.ok) {
@@ -33,7 +38,7 @@ export class FileApiService {
     }
 
     const data = await response.json();
-    console.log ('getFileByFolder() : ', data)
+    console.log('getFileByFolder() : ', data)
     return Array.isArray(data) ? data : [];
   }
 
@@ -49,9 +54,7 @@ export class FileApiService {
   async downloadFile(fileId: number): Promise<{ blob: Blob; filename: string }> {
     const response = await fetch(`${CONTENT_API_URI}/content/v1/public/files/${fileId}/download`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${this.authService.sessionToken()}`
-      }
+      headers: this.createAuthHeaders()
     });
 
     if (!response.ok) {
@@ -64,7 +67,7 @@ export class FileApiService {
     }
 
     let filename = response.headers.get('X-Filename') || response.headers.get('x-filename') || 'download';
-    filename = '[ASMtariSTe.fr]-'+filename
+    filename = '[ASMtariSTe.fr]-' + filename
 
     const blob = await response.blob();
     return { blob, filename };
