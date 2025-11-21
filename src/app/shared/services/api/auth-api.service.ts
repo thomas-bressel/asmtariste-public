@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { LoginCredentials, LoginResponse, GoogleAuthResponse, User, SignInCredentials,
-          SignInResponse,  ConfirmSignupCredentials, TokenValidationResponse } from '@models/auth.model';
+import {
+  LoginCredentials, LoginResponse, GoogleAuthResponse, User, SignInCredentials,
+  SignInResponse, ConfirmSignupCredentials, TokenValidationResponse
+} from '@models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +31,7 @@ export class AuthApi {
     }
     const data = await response.json();
     console.log('Login response data:', data);
-    return data 
+    return data
   }
 
 
@@ -46,11 +48,11 @@ export class AuthApi {
   public async signIn(credentials: SignInCredentials): Promise<SignInResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
 
-    const response = await fetch(`${this.baseUrl}/user/v1/public/signin`, { 
-      method: 'POST', 
-      headers, 
-      credentials: 'include', 
-      body: JSON.stringify(credentials) 
+    const response = await fetch(`${this.baseUrl}/user/v1/public/signin`, {
+      method: 'POST',
+      headers,
+      credentials: 'include',
+      body: JSON.stringify(credentials)
     });
 
     if (!response.ok) {
@@ -70,19 +72,19 @@ export class AuthApi {
 
 
 
-/**
-   * Validate signup token
-   * @param token Token from URL
-   * @returns TokenValidationResponse
-   */
+  /**
+     * Validate signup token
+     * @param token Token from URL
+     * @returns TokenValidationResponse
+     */
   public async validateSignupToken(token: string): Promise<TokenValidationResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
 
-    const response = await fetch(`${this.baseUrl}/user/v1/public/validate-signup-token`, { 
-      method: 'POST', 
-      headers, 
-      credentials: 'include', 
-      body: JSON.stringify({ token }) 
+    const response = await fetch(`${this.baseUrl}/user/v1/public/validate-signup-token`, {
+      method: 'POST',
+      headers,
+      credentials: 'include',
+      body: JSON.stringify({ token })
     });
 
     if (!response.ok) {
@@ -100,19 +102,19 @@ export class AuthApi {
 
 
 
-/**
-   * Confirm signup with token and password
-   * @param credentials ConfirmSignupCredentials (token, password)
-   * @returns SignInResponse
-   */
+  /**
+     * Confirm signup with token and password
+     * @param credentials ConfirmSignupCredentials (token, password)
+     * @returns SignInResponse
+     */
   public async confirmSignup(credentials: ConfirmSignupCredentials): Promise<SignInResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
 
-    const response = await fetch(`${this.baseUrl}/user/v1/public/confirm-signup`, { 
-      method: 'POST', 
-      headers, 
-      credentials: 'include', 
-      body: JSON.stringify(credentials) 
+    const response = await fetch(`${this.baseUrl}/user/v1/public/confirm-signup`, {
+      method: 'POST',
+      headers,
+      credentials: 'include',
+      body: JSON.stringify(credentials)
     });
 
     if (!response.ok) {
@@ -126,7 +128,7 @@ export class AuthApi {
 
 
 
-  
+
 
 
 
@@ -157,11 +159,11 @@ export class AuthApi {
     });
 
     const sessionToken = localStorage.getItem('session_token');
-    if (sessionToken)  headers.append('Authorization', `Bearer ${sessionToken}`);
+    if (sessionToken) headers.append('Authorization', `Bearer ${sessionToken}`);
 
-    const response = await fetch(`${this.baseUrl}/user/v1/public/verify`, { headers, credentials: 'include'});
+    const response = await fetch(`${this.baseUrl}/user/v1/public/verify`, { headers, credentials: 'include' });
 
-    if (!response.ok)  throw new Error(`Profil inaccessible: ${response.status}`);
+    if (!response.ok) throw new Error(`Profil inaccessible: ${response.status}`);
 
     const data = await response.json();
     console.log('Profile data:', data);
@@ -193,11 +195,11 @@ export class AuthApi {
 
 
 
-/**
- * Forgot password
- * @param email
- * @returns
- */
+  /**
+   * Forgot password
+   * @param email
+   * @returns
+   */
   public async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
     const headers = new Headers({
       'Content-Type': 'application/json'
@@ -208,7 +210,7 @@ export class AuthApi {
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/forgot-password`, { method: 'POST', headers, credentials: 'include', body: JSON.stringify({ email }) });
 
-    if (!response.ok)  throw new Error(`Échec de réinitialisation: ${response.status}`);
+    if (!response.ok) throw new Error(`Échec de réinitialisation: ${response.status}`);
 
     return response.json();
   }
@@ -256,11 +258,11 @@ export class AuthApi {
       method: 'POST',
       headers,
       credentials: 'include',
-body: JSON.stringify({
-      token: credentials.token,
-      password: credentials.password
-    })  
-      });
+      body: JSON.stringify({
+        token: credentials.token,
+        password: credentials.password
+      })
+    });
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
@@ -269,4 +271,27 @@ body: JSON.stringify({
 
     return response.json();
   }
+
+
+
+
+
+
+  /**
+   * Get user profile with all information (VERSION JWT)
+   * @returns Profile
+   */
+  public async getProfile(): Promise<ProfileResponse> {
+    const response = await fetch(`${this.baseUrl}/user/v1/public/profile`, {
+      headers: this.createAuthHeaders()
+    });
+
+    if (!response.ok) throw new Error(`Profil inaccessible: ${response.status}`);
+
+    const data: ProfileResponse = await response.json();
+    console.log(chalk.blue('[API] - getProfile() - data:', data));
+    return data;
+  }
+
+
 }

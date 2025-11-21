@@ -305,4 +305,38 @@ export class AuthStore {
       throw error;
     }
   }
+
+
+
+
+
+
+
+  /**
+   * Get user profile
+   * Calls API first, then persists data in store
+   */
+  public async getProfile(): Promise<ProfileResponse> {
+    this.profileState.update(state => ({ ...state, isLoading: true, error: null }));
+
+    try {
+      const profileData = await this.authApi.getProfile();
+      this.profileState.update(state => ({
+        ...state,
+        profile: profileData,
+        isLoading: false,
+        error: null
+      }));
+      return profileData;
+    } catch (error) {
+      this.profileState.update(state => ({
+        ...state,
+        profile: null,
+        isLoading: false,
+        error: error instanceof Error ? error.message : 'Impossible de charger le profil'
+      }));
+      throw error;
+    }
+  }
+
 }

@@ -130,4 +130,14 @@ export class AuthService {
   async resetPassword(credentials: { token: string; password: string }): Promise<void> {
     return this.authStore.resetPassword(credentials);
   }
+
+
+
+    /**
+   * Récupérer le profil complet de l'utilisateur
+   */
+  async getProfile(): Promise<ProfileResponse> {
+    return this.authStore.getProfile();
+  }
+
 }
