@@ -41,7 +41,7 @@
           @if(isGroupOpen(group.label)) {
             <div class="fileList">
               @for(file of group.files; track file.id_files) {
-                <article app-file-item [id_file]="file.id_files" [id_label]="file.label.id_label" [name]="file.name" [label]="file.label.name" [levelRequired]="file.level_required"></article>
+                <article app-file-item [id_file]="file.id_files" [id_label]="file.label.id_label" [name]="file.name" [description]="file.description" [label]="file.label.name" [levelRequired]="file.level_required"></article>
               }
             </div>
           }

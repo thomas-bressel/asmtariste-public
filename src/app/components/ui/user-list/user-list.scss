@@ -1,0 +1,195 @@
+@use "colors" as color;
+@use "spacing" as space;
+
+.users {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: space.$btn-radius;
+    padding: space.$sm space.$md;
+    overflow: hidden;
+    position: relative;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    margin-bottom: space.$md;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 60px;
+        background: linear-gradient(to left, rgba(15, 15, 15, 1), transparent);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        background: linear-gradient(to right, rgba(15, 15, 15, 1), transparent);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    &__road-line {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        transform: translateY(-50%);
+        background: repeating-linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.4) 0px,
+            rgba(255, 255, 255, 0.4) 20px,
+            transparent 20px,
+            transparent 40px
+        );
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    &__track {
+        display: flex;
+        white-space: nowrap;
+        animation: scroll 30s linear infinite;
+        will-change: transform;
+        position: relative;
+        z-index: 0;
+    }
+}
+
+.user {
+    display: inline-block;
+    white-space: nowrap;
+    padding-right: 10rem;
+    flex-shrink: 0;
+
+    &__car {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: race-wave 5s ease-in-out infinite;
+    }
+
+    &__headlights {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        margin-right: 0.25rem;
+    }
+
+    &__headlight {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #FFD700;
+        box-shadow: 0 0 8px #FFD700, 0 0 12px #FFD700;
+        animation: blink 1s ease-in-out infinite;
+
+        &--left {
+            animation-delay: 0s;
+        }
+
+        &--right {
+            animation-delay: 0.5s;
+        }
+    }
+
+    &__name {
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        display: inline-block;
+        padding: 0.25rem 0.65rem;
+        background: rgba(0, 167, 105, 0.699);
+        border-radius: 6px;
+        transition: background 0.3s ease;
+        border: 1px solid rgba(0, 208, 132, 0.2);
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-left: 6px solid rgba(0, 167, 105, 0.699);
+        }
+
+        &:hover {
+            background: rgba(0, 208, 132, 0.85);
+
+            &::before {
+                border-left-color: rgba(0, 208, 132, 0.85);
+            }
+        }
+    }
+
+    @for $i from 1 through 40 {
+        &:nth-child(#{$i}) .user__car {
+            animation-delay: #{$i * 0.3}s;
+        }
+    }
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes race-wave {
+    0% {
+        transform: translateX(0) translateY(0);
+    }
+    25% {
+        transform: translateX(-50px) translateY(-15px);
+    }
+    50% {
+        transform: translateX(0) translateY(0);
+    }
+    75% {
+        transform: translateX(50px) translateY(12px);
+    }
+    100% {
+        transform: translateX(0) translateY(0);
+    }
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 8px #FFD700, 0 0 12px #FFD700;
+    }
+    50% {
+        opacity: 0.3;
+        box-shadow: 0 0 2px #FFD700;
+    }
+}
+
+@media (min-width: 768px) {
+    .users {
+        padding: space.$sm space.$lg;
+        min-height: 70px;
+    }
+
+    .user__name {
+        font-size: 0.9375rem;
+        padding: 0.35rem 0.8rem;
+    }
+}

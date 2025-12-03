@@ -1,3 +1,5 @@
+// ===== CREDENTIALS =====
+
 export interface LoginCredentials {
   nickname: string;
   password: string;
@@ -12,6 +14,8 @@ export interface ConfirmSignupCredentials {
   token: string;
   password: string;
 }
+
+// ===== USER DATA =====
 
 export interface User {
   user: {
@@ -36,23 +40,20 @@ export interface Profile {
   membership_end: string;
 }
 
+// ===== API RESPONSES =====
+
 export interface ProfileResponse {
   success: boolean;
   code: string;
   data: Profile;
 }
 
-// ✅ VERSION JWT: Un seul token pour tout (User API + Content API)
-// Support des deux formats
+/**
+ * Login response
+ * Format actuel du backend
+ */
 export interface LoginResponse {
   success?: boolean;
-  data?: {
-    firstname: string;
-    lastname: string;
-    avatar?: string;
-  };
-  token?: string;  // Nouveau format
-  // Ancien format (compatibilité)
   firstname?: string;
   lastname?: string;
   avatar?: string;
@@ -63,7 +64,7 @@ export interface LoginResponse {
 export interface SignInResponse {
   success: boolean;
   message: string;
-  token?: string;  // JWT optionnel si signup direct
+  token?: string;
 }
 
 export interface TokenValidationResponse {
@@ -74,12 +75,4 @@ export interface TokenValidationResponse {
 
 export interface GoogleAuthResponse {
   authUrl: string;
-}
-
-export interface AuthState {
-  user: User | null;
-  sessionToken: string | null;
-  refreshToken: string | null;
-  isLoading: boolean;
-  error: string | null;
 }

@@ -6,6 +6,7 @@ export interface FileLabel {
 export interface FileData {
   id_files: number;
   name: string;
+  description: string;
   is_display: number;
   level_required: number;
   label: FileLabel;

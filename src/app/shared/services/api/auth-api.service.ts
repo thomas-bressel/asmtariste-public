@@ -1,7 +1,26 @@
 import { Injectable } from '@angular/core';
-import { LoginCredentials, LoginResponse, GoogleAuthResponse, User, SignInCredentials,
-          SignInResponse,  ConfirmSignupCredentials, TokenValidationResponse, ProfileResponse } from '@models/auth.model';
-import chalk from "chalk";
+import {
+  LoginCredentials,
+  LoginResponse,
+  GoogleAuthResponse,
+  User,
+  SignInCredentials,
+  SignInResponse,
+  ConfirmSignupCredentials,
+  TokenValidationResponse,
+  ProfileResponse
+} from '@models/auth.model';
+
+/**
+ * AUTH API - Pure HTTP Calls + Token Storage
+ *
+ * RÈGLES:
+ * - Gère les appels HTTP
+ * - Stocke/supprime les tokens dans localStorage
+ * - NE met JAMAIS à jour le store
+ * - Retourne les données brutes de l'API
+ * - Appelé UNIQUEMENT par le facade service
+ */
 
 @Injectable({
   providedIn: 'root'
@@ -22,13 +41,10 @@ export class AuthApi {
   }
 
   /**
-   * Login with credentials (VERSION JWT)
-   * Le token JWT est reçu dans la réponse JSON et stocké dans localStorage
-   * @param credentials
-   * @returns LoginResponse (contient les données user + le token)
+   * Login with credentials
+   * Stocke automatiquement les tokens dans localStorage
    */
-  public async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    console.log('\x1b[34m[API] - login() - called :\xb1[0m');
+  async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const response = await fetch(`${this.baseUrl}/user/v1/public/login`, {
       method: 'POST',
@@ -40,32 +56,20 @@ export class AuthApi {
       const error = await response.json().catch(() => ({}));
       throw new Error(error.message || `${response.status}: ${response.statusText}`);
     }
+
     const data = await response.json();
-    console.log('\x1b[34m[API] - login() - data :\xb1[0m', data);
 
     // Stocke les tokens dans localStorage
-    // Support des deux formats : nouveau (token) ou ancien (sessionToken + refreshToken)
-    const sessionToken = data.token || data.sessionToken;
-    const refreshToken = data.refreshToken;
-
-    if (sessionToken) localStorage.setItem('session_token', sessionToken);
-    if (refreshToken) localStorage.setItem('refresh_token', refreshToken);
+    if (data.sessionToken) localStorage.setItem('session_token', data.sessionToken);
+    if (data.refreshToken) localStorage.setItem('refresh_token', data.refreshToken);
 
     return data;
   }
 
-
-
-
-
-
-
   /**
    * Sign in with nickname and email
-   * @param credentials SignInCredentials (nickname, email)
-   * @returns SignInResponse
    */
-  public async signIn(credentials: SignInCredentials): Promise<SignInResponse> {
+  async signIn(credentials: SignInCredentials): Promise<SignInResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/signin`, {
@@ -82,21 +86,10 @@ export class AuthApi {
     return response.json();
   }
 
-
-
-
-
-
-
-
-
-
-/**
+  /**
    * Validate signup token
-   * @param token Token from URL
-   * @returns TokenValidationResponse
    */
-  public async validateSignupToken(token: string): Promise<TokenValidationResponse> {
+  async validateSignupToken(token: string): Promise<TokenValidationResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/validate-signup-token`, {
@@ -113,19 +106,11 @@ export class AuthApi {
     return response.json();
   }
 
-
-
-
-
-
-
-
-/**
+  /**
    * Confirm signup with token and password
-   * @param credentials ConfirmSignupCredentials (token, password)
-   * @returns SignInResponse
+   * Stocke automatiquement le token si présent (connexion auto après signup)
    */
-  public async confirmSignup(credentials: ConfirmSignupCredentials): Promise<SignInResponse> {
+  async confirmSignup(credentials: ConfirmSignupCredentials): Promise<SignInResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/confirm-signup`, {
@@ -143,107 +128,85 @@ export class AuthApi {
 
     // Stocke le token si présent (connexion automatique après signup)
     if (data.token) {
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('session_token', data.token);
     }
 
     return data;
   }
 
-
-
-
-  
-
-
-
   /**
-   * Logout the user (VERSION JWT)
+   * Logout the user
    * Supprime les tokens du localStorage
    */
-  public async logout(): Promise<void> {
+  async logout(): Promise<void> {
     const response = await fetch(`${this.baseUrl}/user/v1/public/logout`, {
       method: 'POST',
       headers: this.createAuthHeaders()
     });
 
-    if (!response.ok) throw new Error(`Erreur de déconnexion: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Erreur de déconnexion: ${response.status}`);
+    }
 
     // Supprime les tokens du localStorage
     localStorage.removeItem('session_token');
     localStorage.removeItem('refresh_token');
-
-    const data = await response.json();
-    console.log('Logout response data:', data);
   }
 
-
-
-
-
-
-
-
-
   /**
-   * Check if session is valid (VERSION JWT)
+   * Check if session is valid and get user data
    */
-  public async checkSession(): Promise<User> {
+  async checkSession(): Promise<User> {
     const response = await fetch(`${this.baseUrl}/user/v1/public/verify`, {
       headers: this.createAuthHeaders()
     });
-    if (!response.ok) throw new Error(`Profil inaccessible: ${response.status}`);
+
+    if (!response.ok) throw new Error(`Session invalide: ${response.status}`);
+
     const data = await response.json();
-    console.log('\x1b[34m[API] checkSession() - data:\x1b[0m', data);
-    return data;
+    console.log('\x1b[34m [API] - checkSession() - data :\x1b[0m', data);
+
+    // Construire l'objet User depuis la réponse
+    return {
+      user: {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        avatar: data.avatar
+      }
+    };
   }
 
-
-
-
-
-
-
   /**
-   * Get user profile with all information (VERSION JWT)
-   * @returns Profile
+   * Get user profile with all information
    */
-  public async getProfile(): Promise<ProfileResponse> {
+  async getProfile(): Promise<ProfileResponse> {
     const response = await fetch(`${this.baseUrl}/user/v1/public/profile`, {
       headers: this.createAuthHeaders()
     });
 
-    if (!response.ok) throw new Error(`Profil inaccessible: ${response.status}`);
+    if (!response.ok)  throw new Error(`Profil inaccessible: ${response.status}`);
 
-    const data: ProfileResponse = await response.json();
-    console.log(chalk.blue('[API] - getProfile() - data:', data));
-    return data;
-  }
-
-
-
-
-
-  /**
-   * Get Google OAuth2 authentication URL
-   * @returns GoogleAuthResponse with authUrl
-   */
-  public async getGoogleAuthUrl(): Promise<GoogleAuthResponse> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const response = await fetch(`${this.baseUrl}/user/v1/auth/google`, { headers });
-    if (!response.ok) throw new Error(`Impossible d'obtenir l'URL Google: ${response.status}`);
     return response.json();
   }
 
+  /**
+   * Get Google OAuth2 authentication URL
+   */
+  async getGoogleAuthUrl(): Promise<GoogleAuthResponse> {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const response = await fetch(`${this.baseUrl}/user/v1/auth/google`, { headers });
 
+    if (!response.ok) {
+      throw new Error(`Impossible d'obtenir l'URL Google: ${response.status}`);
+    }
 
+    return response.json();
+  }
 
-
-/**
- * Forgot password
- * @param email
- * @returns
- */
-  public async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
+  /**
+   * Forgot password
+   */
+  async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const response = await fetch(`${this.baseUrl}/user/v1/public/forgot-password`, {
       method: 'POST',
@@ -251,21 +214,17 @@ export class AuthApi {
       body: JSON.stringify({ email })
     });
 
-    if (!response.ok) throw new Error(`Échec de réinitialisation: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Échec de réinitialisation: ${response.status}`);
+    }
 
     return response.json();
   }
 
-
-
-
-
   /**
    * Validate reset token
-   * @param token Token from URL
-   * @returns TokenValidationResponse
    */
-  public async validateResetToken(token: string): Promise<TokenValidationResponse> {
+  async validateResetToken(token: string): Promise<TokenValidationResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/validate-reset-token`, {
@@ -282,16 +241,10 @@ export class AuthApi {
     return response.json();
   }
 
-
-
-
-
   /**
    * Reset password with token
-   * @param credentials ResetPasswordCredentials (token, password)
-   * @returns Success response
    */
-  public async resetPassword(credentials: { token: string; password: string }): Promise<{ success: boolean; message: string }> {
+  async resetPassword(credentials: { token: string; password: string }): Promise<{ success: boolean; message: string }> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/reset-password`, {
@@ -309,5 +262,14 @@ export class AuthApi {
     }
 
     return response.json();
+  }
+
+  /**
+   * Clear tokens from localStorage
+   * Appelé par le facade en cas d'erreur ou de logout
+   */
+  clearTokens(): void {
+    localStorage.removeItem('session_token');
+    localStorage.removeItem('refresh_token');
   }
 }

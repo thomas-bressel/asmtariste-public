@@ -13,6 +13,12 @@
       </span>
     </div>
   </div>
+  <div class="fileContent">
+
+    <div class="fileMeta">
+      <p class="fileDescription">{{ description() }}</p>
+    </div>
+  </div>
 
   <button class="downloadBtn" type="button" aria-label="Télécharger" [disabled]="serviceFile.isDownloading(id_file())"
     (click)="handleDownloadFile(id_file())">
