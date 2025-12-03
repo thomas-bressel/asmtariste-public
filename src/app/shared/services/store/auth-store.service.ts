@@ -1,253 +1,135 @@
-import { Injectable, Signal, computed, effect, inject, signal } from '@angular/core';
-import { AuthApi } from '@services/api/auth-api.service';
-import { AuthState, LoginCredentials, SignInCredentials, ConfirmSignupCredentials, User } from '@models/auth.model';
+import { Injectable, Signal, computed, signal } from '@angular/core';
+import { User, ProfileResponse } from '@models/auth.model';
+
+/**
+ * AUTH STORE - Pure State Management
+ *
+ * RÈGLES:
+ * - NE JAMAIS appeler d'API
+ * - NE JAMAIS manipuler localStorage
+ * - Seulement gérer l'état et exposer des signals
+ * - Appelé UNIQUEMENT par le facade service
+ */
+
+interface AuthState {
+  user: User | null;
+  sessionToken: string | null;
+  refreshToken: string | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
+interface ProfileState {
+  profile: ProfileResponse | null;
+  isLoading: boolean;
+  error: string | null;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthStore {
-  private authApi = inject(AuthApi);
+  // ===== STATE =====
+  private authState = signal<AuthState>({
+    user: null,
+    sessionToken: null,
+    refreshToken: null,
+    isLoading: false,
+    error: null
+  });
 
-  // Intial state
-  private state = signal<AuthState>({ user: null, sessionToken: null, refreshToken: null, isLoading: false, error: null });
+  private profileState = signal<ProfileState>({
+    profile: null,
+    isLoading: false,
+    error: null
+  });
 
-  // Exposed selectors
-  readonly user: Signal<User | null> = computed(() => this.state().user);
-  readonly sessionToken: Signal<string | null> = computed(() => this.state().sessionToken);
-  readonly refreshToken: Signal<string | null> = computed(() => this.state().refreshToken);
-  readonly isLoading: Signal<boolean> = computed(() => this.state().isLoading);
-  readonly error: Signal<string | null> = computed(() => this.state().error);
-  readonly isAuthenticated: Signal<boolean> = computed(() => !!this.state().sessionToken);
+  // ===== SELECTORS (READ-ONLY) =====
+  readonly user: Signal<User | null> = computed(() => this.authState().user);
+  readonly sessionToken: Signal<string | null> = computed(() => this.authState().sessionToken);
+  readonly refreshToken: Signal<string | null> = computed(() => this.authState().refreshToken);
+  readonly isLoading: Signal<boolean> = computed(() => this.authState().isLoading);
+  readonly error: Signal<string | null> = computed(() => this.authState().error);
+  readonly isAuthenticated: Signal<boolean> = computed(() => !!this.authState().sessionToken && !!this.authState().user);
 
-  constructor() {
-    // Check for existing token in localStorage
-    const sessionToken = localStorage.getItem('session_token');
-    const refreshToken = localStorage.getItem('refresh_token');
-    const userJson = localStorage.getItem('user_data');
+  readonly profile: Signal<ProfileResponse | null> = computed(() => this.profileState().profile);
+  readonly profileLoading: Signal<boolean> = computed(() => this.profileState().isLoading);
+  readonly profileError: Signal<string | null> = computed(() => this.profileState().error);
 
-    if (sessionToken && refreshToken) {
-      const user = userJson ? JSON.parse(userJson) : null;
-      this.state.update(state => ({ 
-        ...state, 
-        sessionToken, 
-        refreshToken, 
-        user, 
-        isLoading: true }));
+  // ===== MUTATIONS (appelées uniquement par le facade) =====
 
-      // Check if the token is valid
-      this.checkAuth();
-    }
+  setLoading(isLoading: boolean): void {
+    this.authState.update(state => ({ ...state, isLoading }));
+  }
 
-    // Effect to handle actions after authentication state updates
-    effect(() => {
-      const user = this.user();
-      const error = this.error();
+  setError(error: string | null): void {
+    this.authState.update(state => ({ ...state, error, isLoading: false }));
+  }
 
-      if (user && !error) {
-        // Post-login actions can be handled here
-      }
+  clearError(): void {
+    this.authState.update(state => ({ ...state, error: null }));
+  }
+
+  setAuthData(user: User, sessionToken: string, refreshToken: string | null = null): void {
+    this.authState.update(state => ({
+      ...state,
+      user,
+      sessionToken,
+      refreshToken,
+      isLoading: false,
+      error: null
+    }));
+  }
+
+  clearAuth(): void {
+    this.authState.set({
+      user: null,
+      sessionToken: null,
+      refreshToken: null,
+      isLoading: false,
+      error: null
     });
   }
 
+  setProfileLoading(isLoading: boolean): void {
+    this.profileState.update(state => ({ ...state, isLoading }));
+  }
 
+  setProfileError(error: string | null): void {
+    this.profileState.update(state => ({ ...state, error, isLoading: false }));
+  }
 
+  setProfile(profile: ProfileResponse): void {
+    this.profileState.update(state => ({
+      ...state,
+      profile,
+      isLoading: false,
+      error: null
+    }));
 
-
-  /**
-   * Connection with credentials
-   * @param credentials connection credentials
-   */
-  async login(credentials: LoginCredentials): Promise<void> {
-    this.clearError();
-    this.state.update(state => ({ ...state, isLoading: true }));
-
-    try {
-      const response = await this.authApi.login(credentials);
-
-      const user: User = {
-        firstname: response.firstname,
-        lastname: response.lastname,
-        avatar: response.avatar,
-      };
-            this.setAuthData(response.sessionToken, response.refreshToken, user);
-
-
-      this.state.update(state => ({
+    // Met à jour aussi l'avatar de l'utilisateur dans authState
+    if (this.authState().user && profile.data.avatar) {
+      this.authState.update(state => ({
         ...state,
-        user,
-        sessionToken: response.sessionToken,
-        refreshToken: response.refreshToken,
-        isLoading: false,
-        error: null
-      }));
-
-    } catch (error) {
-      this.state.update(state => ({ ...state, isLoading: false, error: error instanceof Error ? error.message : 'Échec de connexion' }));
-      throw error;
-    }
-  }
-
-
-
-
-
-
-
-
-
-
-  /**
-   * Sign in with nickname and email
-   * @param credentials SignInCredentials (nickname, email)
-   */
-  async signIn(credentials: SignInCredentials): Promise<void> {
-    this.clearError();
-    this.state.update(state => ({ ...state, isLoading: true }));
-
-    try {
-      await this.authApi.signIn(credentials);
-      this.state.update(state => ({ ...state, isLoading: false, error: null }));
-    } catch (error) {
-      this.state.update(state => ({ 
-        ...state, 
-        isLoading: false, 
-        error: error instanceof Error ? error.message : 'Échec de l\'inscription' 
-      }));
-      throw error;
-    }
-  }
-
-
-
-
-
-
-
-
-
-  /**
-   * Confirm signup with token and password
-   * @param credentials ConfirmSignupCredentials (token, password)
-   */
-  async confirmSignup(credentials: ConfirmSignupCredentials): Promise<void> {
-    this.clearError();
-    this.state.update(state => ({ ...state, isLoading: true }));
-
-    try {
-      await this.authApi.confirmSignup(credentials);
-      this.state.update(state => ({ ...state, isLoading: false, error: null }));
-    } catch (error) {
-      this.state.update(state => ({ 
-        ...state, 
-        isLoading: false, 
-        error: error instanceof Error ? error.message : 'Échec de la confirmation' 
-      }));
-      throw error;
-    }
-  }
-
-
-
-
-
-
-  /**
-   * Connection with Google
-   * @returns the Google authentication URL
-   */
-  async loginWithGoogle(): Promise<string> {
-    this.clearError();
-    this.state.update(state => ({ ...state, isLoading: true }));
-
-    try {
-      const response = await this.authApi.getGoogleAuthUrl();
-      this.state.update(state => ({ ...state, isLoading: false }));
-      return response.authUrl;
-    } catch (error) {
-      this.state.update(state => ({ ...state, isLoading: false, error: error instanceof Error ? error.message : 'Échec de connexion avec Google' }));
-      throw error;
-    }
-  }
-
-
-
-
-  /**
-   * Logout the user
-   */
-  async logout(): Promise<void> {
-    this.clearError();
-    this.state.update(state => ({ ...state, isLoading: true }));
-
-    try {
-      await this.authApi.logout();
-    } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
-    } finally {
-      this.clearTokens();
-      this.state.update(state => ({
-        ...state,
-        user: null,
-        sessionToken: null,
-        refreshToken: null,
-        isLoading: false
+        user: state.user ? {
+          user: {
+            ...state.user.user,
+            avatar: profile.data.avatar
+          }
+        } : null
       }));
     }
   }
 
-
-
-
-
-
-
-  /**
-   * Check the authentication status of the user
-   */
-  private async checkAuth(): Promise<void> {
-    try {
-      await this.authApi.checkSession();
-
-      this.state.update(state => ({ ...state, isLoading: false }));
-    } catch (error) {
-      this.clearTokens();
-      this.state.update(state => ({ 
-        ...state, 
-        user: null, 
-        sessionToken: null,
-        refreshToken: null,
-        isLoading: false 
-      }));
-    }
+  clearProfile(): void {
+    this.profileState.set({
+      profile: null,
+      isLoading: false,
+      error: null
+    });
   }
-
-
-
-
-
-
-  /**
-   * Clear authentication error
-   */
-  clearError(): void {
-    this.state.update(state => ({ ...state, error: null }));
-  }
-
-
-
-
-
-  /**
-   * Set authentication tokens
-   * @param sessionToken Session token to store
-   * @param refreshToken Refresh token to store
-   * @param user User data to store
-   */
-  private setAuthData(sessionToken: string, refreshToken: string, user: User): void {
-  localStorage.setItem('session_token', sessionToken);
-  localStorage.setItem('refresh_token', refreshToken);
-  localStorage.setItem('user_data', JSON.stringify(user));
 }
+<<<<<<< HEAD
 
 
 
@@ -340,3 +222,5 @@ export class AuthStore {
   }
 
 }
+=======
+>>>>>>> deploy

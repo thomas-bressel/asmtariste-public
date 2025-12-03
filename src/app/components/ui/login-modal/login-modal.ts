@@ -209,7 +209,7 @@ ngOnInit(): void {
         
         // Recharger uniquement après connexion réussie
         this.router.navigateByUrl('/accueil', { replaceUrl: true }).then(() => {
-          location.reload();
+          // location.reload();
         });
       } else {
         const credentials = { 

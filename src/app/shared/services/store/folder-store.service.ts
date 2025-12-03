@@ -27,9 +27,7 @@ export class FolderStore {
   // Computed signals
 readonly sortedFolders = computed(() => {
   const folders = this._folders();
-  console.log('[STORE COMPUTED] _folders() =', folders);
-  console.log('[STORE COMPUTED] length =', folders.length);
-  
+ 
   if (folders.length === 0) return [];
   
   // Tri simple sans filtre
@@ -39,7 +37,6 @@ readonly sortedFolders = computed(() => {
     return levelA - levelB;
   });
   
-  console.log('[STORE COMPUTED] sorted =', sorted);
   return sorted;
 });
 
@@ -62,9 +59,6 @@ readonly sortedFolders = computed(() => {
 
   // Mutations du state
   setFolders(folders: FolderData[]): void {
-    console.log('[STORE] - setFolders() ', folders);
-    console.log('[STORE] - Premier folder:', folders[0]);
-    console.log('[STORE] - level_required du premier:', folders[0]?.level_required, typeof folders[0]?.level_required);
     this._folders.set(folders);
     this._error.set(null);
   }

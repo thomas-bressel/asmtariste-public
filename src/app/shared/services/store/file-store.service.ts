@@ -53,10 +53,10 @@ export class FileStore {
     if (groups.length > 0) {
 
       // Opening the 1st group only (index 0)
-      // this._openGroups.set(new Set([groups[0].label]));
+      this._openGroups.set(new Set([groups[0].label]));
       
       // Open all groups
-      this._openGroups.set(new Set(groups.map(g => g.label)));
+      // this._openGroups.set(new Set(groups.map(g => g.label)));
     }
   }
 

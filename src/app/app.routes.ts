@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { signupTokenGuard } from '@guards/signup-token-guard';
+import { authGuard } from '@guards/auth-guard';
 
 
 export const routes: Routes = [
@@ -101,6 +102,12 @@ export const routes: Routes = [
                 loadComponent: async () =>
                     (await import('./views/private/reinit-password/reinit-password')).ReinitPassword,
                 canActivate: [signupTokenGuard]
+            },
+            {
+                path: 'profile',
+                loadComponent: async () =>
+                    (await import('./views/private/profile/profile')).Profile,
+                canActivate: [authGuard]
             },
         ]
     },

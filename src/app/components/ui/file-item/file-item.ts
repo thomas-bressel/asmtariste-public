@@ -24,6 +24,7 @@ public id_folder = signal(this.ItemSelector.selectedItemId());
 
   public id_file = input<number>(0);
   public name = input<string>('');
+  public description = input<string>('');
   public id_label = input<number>(0);
   public label = input<string>('');
   public levelRequired = input<number>(0);

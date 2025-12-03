@@ -1,0 +1,31 @@
+@if(userData().length > 0) {
+
+<div class="users">
+    <div class="users__road-line"></div>
+    <div class="users__track">
+        @for(user of userData() ; track user.nickname) {
+        <div class="user">
+            <div class="user__car">
+                <div class="user__headlights">
+                    <div class="user__headlight user__headlight--left"></div>
+                    <div class="user__headlight user__headlight--right"></div>
+                </div>
+                <p class="user__name" [class]="`color-${user.role_color}`">{{user.nickname}}</p>
+            </div>
+        </div>
+        }
+        @for(user of userData() ; track user.nickname + '-duplicate') {
+        <div class="user">
+            <div class="user__car">
+                <div class="user__headlights">
+                    <div class="user__headlight user__headlight--left"></div>
+                    <div class="user__headlight user__headlight--right"></div>
+                </div>
+                <p class="user__name" [class]="`color-${user.role_color}`">{{user.nickname}}</p>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+
+}

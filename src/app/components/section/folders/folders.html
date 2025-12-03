@@ -9,7 +9,7 @@
             <ul class="grid">
 
                 @for(folder of folders() ; track folder.id_folder) {
-                <li app-folder [id]="folder.id_folder" [icon]="folder.icon" [name]="folder.title"
+                <li app-folder [id]="folder.id_folder" [icon]="folder.icon" [name]="folder.title" 
                     [desc]="folder.description"></li>
                 }
             </ul>
