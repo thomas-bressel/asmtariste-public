@@ -1,13 +1,22 @@
 import { Routes } from '@angular/router';
 import { signupTokenGuard } from '@guards/signup-token-guard';
 import { authGuard } from '@guards/auth-guard';
+import { maintenanceGuard } from '@guards/maintenance.guard';
 
 
 export const routes: Routes = [
+    // Route de maintenance (accessible SANS guard)
+    {
+        path: 'maintenance',
+        loadComponent: async () =>
+            (await import('./views/public/maintenance/maintenance')).MaintenancePage
+    },
+    // Toutes les autres routes (protégées par maintenanceGuard)
     {
         path: '',
         loadComponent: async () =>
             (await import('./views/public/layout/layout')).Layout,
+        canActivate: [maintenanceGuard], // Bloque toutes les routes enfants si maintenance active
         children: [
              {
                 path: '',
