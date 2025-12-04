@@ -19,7 +19,7 @@ protected userData = computed(() => this.store.users())
 
   public async ngOnInit(): Promise<void> {
       const users = await this.userService.loadUsers();
-      console.log('users', this.store.users())
+      // console.log('users', this.store.users())
   }
 
 }

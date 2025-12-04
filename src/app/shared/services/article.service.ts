@@ -26,7 +26,7 @@ export class ArticleService {
             this.store.setError(null);
 
             const articles: ArticleData[] = await this.api.getAllArticles();
-            console.log('[SERVICE] - loadArticles() ', articles);
+            // console.log('[SERVICE] - loadArticles() ', articles);
 
             this.store.setArticles(articles);
         } catch (error) {
@@ -47,7 +47,7 @@ export class ArticleService {
             this.store.setError(null);
 
             const articles: ArticleData[] = await this.api.getArticlesByCategory(category);
-            console.log('[SERVICE] - loadArticlesByCategory() ', articles);
+            // console.log('[SERVICE] - loadArticlesByCategory() ', articles);
 
             this.store.setArticles(articles);
         } catch (error) {
@@ -68,7 +68,7 @@ export class ArticleService {
             this.store.setError(null);
 
             const article: ArticleData = await this.api.getArticleById(articleId);
-            console.log('[SERVICE] - loadArticleById() ', article);
+            // console.log('[SERVICE] - loadArticleById() ', article);
 
             this.store.setArticleById(article);
         } catch (error) {
@@ -89,7 +89,7 @@ export class ArticleService {
             this.store.setError(null);
 
             const article: ArticleData = await this.api.getArticleBySlug(articleSlug);
-            console.log('[SERVICE] - getArticleBySlug() ', article);
+            // console.log('[SERVICE] - getArticleBySlug() ', article);
 
             this.store.setArticleById(article);
         } catch (error) {

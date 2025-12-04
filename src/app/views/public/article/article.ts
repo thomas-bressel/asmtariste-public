@@ -88,7 +88,7 @@ export class Article implements OnInit, OnDestroy {
 
       const idArticle = this.articleId();
       const slugArticle = this.slug();
-      console.log('[COMPONENT] slug : ', slugArticle)
+      // console.log('[COMPONENT] slug : ', slugArticle)
       if (slugArticle) {
         await Promise.all([
           // this.articleService.loadArticleById(idArticle),

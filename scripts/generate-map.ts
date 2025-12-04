@@ -22,4 +22,4 @@
 // </urlset>`;
 
 // writeFileSync('dist/public/sitemap.xml', sitemap);
-// console.log('✅ Sitemap généré !');
+// // console.log('✅ Sitemap généré !');

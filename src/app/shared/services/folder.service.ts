@@ -30,14 +30,14 @@ export class FolderService {
    * Charge tous les dossiers
    */
   async loadFolders(): Promise<void> {
-    console.log("\x1b[32m[SERVICE] - loadFolders() called \x1b[0m");
+    // console.log("\x1b[32m[SERVICE] - loadFolders() called \x1b[0m");
     try {
       this.store.setLoading(true);
       this.store.setError(null);
       
       // Appel API
       const folders = await this.api.getAllFolders();
-      console.log("\x1b[32m[SERVICE] - loadFolders() - folders \x1b[0m", folders);
+      // console.log("\x1b[32m[SERVICE] - loadFolders() - folders \x1b[0m", folders);
 
       // Mise à jour du store
       this.store.setFolders(folders);

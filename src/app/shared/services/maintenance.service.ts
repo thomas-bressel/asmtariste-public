@@ -41,7 +41,7 @@ export class MaintenanceService {
     this.isLoading.set(true);
 
     try {
-      console.log('[Maintenance Service] Vérification du statut de maintenance...');
+      // console.log('[Maintenance Service] Vérification du statut de maintenance...');
 
       const status = await this.maintenanceApi.getStatus();
 
@@ -51,7 +51,7 @@ export class MaintenanceService {
       if (status.enabled) {
         console.warn('[Maintenance Service] ⚠️ Mode maintenance activé:', status.message);
       } else {
-        console.log('[Maintenance Service] ✅ Site opérationnel');
+        // console.log('[Maintenance Service] ✅ Site opérationnel');
       }
     } catch (error) {
       console.error('[Maintenance Service] Erreur lors de la vérification:', error);

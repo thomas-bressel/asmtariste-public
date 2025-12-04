@@ -32,7 +32,7 @@ export class FolderApiService {
    * Récupère tous les dossier depuis le serveur
    */
   async getAllFolders(): Promise<FolderData[]> {
-    console.log("\x1b[34m[API] - getAllFolders() called \x1b[0m");
+    // console.log("\x1b[34m[API] - getAllFolders() called \x1b[0m");
 
     const response = await fetch(`${CONTENT_API_URI}/content/v1/public/folders`, {
       method: 'GET',
@@ -42,7 +42,7 @@ export class FolderApiService {
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
     const data = await response.json();
-    console.log("\x1b[34m[API] - getAllFolders() - data: \x1b[0m", data);
+    // console.log("\x1b[34m[API] - getAllFolders() - data: \x1b[0m", data);
 
     return Array.isArray(data) ? data : [];
   }

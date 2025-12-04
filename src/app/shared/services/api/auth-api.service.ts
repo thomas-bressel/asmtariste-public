@@ -166,7 +166,7 @@ export class AuthApi {
     if (!response.ok) throw new Error(`Session invalide: ${response.status}`);
 
     const data = await response.json();
-    console.log('\x1b[34m [API] - checkSession() - data :\x1b[0m', data);
+    // console.log('\x1b[34m [API] - checkSession() - data :\x1b[0m', data);
 
     // Construire l'objet User depuis la réponse
     return {

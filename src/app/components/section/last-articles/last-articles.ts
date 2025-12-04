@@ -38,7 +38,7 @@ export class LastArticles implements OnInit {
     await this.articleService.loadArticles();
 
     // debug
-    console.log('[COMPONENT] Articles loaded:', this.articles());
+    // console.log('[COMPONENT] Articles loaded:', this.articles());
 
   }
 
@@ -47,7 +47,7 @@ export class LastArticles implements OnInit {
 
   public handleNavigate(category: string, slug: string, event: Event) {
     let category_slug = category;
-    console.log('category', category)
+    // console.log('category', category)
 
     if (category === "actualité")  category_slug = "actualite"
     

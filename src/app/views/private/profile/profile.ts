@@ -34,7 +34,7 @@ export class Profile implements OnInit {
   private async loadProfile(): Promise<void> {
     try {
       const profileData = await this.authService.getProfile();
-      console.log('[COMPONENT] - loadProfile()', profileData)
+      // console.log('[COMPONENT] - loadProfile()', profileData)
     } catch (err) {
       console.error('Erreur lors du chargement du profil:', err);
     }

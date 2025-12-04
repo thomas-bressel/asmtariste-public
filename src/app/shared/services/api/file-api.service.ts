@@ -38,7 +38,7 @@ export class FileApiService {
     }
 
     const data = await response.json();
-    console.log('getFileByFolder() : ', data)
+    // console.log('getFileByFolder() : ', data)
     return Array.isArray(data) ? data : [];
   }
 

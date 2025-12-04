@@ -20,7 +20,7 @@ export class UserStore {
   setUsers(users: UserPublicData[]): void {
     this._users.set(users);
     this._error.set(null);
-    console.log('[STORE] - setUsers', this.users())
+    // console.log('[STORE] - setUsers', this.users())
   }
 
 

@@ -23,7 +23,7 @@ export class UserApiService {
         if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
         const data = await response.json();
-        console.log('\x1b[34m[API] getAllUsers() - data:\x1b[0m] ', data);
+        // console.log('\x1b[34m[API] getAllUsers() - data:\x1b[0m] ', data);
         return Array.isArray(data) ? data : [];
     }
 

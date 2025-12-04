@@ -30,17 +30,17 @@ export class MaintenancePage {
    * Si la maintenance est désactivée → Redirige vers /accueil
    */
   async refreshStatus(): Promise<void> {
-    console.log('[Maintenance Page] Vérification du statut...');
+    // console.log('[Maintenance Page] Vérification du statut...');
 
     // Re-vérifier le statut auprès de l'API
     await this.maintenance.checkStatus();
 
     // Si la maintenance est désactivée, rediriger vers l'accueil
     if (!this.maintenance.isMaintenanceActive()) {
-      console.log('[Maintenance Page] ✅ Maintenance terminée, redirection...');
+      // console.log('[Maintenance Page] ✅ Maintenance terminée, redirection...');
       this.router.navigate(['/accueil']);
     } else {
-      console.log('[Maintenance Page] ⚠️ Maintenance toujours active');
+      // console.log('[Maintenance Page] ⚠️ Maintenance toujours active');
     }
   }
 }

@@ -88,7 +88,7 @@ export class AuthService {
    * Login with credentials
    */
   async login(credentials: LoginCredentials): Promise<void> {
-    console.log(chalk.green('[FACADE] - login() called'));
+    // console.log(chalk.green('[FACADE] - login() called'));
 
     this.authStore.clearError();
     this.authStore.setLoading(true);
@@ -96,7 +96,7 @@ export class AuthService {
     try {
       // 1. Appel API (qui stocke automatiquement les tokens dans localStorage)
       const response = await this.authApi.login(credentials);
-      console.log(chalk.green('[FACADE] - login() response:', JSON.stringify(response, null, 2)));
+      // console.log(chalk.green('[FACADE] - login() response:', JSON.stringify(response, null, 2)));
 
       // 2. Vérifier que la réponse contient les données nécessaires
       if (!response.sessionToken) {
@@ -115,7 +115,7 @@ export class AuthService {
       // 4. Mise à jour du store
       this.authStore.setAuthData(user, response.sessionToken, response.refreshToken || null);
 
-      console.log(chalk.green('[FACADE] - login() success - User:', user));
+      // console.log(chalk.green('[FACADE] - login() success - User:', user));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Échec de connexion';
       this.authStore.setError(errorMessage);

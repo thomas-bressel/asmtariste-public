@@ -24,7 +24,7 @@ export class UserService {
             this.store.setError(null);
 
             const users: UserPublicData[] = await this.api.getAllUsers();
-            console.log('[SERVICE] - loadUsers() ', users);
+            // console.log('[SERVICE] - loadUsers() ', users);
 
             this.store.setUsers(users);
         } catch (error) {

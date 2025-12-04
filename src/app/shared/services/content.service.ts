@@ -38,7 +38,7 @@ export class ContentService {
       this.store.setError(null);
 
       const contents = await this.api.getContentByArticleSlug(articleSlug);
-      console.log('Content : ', contents)
+      // console.log('Content : ', contents)
       this.store.setContents(contents);
     } catch (error) {
       const message = `Erreur lors du chargement du contenu`;

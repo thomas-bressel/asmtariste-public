@@ -223,7 +223,7 @@ ngOnInit(): void {
           password: this.loginForm.value.password
         };
         await this.auth.login(credentials);
-        console.log('Utilisateur connecté');
+        // console.log('Utilisateur connecté');
         this.isVisible = false;
         document.body.style.overflow = 'unset';
         
@@ -237,7 +237,7 @@ ngOnInit(): void {
           email: this.loginForm.value.email
         };
         await this.auth.signIn(credentials);
-        console.log('Inscription réussie');
+        // console.log('Inscription réussie');
         
         // Fermer la modale et afficher un message de succès
         this.isVisible = false;
