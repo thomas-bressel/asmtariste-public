@@ -36,7 +36,7 @@ export class Header implements OnInit, OnDestroy {
   // Computed properties
   public readonly avatarUrl = computed(() => {
     const user = this.auth.user()?.user;
-    return user?.avatar ? `${this.avatarBaseUrl}${user.avatar}` : this.avatarBaseUrl + '/default-avatar.png';
+    return user?.avatar ? `${this.avatarBaseUrl}/avatars/${user.avatar}` : this.avatarBaseUrl + '/default-avatar.png';
   });
 
   public readonly userFullName = computed(() => {
