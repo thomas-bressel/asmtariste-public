@@ -254,44 +254,4 @@ export class AuthService {
   clearError(): void {
     this.authStore.clearError();
   }
-<<<<<<< HEAD
-
-
-
-
-
-
-  
-  /**
-   * Demander la réinitialisation du mot de passe
-   */
-  async forgotPassword(email: string): Promise<void> {
-    return this.authStore.forgotPassword(email);
-  }
-
-
-
-
-
-
-
-  /**
-   * Réinitialiser le mot de passe avec token
-   */
-  async resetPassword(credentials: { token: string; password: string }): Promise<void> {
-    return this.authStore.resetPassword(credentials);
-  }
-
-
-
-    /**
-   * Récupérer le profil complet de l'utilisateur
-   */
-  async getProfile(): Promise<ProfileResponse> {
-    return this.authStore.getProfile();
-  }
-
 }
-=======
-}
->>>>>>> deploy
