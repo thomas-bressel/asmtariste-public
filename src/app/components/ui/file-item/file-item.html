@@ -1,24 +1,33 @@
 <div class="fileWrapper">
 
-  <img class="filePreview"
+
+
+    <img class="filePreview"
     [src]="baseUrl + '/folders/' + id_folder() + '/labels/' + id_label() + '/files/' + id_file() + '/thumbnails/thumbnail.webp'"
     alt="">
-  <div class="fileContent">
-    <h3 class="fileName">{{ name() }}</h3>
+ 
+    
+  
+  <div class="fileContentWrapper">
 
-    <div class="fileMeta">
-      <span class="fileLabel">{{ label() }}</span>
-      <span class="fileBadge" [class]="getLevelColor()">
-        {{ getLevelBadge() }}
-      </span>
-    </div>
+    
+    <div class="fileContent">
+      <h3 class="fileName">{{ name() }}</h3>
+      
+      <div class="fileMeta">
+        <span class="fileLabel">{{ label() }}</span>
+        <span class="fileBadge" [class]="getLevelColor()">
+          {{ getLevelBadge() }}
+        </span>
+      </div>
   </div>
   <div class="fileContent">
-
+    
     <div class="fileMeta">
       <p class="fileDescription">{{ description() }}</p>
     </div>
   </div>
+</div>
 
   <button class="downloadBtn" type="button" aria-label="Télécharger" [disabled]="serviceFile.isDownloading(id_file())"
     (click)="handleDownloadFile(id_file())">

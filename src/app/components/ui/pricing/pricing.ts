@@ -11,8 +11,8 @@ import { Component, signal, computed } from '@angular/core';
 })
 export class Pricing {
 
-   protected currentAmount = signal(0);
-  protected targetAmount = signal(192);
+  protected currentAmount = signal(11.88);
+  protected targetAmount = signal(122.26);
   protected progressPercentage = computed(() => 
     Math.min(Math.round((this.currentAmount() / this.targetAmount()) * 100), 100)
   );
@@ -27,15 +27,17 @@ export class Pricing {
       ctaText: '',
       features: [
         { text: 'Tous les Cours ASM 68000', available: true },
-        { text: 'Toutes les documentation Atari', available: true },
-        { text: 'tutoriel', available: true },
+        { text: 'Toutes les documentations Atari', available: true },
+        { text: 'Tutoriel', available: true },
         { text: 'Ressources à télécharger', available: true },
         { text: 'Sources commenté .ASM', available: true },
         { text: 'Planches de sprites/masques .IFF', available: false },
         { text: 'Screen .PI1', available: false },
-        { text: 'Samples audio .SND', available: false },
         { text: 'Musique midi/cubase .SND', available: false },
-        { text: 'Accès libre aux projets complets', available: false }
+        { text: 'Samples audio .SND', available: false },
+        { text: 'Accès libre aux projets complets', available: false },
+        { text: 'Archiver les articles en PDF', available: false },
+
         
       ],
       highlighted: false
@@ -48,15 +50,17 @@ export class Pricing {
       ctaText: 'Soutenir le projet',
       features: [
         { text: 'Tous les Cours ASM 68000', available: true },
-        { text: 'Toutes les documentation Atari', available: true },
-        { text: 'tutoriel', available: true },
+        { text: 'Toutes les documentations Atari', available: true },
+        { text: 'Tutoriel', available: true },
         { text: 'Ressources à télécharger', available: true },
         { text: 'Sources commenté .ASM', available: true },
         { text: 'Planches de sprites/masques .IFF', available: true },
         { text: 'Screen .PI1', available: true },
         { text: 'Musique midi/cubase .SND', available: true },
         { text: 'Samples audio .SND', available: true },
-        { text: 'Accès libre aux projets complets', available: false }
+        { text: 'Accès libre aux projets complets', available: false },
+        { text: 'Imprimer les articles en PDF', available: false },
+
         
       ],
       highlighted: true
@@ -69,14 +73,17 @@ export class Pricing {
       ctaText: '',
       features: [
         { text: 'Tous les Cours ASM 68000', available: true },
-        { text: 'Toutes les documentation Atari', available: true },
-        { text: 'tutoriel', available: true },
+        { text: 'Toutes les documentations Atari', available: true },
+        { text: 'Tutoriel', available: true },
         { text: 'Ressources à télécharger', available: true },
         { text: 'Sources commenté .ASM', available: true },
         { text: 'Planches de sprites/masques .IFF', available: true },
+        { text: 'Screen .PI1', available: true },
         { text: 'Musique midi/cubase .SND', available: true },
         { text: 'Samples audio .SND', available: true },
-        { text: 'Accès libre aux projets complets', available: true }
+        { text: 'Accès libre aux projets complets', available: true },
+        { text: 'Imprimer les articles en PDF', available: true },
+
       ],
       highlighted: false
     }
