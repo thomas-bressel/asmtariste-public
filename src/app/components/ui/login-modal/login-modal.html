@@ -39,20 +39,20 @@
             <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()" class="form">
                 <div class="inputGroup">
                     <label for="nickname" class="label">Nom d'utilisateur</label>
-                    <input id="nickname" type="text" formControlName="nickname" class="input" placeholder="votre_nom"autocomplete="nickname" required />
+                    <input id="nickname" type="text" formControlName="nickname" class="input" placeholder="votre_nom" autocomplete="nickname" inputmode="text" required />
                 </div>
 
                 @if (mode() === 'signIn') {
                 <div class="inputGroup">
                     <label for="email" class="label">Email</label>
-                    <input id="email" type="email" formControlName="email" class="input" placeholder="votre@email.fr"autocomplete="email" required />
+                    <input id="email" type="email" formControlName="email" class="input" placeholder="votre@email.fr" autocomplete="email" inputmode="email" required />
                 </div>
                 }
 
                 @if (mode() === 'login') {
                 <div class="inputGroup">
                     <label for="password" class="label">Mot de passe</label>
-                    <input id="password" type="password" formControlName="password" class="input" placeholder="••••••••"autocomplete="current-password" required/>
+                    <input id="password" type="password" formControlName="password" class="input" placeholder="••••••••" autocomplete="current-password" required />
                 </div>
 
                 <div class="forgotPassword">

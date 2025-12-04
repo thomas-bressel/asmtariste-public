@@ -91,7 +91,17 @@ ngOnInit(): void {
     this.mode.set('login');
     this.updateFormValidators();
     this.isVisible = true;
-    document.body.style.overflow = 'hidden'; // Bloquer le scroll
+
+    // Sur mobile, ne pas bloquer l'overflow pour permettre au clavier de fonctionner
+    if (window.innerWidth >= 768) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Focus automatique sur le premier champ après l'ouverture
+    setTimeout(() => {
+      const firstInput = document.getElementById('nickname');
+      if (firstInput) firstInput.focus();
+    }, 100);
   }
 
 
@@ -107,7 +117,17 @@ ngOnInit(): void {
     this.updateFormValidators();
     this.loginForm.reset();
     this.isVisible = true;
-    document.body.style.overflow = 'hidden'; // Bloquer le scroll
+
+    // Sur mobile, ne pas bloquer l'overflow pour permettre au clavier de fonctionner
+    if (window.innerWidth >= 768) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Focus automatique sur le premier champ après l'ouverture
+    setTimeout(() => {
+      const firstInput = document.getElementById('nickname');
+      if (firstInput) firstInput.focus();
+    }, 100);
   }
 
 
