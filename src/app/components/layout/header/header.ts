@@ -8,7 +8,7 @@ import { AuthService } from '@services/auth.service';
 
 // Component imports
 import { LoginModal } from '@components/ui/login-modal/login-modal';
-
+import { USER_API_URI } from 'src/app/shared/config-api';
 @Component({
   selector: 'header[app-header]',
   imports: [RouterLink, LoginModal],
@@ -20,7 +20,7 @@ import { LoginModal } from '@components/ui/login-modal/login-modal';
 })
 export class Header implements OnInit, OnDestroy {
   @ViewChild(LoginModal) loginModal!: LoginModal;
-  private readonly avatarBaseUrl = 'http://localhost:5002/avatars/';
+  private readonly avatarBaseUrl = USER_API_URI;
 
   // Dependency injections
   public auth = inject(AuthService);
@@ -165,7 +165,8 @@ export class Header implements OnInit, OnDestroy {
       });
       this.isOpen.set(false);
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la déconnexion';
+      console.error('Erreur lors de la déconnexion:', errorMessage);
     }
   }
 }
