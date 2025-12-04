@@ -11,6 +11,8 @@ import {
   ProfileResponse
 } from '@models/auth.model';
 
+import { USER_API_URI } from '../../config-api';
+
 /**
  * AUTH API - Pure HTTP Calls + Token Storage
  *
@@ -26,7 +28,7 @@ import {
   providedIn: 'root'
 })
 export class AuthApi {
-  private baseUrl = 'http://localhost:5002';
+  private baseUrl = USER_API_URI;
 
   /**
    * Crée les headers avec le token Bearer depuis localStorage
