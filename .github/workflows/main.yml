@@ -48,6 +48,10 @@ jobs:
         script: |
           cd ~/asmtariste
 
+          # Créer le réseau si inexistant
+          docker network inspect asmtariste-net-production >/dev/null 2>&1 || \
+          docker network create asmtariste-net-production
+
           # Arrêter seulement le dashboard
           docker compose -f docker-compose.production.yml stop asmtariste
 
