@@ -9,5 +9,5 @@ const contentApiEnv = {
     staging: 'https://staging.drawer.auroreia.fr/api/content',
 }
 
-export const USER_API_URI: string = userApiEnv.production;
-export const CONTENT_API_URI: string = contentApiEnv.production;
+export const USER_API_URI: string = userApiEnv.staging;
+export const CONTENT_API_URI: string = contentApiEnv.staging;
