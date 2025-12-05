@@ -53,16 +53,16 @@ jobs:
           docker network create asmtariste-net-production
 
           # Arrêter seulement le dashboard
-          docker compose -f docker-compose.production.yml stop asmtariste
+          docker compose -f docker-compose.production.yml stop asmtariste-production
 
           # Récupérer la nouvelle image
-          docker compose -f docker-compose.production.yml pull asmtariste
+          docker compose -f docker-compose.production.yml pull asmtariste-production
 
           # Relancer avec la nouvelle image
-          docker compose -f docker-compose.production.yml up -d asmtariste
+          docker compose -f docker-compose.production.yml up -d asmtariste-production
 
           # Vérifier le statut
-          docker compose -f docker-compose.production.yml ps asmtariste
+          docker compose -f docker-compose.production.yml ps asmtariste-production
 
           # Nettoyer les anciennes images
           docker image prune -f

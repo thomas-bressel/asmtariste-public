@@ -49,16 +49,16 @@ jobs:
           cd ~/asmtariste
 
           # Arrêter seulement le dashboard
-          docker compose -f docker-compose.staging.yml stop asmtariste
+          docker compose -f docker-compose.staging.yml stop asmtariste-staging
 
           # Récupérer la nouvelle image
-          docker compose -f docker-compose.staging.yml pull asmtariste
+          docker compose -f docker-compose.staging.yml pull asmtariste-staging
 
           # Relancer avec la nouvelle image
-          docker compose -f docker-compose.staging.yml up -d asmtariste
+          docker compose -f docker-compose.staging.yml up -d asmtariste-staging
 
           # Vérifier le statut
-          docker compose -f docker-compose.staging.yml ps asmtariste
+          docker compose -f docker-compose.staging.yml ps asmtariste-staging
 
           # Nettoyer les anciennes images
           docker image prune -f
