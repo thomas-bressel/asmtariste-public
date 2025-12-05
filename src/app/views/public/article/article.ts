@@ -11,6 +11,15 @@ import { PaginationComponent } from '@components/ui/pagination/pagination';
 
 import { CONTENT_API_URI } from 'src/app/shared/config-api';
 
+/**
+ * Article detail page component for displaying individual articles.
+ * Route: /[category]/article/:slug (e.g., /actualite/article/my-article)
+ *
+ * @component
+ * @description Displays a single article with its content organized in pages.
+ * Loads article data and content by slug from ArticleService and ContentService.
+ * Supports paginated content navigation using PaginationService.
+ */
 @Component({
   selector: 'app-article',
   imports: [CommonModule, PaginationComponent],
@@ -18,34 +27,123 @@ import { CONTENT_API_URI } from 'src/app/shared/config-api';
   styleUrl: './article.scss',
 })
 export class Article implements OnInit, OnDestroy {
+  /**
+   * Angular injector for managing effects.
+   * @private
+   * @readonly
+   * @type {Injector}
+   */
   private readonly injector = inject(Injector);
+
+  /**
+   * Activated route for accessing URL parameters.
+   * @private
+   * @type {ActivatedRoute}
+   */
   private route = inject(ActivatedRoute);
+
+  /**
+   * Item selector service for managing selected article state.
+   * @private
+   * @type {ItemSelector}
+   */
   private selectorService = inject(ItemSelector);
+
+  /**
+   * Content service for fetching article content pages.
+   * @private
+   * @type {ContentService}
+   */
   private contentService = inject(ContentService);
+
+  /**
+   * Article service for fetching article metadata.
+   * @private
+   * @type {ArticleService}
+   */
   private articleService = inject(ArticleService);
+
+  /**
+   * Pagination service for managing page navigation.
+   * @private
+   * @type {PaginationService}
+   */
   private paginationService = inject(PaginationService);
 
+  /**
+   * Base URL for content API endpoints.
+   * @public
+   * @type {string}
+   */
   public baseUrlAPI = CONTENT_API_URI;
 
+  /**
+   * Signal containing the current article slug from route parameters.
+   * @protected
+   * @type {Signal<string | null>}
+   */
   protected slug = signal<string | null>(null);
+
+  /**
+   * Signal containing the selected article ID.
+   * @private
+   * @type {Signal<number>}
+   */
   private articleId = signal(this.selectorService.selectedItemId());
 
-  // Signal for current page
+  /**
+   * Internal signal for tracking the current page number.
+   * @private
+   * @readonly
+   * @type {Signal<number>}
+   */
   private readonly _currentPage = signal<number>(1);
+
+  /**
+   * Read-only signal exposing the current page number.
+   * @public
+   * @readonly
+   * @type {ReadonlySignal<number>}
+   */
   public readonly currentPage = this._currentPage.asReadonly();
 
-  // Computed signals
+  /**
+   * Computed signal containing the article metadata.
+   * @protected
+   * @type {Signal<any>}
+   */
   protected articleData = computed(() => this.articleService.articleById());
+
+  /**
+   * Computed signal containing the article content organized by pages.
+   * @protected
+   * @type {Signal<any[]>}
+   */
   protected contentsByPages = computed(() => this.contentService.contentsByPages());
-  protected isLoading = computed(() => 
+
+  /**
+   * Computed signal indicating whether article or content is loading.
+   * @protected
+   * @type {Signal<boolean>}
+   */
+  protected isLoading = computed(() =>
     this.articleService.loading() || this.contentService.loading()
   );
-  protected error = computed(() => 
+
+  /**
+   * Computed signal containing any errors from article or content loading.
+   * @protected
+   * @type {Signal<any>}
+   */
+  protected error = computed(() =>
     this.articleService.error() || this.contentService.error()
   );
 
   /**
-   * Computed to get total pages count
+   * Computed signal that returns the total number of content pages.
+   *
+   * @public
+   * @returns {number} The total number of pages, or 0 if no pages exist
    */
   public totalPages = computed(() => {
     const pages = this.contentsByPages();
@@ -53,17 +151,24 @@ export class Article implements OnInit, OnDestroy {
   });
 
   /**
-   * Computed to get current page content
+   * Computed signal that returns the content for the current page.
+   *
+   * @public
+   * @returns {any | null} The current page content object, or null if not found
    */
   public currentPageContent = computed(() => {
     const pages = this.contentsByPages();
     const page = this.currentPage();
-    
+
     if (!pages || pages.length === 0) return null;
-    
+
     return pages.find((p: any) => p.page === page) || null;
   });
 
+  /**
+   * Constructor that sets up reactive effects for pagination management.
+   * Synchronizes pagination service with component state.
+   */
   constructor() {
     // Effect to update pagination service when total pages changes
     effect(() => {
@@ -80,6 +185,12 @@ export class Article implements OnInit, OnDestroy {
     }, { injector: this.injector });
   }
 
+  /**
+   * Lifecycle hook that is called after component initialization.
+   * Subscribes to route parameter changes and loads article data and content by slug.
+   *
+   * @returns {Promise<void>}
+   */
   async ngOnInit(): Promise<void> {
     this.paginationService.reset();
 
@@ -88,10 +199,9 @@ export class Article implements OnInit, OnDestroy {
 
       const idArticle = this.articleId();
       const slugArticle = this.slug();
-      // console.log('[COMPONENT] slug : ', slugArticle)
+
       if (slugArticle) {
         await Promise.all([
-          // this.articleService.loadArticleById(idArticle),
           this.articleService.loadArticleBySlug(slugArticle),
           this.contentService.loadContentByArticleSlug(slugArticle)
         ]);
@@ -99,6 +209,12 @@ export class Article implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   * Cleans up the content store and resets pagination state.
+   *
+   * @returns {void}
+   */
   ngOnDestroy(): void {
     this.contentService.clearStore();
     this.paginationService.reset();

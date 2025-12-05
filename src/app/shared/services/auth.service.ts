@@ -7,10 +7,10 @@ import chalk from 'chalk';
 /**
  * AUTH FACADE SERVICE - Orchestration Layer
  *
- * RÈGLES:
- * - Point d'entrée UNIQUE pour les composants
- * - Appelle l'API (qui gère localStorage), puis met à jour le store selon la réponse
- * - Les composants ne doivent JAMAIS appeler directement API ou Store
+ * RULES:
+ * - Single entry point for components
+ * - Calls the API (which manages localStorage), then updates the store based on the response
+ * - Components should NEVER call API or Store directly
  */
 
 @Injectable({
@@ -21,38 +21,75 @@ export class AuthService {
   private authStore = inject(AuthStore);
 
   // ===== EXPOSED SELECTORS =====
+
+  /**
+   * Gets the current authenticated user signal
+   * @returns Signal containing the current user data or null if not authenticated
+   */
   get user(): Signal<User | null> {
     return this.authStore.user;
   }
 
+  /**
+   * Gets the loading state signal for authentication operations
+   * @returns Signal indicating if an authentication operation is in progress
+   */
   get isLoading(): Signal<boolean> {
     return this.authStore.isLoading;
   }
 
+  /**
+   * Gets the authentication error signal
+   * @returns Signal containing the last authentication error message or null
+   */
   get error(): Signal<string | null> {
     return this.authStore.error;
   }
 
+  /**
+   * Gets the authentication status signal
+   * @returns Signal indicating if a user is currently authenticated
+   */
   get isAuthenticated(): Signal<boolean> {
     return this.authStore.isAuthenticated;
   }
 
+  /**
+   * Gets the current session token signal
+   * @returns Signal containing the session token or null if not authenticated
+   */
   get sessionToken(): Signal<string | null> {
     return this.authStore.sessionToken;
   }
 
+  /**
+   * Gets the current refresh token signal
+   * @returns Signal containing the refresh token or null if not available
+   */
   get refreshToken(): Signal<string | null> {
     return this.authStore.refreshToken;
   }
 
+  /**
+   * Gets the user profile data signal
+   * @returns Signal containing the user profile data or null if not loaded
+   */
   get profile(): Signal<ProfileResponse | null> {
     return this.authStore.profile;
   }
 
+  /**
+   * Gets the profile loading state signal
+   * @returns Signal indicating if profile data is being loaded
+   */
   get profileLoading(): Signal<boolean> {
     return this.authStore.profileLoading;
   }
 
+  /**
+   * Gets the profile error signal
+   * @returns Signal containing the profile loading error message or null
+   */
   get profileError(): Signal<string | null> {
     return this.authStore.profileError;
   }
@@ -60,8 +97,9 @@ export class AuthService {
   // ===== INITIALIZATION =====
 
   /**
-   * Initialize authentication state from JWT token in localStorage
+   * Initializes authentication state from JWT token in localStorage
    * Called by APP_INITIALIZER to restore session on app startup
+   * @returns Promise that resolves when initialization is complete
    */
   async initialize(): Promise<void> {
     const token = localStorage.getItem('session_token');
@@ -70,12 +108,12 @@ export class AuthService {
       try {
         this.authStore.setLoading(true);
 
-        // Vérifier si le token est valide et récupérer les données utilisateur
+        // Verify if the token is valid and retrieve user data
         const userData = await this.authApi.checkSession();
 
         this.authStore.setAuthData(userData, token);
       } catch (error) {
-        console.error('Token invalide lors de l\'initialisation:', error);
+        console.error('Invalid token during initialization:', error);
         this.authApi.clearTokens();
         this.authStore.clearAuth();
       }
@@ -85,7 +123,11 @@ export class AuthService {
   // ===== AUTH OPERATIONS =====
 
   /**
-   * Login with credentials
+   * Authenticates a user with email and password credentials
+   * Stores tokens in localStorage and updates the auth store on success
+   * @param credentials - User login credentials (email and password)
+   * @returns Promise that resolves when login is complete
+   * @throws Error if login fails or response format is invalid
    */
   async login(credentials: LoginCredentials): Promise<void> {
     // console.log(chalk.green('[FACADE] - login() called'));
@@ -94,16 +136,16 @@ export class AuthService {
     this.authStore.setLoading(true);
 
     try {
-      // 1. Appel API (qui stocke automatiquement les tokens dans localStorage)
+      // 1. API call (automatically stores tokens in localStorage)
       const response = await this.authApi.login(credentials);
       // console.log(chalk.green('[FACADE] - login() response:', JSON.stringify(response, null, 2)));
 
-      // 2. Vérifier que la réponse contient les données nécessaires
+      // 2. Verify that the response contains necessary data
       if (!response.sessionToken) {
-        throw new Error('Format de réponse invalide : sessionToken manquant');
+        throw new Error('Invalid response format: sessionToken missing');
       }
 
-      // 3. Construire l'objet User
+      // 3. Build User object
       const user: User = {
         user: {
           firstname: response.firstname!,
@@ -112,19 +154,23 @@ export class AuthService {
         }
       };
 
-      // 4. Mise à jour du store
+      // 4. Update store
       this.authStore.setAuthData(user, response.sessionToken, response.refreshToken || null);
 
       // console.log(chalk.green('[FACADE] - login() success - User:', user));
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Échec de connexion';
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
       this.authStore.setError(errorMessage);
       throw error;
     }
   }
 
   /**
-   * Sign in with nickname and email
+   * Registers a new user with nickname and email
+   * Sends a confirmation email to complete the registration
+   * @param credentials - User registration credentials (nickname, email)
+   * @returns Promise that resolves when registration request is complete
+   * @throws Error if registration fails
    */
   async signIn(credentials: SignInCredentials): Promise<void> {
     this.authStore.clearError();
@@ -134,14 +180,18 @@ export class AuthService {
       await this.authApi.signIn(credentials);
       this.authStore.setLoading(false);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Échec de l\'inscription';
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
       this.authStore.setError(errorMessage);
       throw error;
     }
   }
 
   /**
-   * Confirm signup with token and password
+   * Confirms user signup with token and password
+   * Completes the registration process after email confirmation
+   * @param credentials - Confirmation credentials (token and password)
+   * @returns Promise that resolves when confirmation is complete
+   * @throws Error if confirmation fails
    */
   async confirmSignup(credentials: ConfirmSignupCredentials): Promise<void> {
     this.authStore.clearError();
@@ -151,14 +201,17 @@ export class AuthService {
       await this.authApi.confirmSignup(credentials);
       this.authStore.setLoading(false);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Échec de la confirmation';
+      const errorMessage = error instanceof Error ? error.message : 'Confirmation failed';
       this.authStore.setError(errorMessage);
       throw error;
     }
   }
 
   /**
-   * Login with Google
+   * Initiates Google OAuth authentication flow
+   * Returns the Google authentication URL to redirect the user
+   * @returns Promise resolving to the Google OAuth authorization URL
+   * @throws Error if unable to get Google auth URL
    */
   async loginWithGoogle(): Promise<string> {
     this.authStore.clearError();
@@ -169,24 +222,26 @@ export class AuthService {
       this.authStore.setLoading(false);
       return response.authUrl;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Échec de connexion avec Google';
+      const errorMessage = error instanceof Error ? error.message : 'Google login failed';
       this.authStore.setError(errorMessage);
       throw error;
     }
   }
 
   /**
-   * Logout
+   * Logs out the current user
+   * Clears tokens from localStorage and resets authentication state
+   * @returns Promise that resolves when logout is complete
    */
   async logout(): Promise<void> {
     this.authStore.clearError();
     this.authStore.setLoading(true);
 
     try {
-      // L'API supprime les tokens de localStorage
+      // API removes tokens from localStorage
       await this.authApi.logout();
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
+      console.error('Error during logout:', error);
     } finally {
       this.authStore.clearAuth();
       this.authStore.clearProfile();
@@ -194,7 +249,11 @@ export class AuthService {
   }
 
   /**
-   * Forgot password
+   * Initiates password reset process
+   * Sends a password reset email to the specified address
+   * @param email - Email address to send password reset link
+   * @returns Promise that resolves when reset email is sent
+   * @throws Error if request fails
    */
   async forgotPassword(email: string): Promise<void> {
     this.authStore.clearError();
@@ -204,14 +263,18 @@ export class AuthService {
       await this.authApi.forgotPassword(email);
       this.authStore.setLoading(false);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Échec de la demande de réinitialisation';
+      const errorMessage = error instanceof Error ? error.message : 'Password reset request failed';
       this.authStore.setError(errorMessage);
       throw error;
     }
   }
 
   /**
-   * Reset password with token
+   * Resets user password using a reset token
+   * Completes the password reset process after email link click
+   * @param credentials - Reset credentials containing token and new password
+   * @returns Promise that resolves when password is reset
+   * @throws Error if reset fails
    */
   async resetPassword(credentials: { token: string; password: string }): Promise<void> {
     this.authStore.clearError();
@@ -221,35 +284,38 @@ export class AuthService {
       await this.authApi.resetPassword(credentials);
       this.authStore.setLoading(false);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Échec de la réinitialisation';
+      const errorMessage = error instanceof Error ? error.message : 'Password reset failed';
       this.authStore.setError(errorMessage);
       throw error;
     }
   }
 
   /**
-   * Get user profile
+   * Fetches the authenticated user's profile data
+   * Updates the profile store with the retrieved data
+   * @returns Promise resolving to the user's profile data
+   * @throws Error if profile loading fails
    */
   async getProfile(): Promise<ProfileResponse> {
     this.authStore.setProfileLoading(true);
 
     try {
-      // 1. Appel API
+      // 1. API call
       const profileData = await this.authApi.getProfile();
 
-      // 2. Mise à jour du store
+      // 2. Update store
       this.authStore.setProfile(profileData);
 
       return profileData;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Impossible de charger le profil';
+      const errorMessage = error instanceof Error ? error.message : 'Unable to load profile';
       this.authStore.setProfileError(errorMessage);
       throw error;
     }
   }
 
   /**
-   * Clear authentication error
+   * Clears any authentication error from the store
    */
   clearError(): void {
     this.authStore.clearError();

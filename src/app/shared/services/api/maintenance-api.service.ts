@@ -3,15 +3,24 @@ import { MaintenanceStatus } from '@models/maintenance.model';
 import { USER_API_URI } from '../../config-api';
 
 /**
- * MAINTENANCE API SERVICE
+ * Maintenance API Service for HTTP Operations
  *
- * RÈGLES:
- * - Gère les appels HTTP vers l'API User
- * - NE doit être appelé QUE par MaintenanceService (facade)
- * - Retourne les données brutes de l'API
- * - Pas de logique métier, juste HTTP
- * - LECTURE SEULE: ce site ne peut pas modifier le statut de maintenance
- *   (seul le Dashboard Drawer peut le faire)
+ * This service handles HTTP requests to check the maintenance status
+ * of the application. It provides a read-only interface to the maintenance
+ * status endpoint.
+ *
+ * RULES:
+ * - Handles HTTP calls to the User API for maintenance status
+ * - Should ONLY be called by MaintenanceService (facade)
+ * - Returns raw API data without transformation
+ * - No business logic, just HTTP operations
+ * - READ-ONLY: this site cannot modify maintenance status
+ *   (only the Dashboard Drawer can do that)
+ *
+ * IMPORTANT BEHAVIOR:
+ * - If API doesn't respond correctly (404, 500, timeout, etc.)
+ * - The site is considered IN MAINTENANCE mode
+ * - This prevents displaying a broken site if the backend has issues
  */
 
 @Injectable({
@@ -21,12 +30,16 @@ export class MaintenanceApiService {
   private baseUrl = USER_API_URI;
 
   /**
-   * Récupère le statut de maintenance depuis l'API
-   * Route publique (pas besoin d'authentification)
+   * Retrieves the maintenance status from the API
+   * Public route (no authentication required)
+   * Makes HTTP GET request to system status endpoint
    *
-   * IMPORTANT: Si l'API ne répond pas correctement (404, 500, timeout, etc.)
-   * → On considère que le site EST EN MAINTENANCE
-   * → Cela évite d'afficher un site cassé si le backend a un problème
+   * IMPORTANT: If the API doesn't respond correctly (404, 500, timeout, etc.)
+   * the site is considered IN MAINTENANCE mode
+   * This prevents displaying a broken site if the backend has issues
+   *
+   * @returns {Promise<MaintenanceStatus>} Promise resolving to maintenance status object
+   * @returns {MaintenanceStatus} Returns {enabled: true, message: string} if API fails or network error occurs
    */
   async getStatus(): Promise<MaintenanceStatus> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -38,22 +51,22 @@ export class MaintenanceApiService {
       });
 
       if (!response.ok) {
-        // ⚠️ API en erreur (404, 500, etc.) = Site en maintenance
-        console.error('[Maintenance API] Erreur API:', response.status, response.statusText);
+        // Warning: API error (404, 500, etc.) = Site in maintenance mode
+        console.error('[Maintenance API] API Error:', response.status, response.statusText);
         return {
           enabled: true,
-          message: 'Le site est temporairement indisponible pour maintenance technique. Nous serons de retour très bientôt.'
+          message: 'The site is temporarily unavailable for technical maintenance. We will be back very soon.'
         };
       }
 
-      // API OK = Retourner le statut réel
+      // API OK = Return the actual status
       return response.json();
     } catch (error) {
-      // ⚠️ Erreur réseau (timeout, connexion refusée, etc.) = Site en maintenance
-      console.error('[Maintenance API] Erreur réseau:', error);
+      // Warning: Network error (timeout, connection refused, etc.) = Site in maintenance mode
+      console.error('[Maintenance API] Network Error:', error);
       return {
         enabled: true,
-        message: 'Le site est temporairement indisponible. Veuillez réessayer dans quelques instants.'
+        message: 'The site is temporarily unavailable. Please try again in a few moments.'
       };
     }
   }

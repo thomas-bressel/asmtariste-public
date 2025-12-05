@@ -2,7 +2,38 @@ import { Component, OnDestroy, OnInit, inject, EffectRef, effect, signal } from 
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '@services/auth.service';
+import { NotificationService } from '@services/ui/notification.service';
 
+/**
+ * Angular standalone modal component for user authentication.
+ *
+ * This component provides a dual-purpose modal dialog for both login and registration (sign-in) functionality.
+ * It features reactive forms with dynamic validation, OAuth integration with Google, keyboard navigation support,
+ * and automatic form state management based on loading states.
+ *
+ * Features:
+ * - Toggle between login and registration modes
+ * - Form validation with email and required field validators
+ * - Google OAuth authentication support
+ * - ESC key to close modal
+ * - Click outside overlay to close
+ * - Auto-focus on first input field
+ * - Loading state management with automatic form disable/enable
+ * - Mobile-friendly overflow handling
+ *
+ * @example
+ * ```typescript
+ * // In parent component template
+ * <app-login-modal #loginModal></app-login-modal>
+ *
+ * // In parent component class
+ * @ViewChild('loginModal') loginModal!: LoginModal;
+ *
+ * openLogin() {
+ *   this.loginModal.open();
+ * }
+ * ```
+ */
 @Component({
   selector: 'app-login-modal',
   templateUrl: './login-modal.html',
@@ -11,25 +42,42 @@ import { AuthService } from '@services/auth.service';
 })
 export class LoginModal implements OnInit, OnDestroy {
 
-  // Dependency injections
+  /** Injected FormBuilder for reactive form creation */
   private fb = inject(FormBuilder);
+
+  /** Injected AuthService for authentication operations */
   public auth = inject(AuthService);
+
+  /** Injected Router for navigation after authentication */
   private router = inject(Router);
 
-  // Modal visibility state
+  /** Injected NotificationService for displaying user messages */
+  private notificationService = inject(NotificationService);
+
+  /** Boolean flag controlling the modal's visibility state */
   public isVisible = false;
 
-  // Mode: 'login' ou 'signIn'
+  /**
+   * Signal controlling the modal mode.
+   * 'login' - Shows login form with nickname and password
+   * 'signIn' - Shows registration form with nickname and email
+   */
   public mode = signal<'login' | 'signIn'>('login');
 
-  // Login form group
+  /** Reactive form group containing authentication form controls */
   loginForm!: FormGroup;
 
-  // Effect reference for loading state
+  /**
+   * Reference to the effect that synchronizes form state with loading status.
+   * Stored to allow proper cleanup on component destruction.
+   */
   private loadingEffectRef?: EffectRef;
 
-
-  // Build
+  /**
+   * Constructor that initializes the component and sets up reactive effects.
+   * Creates an effect that automatically disables the form during authentication requests
+   * and re-enables it when complete.
+   */
   constructor() {
     // Effect to disable/enable form controls based on isLoading state
     this.loadingEffectRef = effect(() => {
@@ -42,41 +90,44 @@ export class LoginModal implements OnInit, OnDestroy {
 
 
 
-ngOnInit(): void {
-    // Initialiser le formulaire
+  /**
+   * Angular lifecycle hook called after component initialization.
+   * Initializes the reactive form with all necessary controls and validators,
+   * sets up keyboard event listeners for ESC key handling,
+   * and synchronizes initial form state with authentication loading status.
+   */
+  ngOnInit(): void {
+    // Initialize the form with all controls
     this.loginForm = this.fb.group({
       nickname: new FormControl('', { validators: [Validators.required], nonNullable: true }),
       password: new FormControl('', { validators: [Validators.required], nonNullable: true }),
       email: new FormControl('', { validators: [Validators.required, Validators.email], nonNullable: true })
     });
 
-    // GÃ©rer la fermeture avec la touche ESC
+    // Handle modal closure with ESC key
     document.addEventListener('keydown', this.handleKeyDown);
 
-    // Mettre Ã  jour manuellement l'Ã©tat du formulaire aprÃ¨s son initialisation
-    if (this.auth.isLoading()) {
-      this.loginForm.disable();
-    } else {
-      this.loginForm.enable();
-    }
+    // Manually update form state after initialization
+    this.auth.isLoading() ? this.loginForm.disable() : this.loginForm.enable();
   }
 
 
 
 
-/**
- * On component death
- */
+  /**
+   * Angular lifecycle hook called before component destruction.
+   * Performs cleanup operations including destroying the loading effect,
+   * removing keyboard event listeners, and restoring page scrolling if modal is visible.
+   */
   ngOnDestroy(): void {
-    // Nettoyer l'effect
+    // Clean up the loading effect
     if (this.loadingEffectRef) this.loadingEffectRef.destroy();
 
-    // Supprimer les écouteurs d'événements
+    // Remove event listeners
     document.removeEventListener('keydown', this.handleKeyDown);
 
-    // Réactiver le scroll si la modale est visible lors de la destruction
+    // Re-enable scrolling if modal is visible during destruction
     if (this.isVisible) document.body.style.overflow = 'unset';
-
   }
 
 
@@ -85,19 +136,20 @@ ngOnInit(): void {
 
 
   /**
-   * Ouvrir la modale
+   * Opens the modal in login mode.
+   * Updates form validators for login requirements (nickname and password),
+   * disables page scrolling on desktop devices, and auto-focuses the first input field.
+   * On mobile devices (width < 768px), scrolling is preserved to allow keyboard functionality.
    */
   public open(): void {
     this.mode.set('login');
     this.updateFormValidators();
     this.isVisible = true;
 
-    // Sur mobile, ne pas bloquer l'overflow pour permettre au clavier de fonctionner
-    if (window.innerWidth >= 768) {
-      document.body.style.overflow = 'hidden';
-    }
+    // On mobile, don't block overflow to allow keyboard to function properly
+    if (window.innerWidth >= 768) document.body.style.overflow = 'hidden';
 
-    // Focus automatique sur le premier champ après l'ouverture
+    // Auto-focus on the first field after opening
     setTimeout(() => {
       const firstInput = document.getElementById('nickname');
       if (firstInput) firstInput.focus();
@@ -110,7 +162,11 @@ ngOnInit(): void {
 
 
   /**
-   * Ouvrir la modale en mode inscription
+   * Opens the modal in registration (sign-in) mode.
+   * Updates form validators for registration requirements (nickname and email),
+   * resets the form to clear any previous data, disables page scrolling on desktop devices,
+   * and auto-focuses the first input field.
+   * On mobile devices (width < 768px), scrolling is preserved to allow keyboard functionality.
    */
   public openSignIn(): void {
     this.mode.set('signIn');
@@ -118,12 +174,10 @@ ngOnInit(): void {
     this.loginForm.reset();
     this.isVisible = true;
 
-    // Sur mobile, ne pas bloquer l'overflow pour permettre au clavier de fonctionner
-    if (window.innerWidth >= 768) {
-      document.body.style.overflow = 'hidden';
-    }
+    // On mobile, don't block overflow to allow keyboard to function properly
+    if (window.innerWidth >= 768) document.body.style.overflow = 'hidden';
 
-    // Focus automatique sur le premier champ après l'ouverture
+    // Auto-focus on the first field after opening
     setTimeout(() => {
       const firstInput = document.getElementById('nickname');
       if (firstInput) firstInput.focus();
@@ -131,8 +185,15 @@ ngOnInit(): void {
   }
 
 
+
+
+
+
+
   /**
-   * Basculer entre les modes login et signIn
+   * Toggles between login and registration (sign-in) modes.
+   * Updates form validators according to the new mode, resets the form,
+   * and clears any authentication errors from previous attempts.
    */
   public toggleMode(): void {
     this.mode.update(m => m === 'login' ? 'signIn' : 'login');
@@ -149,7 +210,12 @@ ngOnInit(): void {
 
 
   /**
-   * Mettre à jour les validateurs du formulaire selon le mode
+   * Updates form validators dynamically based on the current modal mode.
+   * In login mode: email is not required, password is required
+   * In sign-in mode: email is required with email format validation, password is not required
+   * Triggers validation updates for affected form controls.
+   *
+   * @private
    */
   private updateFormValidators(): void {
     if (this.mode() === 'login') {
@@ -168,18 +234,16 @@ ngOnInit(): void {
 
 
   /**
-   * Fermer la modale
+   * Closes the modal dialog.
+   * Resets the form to clear all entered data, clears any authentication errors,
+   * hides the modal, and re-enables page scrolling.
    */
   public close(): void {
     this.loginForm.reset();
     this.auth.clearError();
     this.isVisible = false;
-    document.body.style.overflow = 'unset'; // Réactiver le scroll
+    document.body.style.overflow = 'unset'; // Re-enable scrolling
 
-    // // Reload the homepage to update the content based on authentication state
-    // this.router.navigateByUrl('/accueil', { replaceUrl: true }).then(() => {
-    //   location.reload();
-    // });
   }
 
 
@@ -188,7 +252,11 @@ ngOnInit(): void {
 
 
   /**
-   * Gestionnaire d'événement pour la touche ESC
+   * Event handler for keyboard events.
+   * Closes the modal when ESC key is pressed and modal is visible.
+   *
+   * @param e - Keyboard event object
+   * @private
    */
   private handleKeyDown = (e: KeyboardEvent): void => {
     if (e.key === 'Escape' && this.isVisible) this.close();
@@ -199,8 +267,14 @@ ngOnInit(): void {
 
 
 
+
+
   /**
-   * Gestion du clic sur l'overlay (fermeture de la modale)
+   * Handles clicks on the modal overlay (backdrop).
+   * Closes the modal only when clicking directly on the overlay,
+   * not when clicking on modal content.
+   *
+   * @param event - Mouse event object
    */
   handleOverlayClick(event: MouseEvent): void {
     if (event.target === event.currentTarget) this.close();
@@ -210,65 +284,51 @@ ngOnInit(): void {
 
 
 
-/**
-   * Soumission du formulaire de connexion
+  /**
+   * Handles form submission for both login and registration.
+   * Validates form state before processing. In login mode, authenticates user with nickname and password.
+   * In registration mode, creates new account with nickname and email, then shows confirmation message.
+   * Closes modal and navigates appropriately on success.
+   *
+   * @returns Promise that resolves when authentication completes
    */
-  async handleSubmit(): Promise<void> {
+  public async handleSubmit(): Promise<void> {
     if (this.loginForm.invalid || this.auth.isLoading()) return;
 
     try {
       if (this.mode() === 'login') {
-        const credentials = { 
+        const credentials = {
           nickname: this.loginForm.value.nickname,
           password: this.loginForm.value.password
         };
         await this.auth.login(credentials);
-        // console.log('Utilisateur connecté');
         this.isVisible = false;
         document.body.style.overflow = 'unset';
-        
-        // Recharger uniquement après connexion réussie
-        this.router.navigateByUrl('/accueil', { replaceUrl: true }).then(() => {
-          // location.reload();
-        });
+                
+        // Success message
+        this.notificationService.show('login.success', 2000, true);
+
       } else {
-        const credentials = { 
+        const credentials = {
           nickname: this.loginForm.value.nickname,
           email: this.loginForm.value.email
         };
         await this.auth.signIn(credentials);
-        // console.log('Inscription réussie');
         
-        // Fermer la modale et afficher un message de succès
+        // Close modal and display success message
         this.isVisible = false;
         document.body.style.overflow = 'unset';
-        
-        // Message de succès
-        alert('✓ Un email de confirmation vous a été envoyé. Consultez votre boîte mail pour finaliser votre inscription.');
-        
+
         this.loginForm.reset();
+
+         // Success message
+        this.notificationService.show('registration.success', 5000, false);
+
       }
     } catch (error) {
-      console.error('Erreur:', error);
-    }
+      console.error('Error:', error);
+    } 
   }
 
 
-
-
-
-  /**
-   * Connexion avec Google
-   */
-  async handleGoogleLogin(): Promise<void> {
-    if (this.auth.isLoading()) return;
-
-    try {
-      const authUrl = await this.auth.loginWithGoogle();
-      // Rediriger vers l'URL d'authentification Google
-      window.location.href = authUrl;
-    } catch (error) {
-      console.error('Erreur Google OAuth:', error);
-    }
-  }
 }

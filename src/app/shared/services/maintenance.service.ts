@@ -3,13 +3,13 @@ import { MaintenanceStatus } from '@models/maintenance.model';
 import { MaintenanceApiService } from './api/maintenance-api.service';
 
 /**
- * MAINTENANCE SERVICE (Facade)
+ * MAINTENANCE FACADE SERVICE - Orchestration Layer
  *
- * RÈGLES:
- * - Seul service accessible depuis les composants
- * - Gère la logique métier et le state
- * - Appelle MaintenanceApiService pour les données
- * - Utilise des signals pour la réactivité
+ * RULES:
+ * - Single entry point for components to access maintenance status
+ * - Manages business logic and state with signals
+ * - Calls MaintenanceApiService for data
+ * - Uses signals for reactivity
  */
 
 @Injectable({
@@ -17,7 +17,7 @@ import { MaintenanceApiService } from './api/maintenance-api.service';
 })
 export class MaintenanceService {
 
-  // State management avec signals
+  // State management with signals
   private maintenanceStatus = signal<MaintenanceStatus>({
     enabled: false,
     message: null
@@ -26,22 +26,26 @@ export class MaintenanceService {
   private isLoading = signal<boolean>(false);
   private hasChecked = signal<boolean>(false);
 
-  // Exposition des signals en lecture seule
+  /** Signal containing the maintenance status (read-only) */
   public readonly status = this.maintenanceStatus.asReadonly();
+  /** Signal indicating if maintenance status is being checked (read-only) */
   public readonly loading = this.isLoading.asReadonly();
+  /** Signal indicating if maintenance status has been checked (read-only) */
   public readonly checked = this.hasChecked.asReadonly();
 
   constructor(private maintenanceApi: MaintenanceApiService) {}
 
   /**
-   * Vérifie le statut de maintenance auprès de l'API
-   * Appelé une seule fois au démarrage de l'application (APP_INITIALIZER)
+   * Checks the maintenance status from the API
+   * Called once at application startup (APP_INITIALIZER)
+   * If an error occurs, assumes the site is not in maintenance mode
+   * @returns Promise that resolves when status check is complete
    */
   async checkStatus(): Promise<void> {
     this.isLoading.set(true);
 
     try {
-      // console.log('[Maintenance Service] Vérification du statut de maintenance...');
+      // console.log('[Maintenance Service] Checking maintenance status...');
 
       const status = await this.maintenanceApi.getStatus();
 
@@ -49,13 +53,13 @@ export class MaintenanceService {
       this.hasChecked.set(true);
 
       if (status.enabled) {
-        console.warn('[Maintenance Service] ⚠️ Mode maintenance activé:', status.message);
+        console.warn('[Maintenance Service] ⚠️ Maintenance mode enabled:', status.message);
       } else {
-        // console.log('[Maintenance Service] ✅ Site opérationnel');
+        // console.log('[Maintenance Service] ✅ Site operational');
       }
     } catch (error) {
-      console.error('[Maintenance Service] Erreur lors de la vérification:', error);
-      // En cas d'erreur, on considère que le site n'est pas en maintenance
+      console.error('[Maintenance Service] Error checking status:', error);
+      // In case of error, assume the site is not in maintenance
       this.maintenanceStatus.set({
         enabled: false,
         message: null
@@ -67,22 +71,26 @@ export class MaintenanceService {
   }
 
   /**
-   * Indique si le site est actuellement en maintenance
+   * Indicates if the site is currently in maintenance mode
+   * @returns True if maintenance is active, false otherwise
    */
   isMaintenanceActive(): boolean {
     return this.maintenanceStatus().enabled;
   }
 
   /**
-   * Récupère le message de maintenance
+   * Retrieves the maintenance message
+   * Returns a default message if no custom message is set
+   * @returns The maintenance message to display to users
    */
   getMaintenanceMessage(): string {
     return this.maintenanceStatus().message ||
-           'Site en maintenance. Nous serons de retour très bientôt.';
+           'Site under maintenance. We will be back very soon.';
   }
 
   /**
-   * Récupère le statut complet
+   * Retrieves the complete maintenance status
+   * @returns The full maintenance status object
    */
   getStatus(): MaintenanceStatus {
     return this.maintenanceStatus();

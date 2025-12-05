@@ -1,22 +1,30 @@
 import { Injectable, signal } from '@angular/core';
 import { CookieData } from '../models/cookie.model';
 
+/**
+ * COOKIE SERVICE - Cookie Consent Management
+ *
+ * Manages user cookie consent preferences and visitor tracking.
+ * Handles consent state, visit counting, and localStorage persistence.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class CookieService {
+  /** LocalStorage key for storing cookie consent data */
   private readonly STORAGE_KEY = 'asmtariste_cookie_consent';
-  
-  
+
+  /** Signal containing the cookie acceptance state (true, false, or null if not set) */
   public cookiesAccepted = signal<boolean | null>(null);
 
   constructor() {
     this.initialize();
   }
 
-
   /**
-   * Initializes the cookie consent state from localStorage.
+   * Initializes the cookie consent state from localStorage
+   * Called automatically on service construction
+   * Loads existing consent data and updates the signal
    */
   private initialize(): void {
     const consent = this.getConsent();
@@ -30,8 +38,9 @@ export class CookieService {
 
 
   /**
-   * Retrieves the stored cookie consent data.
-   * @returns The stored cookie consent data, or null if not found.
+   * Retrieves the stored cookie consent data from localStorage
+   * Includes visit count, timestamps, and acceptance status
+   * @returns The stored cookie consent data, or null if not found or on error
    */
   public getConsent(): CookieData | null {
     try {
@@ -49,13 +58,15 @@ export class CookieService {
 
 
   /**
-   * Sets the cookie consent data.
-   * @param accepted - Whether the user has accepted cookies.
+   * Sets the cookie consent data and saves to localStorage
+   * Increments visit count, updates timestamps, and stores user language
+   * Updates the cookiesAccepted signal
+   * @param accepted - Whether the user has accepted cookies
    */
   public setConsent(accepted: boolean): void {
     const language = navigator.language || 'fr-FR';
     const existingData = this.getConsent();
-    
+
     const cookieData: CookieData = {
       accepted,
       language,
@@ -75,7 +86,9 @@ export class CookieService {
 
 
   /**
-   * Increments the visit count and updates the last visit timestamp.
+   * Increments the visit count and updates the last visit timestamp
+   * Only updates if cookies have been accepted
+   * Used to track returning visitors
    */
   public incrementVisit(): void {
     const consent = this.getConsent();
@@ -85,7 +98,7 @@ export class CookieService {
         totalVisits: consent.totalVisits + 1,
         lastVisit: new Date().toISOString()
       };
-      
+
       try {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedData));
       } catch (error) {
@@ -94,10 +107,10 @@ export class CookieService {
     }
   }
 
-
-
   /**
-   * Clears the stored cookie consent data.
+   * Clears the stored cookie consent data from localStorage
+   * Resets the cookiesAccepted signal to null
+   * Used when user wants to reset their cookie preferences
    */
   public clearConsent(): void {
     try {
@@ -108,12 +121,9 @@ export class CookieService {
     }
   }
 
-
-
-
   /**
-   * Checks if cookies have been accepted.
-   * @returns True if cookies have been accepted, false otherwise.
+   * Checks if cookies have been accepted by the user
+   * @returns True if cookies have been accepted, false otherwise
    */
   public hasConsent(): boolean {
     return this.cookiesAccepted() === true;

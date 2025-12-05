@@ -5,6 +5,12 @@ import { filter } from 'rxjs/operators';
 
 import { SeoData } from '../models/seo.model';
 
+/**
+ * SEO SERVICE - Search Engine Optimization Management
+ *
+ * Manages all SEO-related meta tags and structured data for the application.
+ * Handles title, description, Open Graph, Twitter Cards, and canonical URLs.
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -12,7 +18,8 @@ export class SeoService {
    private meta = inject(Meta);
   private title = inject(Title);
   private router = inject(Router);
-  
+
+  /** Default SEO configuration applied when no specific data is provided */
   private defaultSeo: SeoData = {
     title: `ASMtariste - Maîtrise l'assembleur du 68000 sur Atari ST`,
     description: `Apprends à programmer en assembleur sur le légendaire Motorola 68000 de l'Atari ST. Cours complets, exemples pratiques et ressources téléchargeables.`,
@@ -25,7 +32,8 @@ export class SeoService {
   }
 
   /**
-   * Listen to route changes to update the canonical URL
+   * Sets up a listener for route changes to automatically update the canonical URL
+   * Called during service initialization
    */
   private setupRouteListener(): void {
     this.router.events
@@ -36,7 +44,9 @@ export class SeoService {
   }
 
   /**
-   * Update all SEO meta tags
+   * Updates all SEO meta tags for the current page
+   * Merges provided data with default SEO configuration
+   * Updates title, meta tags, Open Graph, Twitter Cards, and canonical URL
    * @param data - Partial SEO data to update the tags with
    */
   updateSeo(data: Partial<SeoData>): void {
@@ -46,7 +56,7 @@ export class SeoService {
     // Title
     this.title.setTitle(seo.title);
 
-    // Meta Tags Standard
+    // Standard Meta Tags
     this.meta.updateTag({ name: 'description', content: seo.description });
     if (seo.keywords)  this.meta.updateTag({ name: 'keywords', content: seo.keywords });
     if (seo.author)  this.meta.updateTag({ name: 'Zisquier', content: seo.author });
@@ -77,29 +87,30 @@ export class SeoService {
 
 
   /**
-   * Update the canonical URL
-   * @param url - The canonical URL to set
+   * Updates the canonical URL in the document head
+   * Creates the link element if it doesn't exist
+   * Ensures the URL is absolute with proper domain
+   * @param url - The canonical URL to set (can be relative or absolute)
    */
   private updateCanonicalUrl(url: string): void {
     const fullUrl = url.startsWith('http') ? url : `https://asmtariste.fr${url}`;
-    
+
     let link: HTMLLinkElement | null = document.querySelector('link[rel="canonical"]');
-    
+
     if (!link) {
       link = document.createElement('link');
       link.setAttribute('rel', 'canonical');
       document.head.appendChild(link);
     }
-    
+
     link.setAttribute('href', fullUrl);
   }
 
-
-
-
   /**
-   * Adds structured JSON-LD data to the document head.
-   * @param data - Structured data object to add as JSON-LD
+   * Adds or updates structured JSON-LD data in the document head
+   * Used for rich snippets and enhanced search results
+   * Creates the script element if it doesn't exist
+   * @param data - Structured data object to add as JSON-LD (schema.org format)
    */
   addStructuredData(data: any): void {
     let script: HTMLScriptElement | null = document.querySelector('script[type="application/ld+json"]');

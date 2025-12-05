@@ -1,9 +1,21 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
+// Service imports
 import { AuthService } from '@services/auth.service';
 import { AuthApi } from '@services/api/auth-api.service';
+import { NotificationService } from '@services/ui/notification.service';
 
+/**
+ * Account setup password page component for new user registration completion.
+ * Route: /setup-password (requires valid signup token)
+ *
+ * @component
+ * @description Allows new users to complete their account setup by creating a password.
+ * Validates the signup token via AuthApi, displays the user's nickname and email,
+ * and handles the password setup with validation and confirmation matching.
+ */
 @Component({
   selector: 'app-setup-password',
   templateUrl: './setup-password.html',
@@ -11,20 +23,97 @@ import { AuthApi } from '@services/api/auth-api.service';
   imports: [ReactiveFormsModule]
 })
 export class SetupPassword implements OnInit {
+  /**
+   * Notifications service to display notifications.
+   * @private
+   * @type {NotificationService}
+   */
+  private notification = inject(NotificationService);
+
+  /**
+   * Form builder service for creating reactive forms.
+   * @private
+   * @type {FormBuilder}
+   */
   private fb = inject(FormBuilder);
+
+  /**
+   * Activated route for accessing URL query parameters.
+   * @private
+   * @type {ActivatedRoute}
+   */
   private route = inject(ActivatedRoute);
+
+  /**
+   * Angular router for navigation.
+   * @private
+   * @type {Router}
+   */
   private router = inject(Router);
+
+  /**
+   * Authentication API service for validating signup token.
+   * @private
+   * @type {AuthApi}
+   */
   private authApi = inject(AuthApi);
+
+  /**
+   * Authentication service for handling signup confirmation.
+   * @public
+   * @type {AuthService}
+   */
   public auth = inject(AuthService);
 
+  /**
+   * Signal containing the signup token from URL query parameters.
+   * @public
+   * @type {Signal<string>}
+   */
   public token = signal<string>('');
+
+  /**
+   * Signal containing the user's nickname from the signup token.
+   * @public
+   * @type {Signal<string>}
+   */
   public nickname = signal<string>('');
+
+  /**
+   * Signal containing the user's email from the signup token.
+   * @public
+   * @type {Signal<string>}
+   */
   public email = signal<string>('');
+
+  /**
+   * Signal controlling password field visibility.
+   * @public
+   * @type {Signal<boolean>}
+   */
   public showPassword = signal<boolean>(false);
+
+  /**
+   * Signal controlling confirm password field visibility.
+   * @public
+   * @type {Signal<boolean>}
+   */
   public showConfirmPassword = signal<boolean>(false);
 
+  /**
+   * Reactive form for password setup.
+   * @public
+   * @type {FormGroup}
+   */
   signupForm!: FormGroup;
 
+  /**
+   * Lifecycle hook that is called after component initialization.
+   * Extracts the signup token from URL parameters, initializes the password setup form
+   * with validation rules, and loads token information.
+   *
+   * @returns {void}
+   */
   ngOnInit(): void {
     this.token.set(this.route.snapshot.queryParamMap.get('session') || '');
 
@@ -46,7 +135,11 @@ export class SetupPassword implements OnInit {
 
 
   /**
-   * 
+   * Loads and validates the signup token information.
+   * Retrieves the nickname and email associated with the token via AuthApi.
+   *
+   * @private
+   * @returns {Promise<void>}
    */
   private async loadTokenInfo(): Promise<void> {
     try {
@@ -56,7 +149,7 @@ export class SetupPassword implements OnInit {
         this.email.set(response.email);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des informations:', error);
+      console.error('Error loading token information:', error);
     }
   }
 
@@ -66,9 +159,11 @@ export class SetupPassword implements OnInit {
 
 
   /**
+   * Custom validator to verify that password and confirm password fields match.
    *
-   * @param control
-   * @returns
+   * @private
+   * @param {AbstractControl} control - The form group containing password fields
+   * @returns {ValidationErrors | null} Returns {passwordMismatch: true} if passwords don't match, null otherwise
    */
   private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
@@ -82,9 +177,10 @@ export class SetupPassword implements OnInit {
 
 
   /**
-   * 
-   * @param group 
-   * @returns 
+   * Toggles the visibility of the password field.
+   *
+   * @public
+   * @returns {void}
    */
   public togglePasswordVisibility(): void {
     this.showPassword.update(v => !v);
@@ -96,9 +192,10 @@ export class SetupPassword implements OnInit {
 
 
   /**
-   * 
-   * @param group 
-   * @returns 
+   * Toggles the visibility of the confirm password field.
+   *
+   * @public
+   * @returns {void}
    */
   public toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword.update(v => !v);
@@ -110,9 +207,12 @@ export class SetupPassword implements OnInit {
 
 
   /**
-   * 
-   * @param group 
-   * @returns 
+   * Handles form submission to complete the signup process.
+   * Validates the form, submits the password via AuthService, and redirects
+   * to homepage with a success message.
+   *
+   * @public
+   * @returns {Promise<void>}
    */
   public async handleSubmit(): Promise<void> {
     if (this.signupForm.invalid || this.auth.isLoading()) return;
@@ -124,12 +224,12 @@ export class SetupPassword implements OnInit {
       };
 
       await this.auth.confirmSignup(credentials);
+
+      this.notification.show('confirm.success', 3000, true)
       
-      this.router.navigate(['/accueil']).then(() => {
-        alert('Inscription finalisée avec succès ! Vous pouvez maintenant vous connecter.');
-      });
     } catch (error) {
-      console.error('Erreur lors de la finalisation:', error);
+      console.error('Error during signup completion:', error);
+      this.notification.show('confirm.error', 3000, true)
     }
   }
 }

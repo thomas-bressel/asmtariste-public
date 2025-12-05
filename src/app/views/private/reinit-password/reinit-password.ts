@@ -1,9 +1,23 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
+
 import { AuthService } from '@services/auth.service';
 import { AuthApi } from '@services/api/auth-api.service';
+import { NotificationService } from '@services/ui/notification.service';
 
+
+
+/**
+ * Password reset page component for authenticated password reset flow.
+ * Route: /reinit-password (requires valid reset token)
+ *
+ * @component
+ * @description Allows users to set a new password after requesting a password reset.
+ * Validates the reset token via AuthApi, displays the associated email, and handles
+ * the password reset submission with password strength validation and confirmation matching.
+ */
 @Component({
   selector: 'app-reinit-password',
   templateUrl: './reinit-password.html',
@@ -11,19 +25,90 @@ import { AuthApi } from '@services/api/auth-api.service';
   imports: [ReactiveFormsModule]
 })
 export class ReinitPassword implements OnInit {
+  /**
+ * Notifications service to display notifications.
+ * @private
+ * @type {NotificationService}
+ */
+  private notification = inject(NotificationService);
+
+  /**
+   * Form builder service for creating reactive forms.
+   * @private
+   * @type {FormBuilder}
+   */
   private fb = inject(FormBuilder);
+
+  /**
+   * Activated route for accessing URL query parameters.
+   * @private
+   * @type {ActivatedRoute}
+   */
   private route = inject(ActivatedRoute);
+
+  /**
+   * Angular router for navigation.
+   * @private
+   * @type {Router}
+   */
   private router = inject(Router);
+
+  /**
+   * Authentication API service for validating reset token.
+   * @private
+   * @type {AuthApi}
+   */
   private authApi = inject(AuthApi);
+
+  /**
+   * Authentication service for handling password reset.
+   * @public
+   * @type {AuthService}
+   */
   public auth = inject(AuthService);
 
+  /**
+   * Signal containing the password reset token from URL query parameters.
+   * @public
+   * @type {Signal<string>}
+   */
   public token = signal<string>('');
+
+  /**
+   * Signal containing the email address associated with the reset token.
+   * @public
+   * @type {Signal<string>}
+   */
   public email = signal<string>('');
+
+  /**
+   * Signal controlling password field visibility.
+   * @public
+   * @type {Signal<boolean>}
+   */
   public showPassword = signal<boolean>(false);
+
+  /**
+   * Signal controlling confirm password field visibility.
+   * @public
+   * @type {Signal<boolean>}
+   */
   public showConfirmPassword = signal<boolean>(false);
 
+  /**
+   * Reactive form for password reset.
+   * @public
+   * @type {FormGroup}
+   */
   resetPasswordForm!: FormGroup;
 
+  /**
+   * Lifecycle hook that is called after component initialization.
+   * Extracts the reset token from URL parameters, initializes the password reset form
+   * with validation rules, and loads token information.
+   *
+   * @returns {void}
+   */
   ngOnInit(): void {
     this.token.set(this.route.snapshot.queryParamMap.get('session') || '');
 
@@ -43,7 +128,12 @@ export class ReinitPassword implements OnInit {
 
 
   /**
-   * Charger les informations du token
+   * Loads and validates the reset token information.
+   * Retrieves the email associated with the token via AuthApi.
+   * Redirects to homepage if token is invalid.
+   *
+   * @private
+   * @returns {Promise<void>}
    */
   private async loadTokenInfo(): Promise<void> {
     try {
@@ -52,7 +142,7 @@ export class ReinitPassword implements OnInit {
         this.email.set(response.email);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des informations:', error);
+      console.error('Error loading token information:', error);
       this.router.navigate(['/accueil']);
     }
   }
@@ -61,9 +151,11 @@ export class ReinitPassword implements OnInit {
 
 
   /**
-   * Validateur pour vérifier que les mots de passe correspondent
-   * @param control
-   * @returns
+   * Custom validator to verify that password and confirm password fields match.
+   *
+   * @private
+   * @param {AbstractControl} control - The form group containing password fields
+   * @returns {ValidationErrors | null} Returns {passwordMismatch: true} if passwords don't match, null otherwise
    */
   private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
@@ -75,7 +167,10 @@ export class ReinitPassword implements OnInit {
 
 
   /**
-   * Afficher/masquer le mot de passe
+   * Toggles the visibility of the password field.
+   *
+   * @public
+   * @returns {void}
    */
   public togglePasswordVisibility(): void {
     this.showPassword.update(v => !v);
@@ -85,7 +180,10 @@ export class ReinitPassword implements OnInit {
 
 
   /**
-   * Afficher/masquer la confirmation du mot de passe
+   * Toggles the visibility of the confirm password field.
+   *
+   * @public
+   * @returns {void}
    */
   public toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword.update(v => !v);
@@ -95,7 +193,12 @@ export class ReinitPassword implements OnInit {
 
 
   /**
-   * Soumettre le formulaire de réinitialisation
+   * Handles form submission to reset the user's password.
+   * Validates the form, submits the new password via AuthService, and redirects
+   * to homepage with a success message.
+   *
+   * @public
+   * @returns {Promise<void>}
    */
   public async handleSubmit(): Promise<void> {
     if (this.resetPasswordForm.invalid || this.auth.isLoading()) return;
@@ -108,11 +211,10 @@ export class ReinitPassword implements OnInit {
 
       await this.auth.resetPassword(credentials);
 
-      this.router.navigate(['/accueil']).then(() => {
-        alert('Mot de passe réinitialisé avec succès ! Vous pouvez maintenant vous connecter.');
-      });
+      this.notification.show('reinit.success', 2000, true);
     } catch (error) {
-      console.error('Erreur lors de la réinitialisation:', error);
+      this.notification.show('reinit.error', 2000, true);
+      console.error('Error during password reset:', error);
     }
   }
 }

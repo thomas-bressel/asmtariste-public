@@ -4,7 +4,14 @@ import { LastArticles } from "@components/section/last-articles/last-articles";
 import { Folders } from "@components/section/folders/folders";
 import { SeoService } from '@services/seo.service';
 
-
+/**
+ * Home page component for the public area.
+ * Route: /accueil
+ *
+ * @component
+ * @description Displays the homepage with hero section, latest articles, and resource folders.
+ * Configures SEO metadata for the homepage including title, description, keywords, and structured data.
+ */
 @Component({
   selector: 'div[app-accueil]',
   imports: [Hero, LastArticles,Folders],
@@ -13,11 +20,22 @@ import { SeoService } from '@services/seo.service';
 })
 export class Accueil  implements OnInit  {
 
- private seo = inject(SeoService);
+  /**
+   * SEO service for managing page metadata and structured data.
+   * @private
+   * @type {SeoService}
+   */
+  private seo = inject(SeoService);
 
+  /**
+   * Lifecycle hook that is called after component initialization.
+   * Sets up SEO metadata and structured data for the homepage.
+   *
+   * @returns {void}
+   */
   ngOnInit(): void {
     this.seo.updateSeo({
-      title: 'Accueil - ASMtariSTe.fr, apprendre l’assembleur 68000 sur Atari ST',
+      title: 'Accueil - ASMtariSTe.fr, apprendre l\'assembleur 68000 sur Atari ST',
       description: `Découvrez ASMtariSTe.fr, la plateforme dédiée à l'apprentissage de l'assembleur Motorola 68000 sur Atari ST.
         Articles, dossiers et ressources pour comprendre le fonctionnement de cette machine mythique.`,
       keywords: 'Atari ST, assembleur 68000, programmation, rétro-informatique, tutoriel, cours, jeux, démos',

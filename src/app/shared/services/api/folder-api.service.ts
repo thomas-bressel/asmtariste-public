@@ -8,8 +8,15 @@ import { FolderData } from '@models/folder.model';
 import { CONTENT_API_URI } from '../../config-api';
 
 /**
- * Service responsable uniquement des appels API
- * Aucune gestion d'état, juste des appels HTTP purs
+ * Folder API Service for HTTP Operations
+ *
+ * This service is responsible only for API calls related to folders.
+ * It handles pure HTTP operations without any state management.
+ *
+ * Features:
+ * - Retrieves folders from the content API
+ * - Manages authentication via localStorage tokens
+ * - Returns raw API data without transformation
  */
 @Injectable({
   providedIn: 'root'
@@ -17,7 +24,9 @@ import { CONTENT_API_URI } from '../../config-api';
 export class FolderApiService {
 
   /**
-   * Crée les headers avec le token Bearer depuis localStorage
+   * Creates HTTP headers with Bearer token from localStorage
+   * @private
+   * @returns {Headers} Headers object with Content-Type and Authorization (if token exists)
    */
   private createAuthHeaders(): Headers {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -29,7 +38,10 @@ export class FolderApiService {
   }
 
   /**
-   * Récupère tous les dossier depuis le serveur
+   * Retrieves all folders from the server
+   * Makes HTTP GET request with Bearer token authentication
+   * @returns {Promise<FolderData[]>} Promise resolving to array of folder data objects
+   * @throws {Error} Throws error if HTTP request fails or user is not authenticated
    */
   async getAllFolders(): Promise<FolderData[]> {
     // console.log("\x1b[34m[API] - getAllFolders() called \x1b[0m");

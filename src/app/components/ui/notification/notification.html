@@ -1,0 +1,12 @@
+<div class="notification-container">
+  @for (notification of notificationService.notifications(); track notification.id) {
+    <div [class]="getNotificationClass(notification)">
+      <div class="notification__content">
+        <p class="notification__message">{{ notification.message }}</p>
+        <button class="notification__close" (click)="close(notification.id)" aria-label="Fermer la notification">
+          ×
+        </button>
+      </div>
+    </div>
+  }
+</div>

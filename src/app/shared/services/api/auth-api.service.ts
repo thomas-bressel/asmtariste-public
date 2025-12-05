@@ -14,14 +14,18 @@ import {
 import { USER_API_URI } from '../../config-api';
 
 /**
- * AUTH API - Pure HTTP Calls + Token Storage
+ * Authentication API Service - Pure HTTP Operations + Token Storage
  *
- * RÈGLES:
- * - Gère les appels HTTP
- * - Stocke/supprime les tokens dans localStorage
- * - NE met JAMAIS à jour le store
- * - Retourne les données brutes de l'API
- * - Appelé UNIQUEMENT par le facade service
+ * This service handles all HTTP calls related to authentication and manages
+ * session tokens in localStorage. It provides methods for login, signup,
+ * password reset, and session validation.
+ *
+ * RULES:
+ * - Handles HTTP calls to the authentication API
+ * - Stores/removes tokens in localStorage
+ * - NEVER updates the application store directly
+ * - Returns raw data from the API
+ * - Should ONLY be called by the facade service
  */
 
 @Injectable({
@@ -31,7 +35,9 @@ export class AuthApi {
   private baseUrl = USER_API_URI;
 
   /**
-   * Crée les headers avec le token Bearer depuis localStorage
+   * Creates HTTP headers with Bearer token from localStorage
+   * @private
+   * @returns {Headers} Headers object with Content-Type and Authorization (if token exists)
    */
   private createAuthHeaders(): Headers {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -43,8 +49,11 @@ export class AuthApi {
   }
 
   /**
-   * Login with credentials
-   * Stocke automatiquement les tokens dans localStorage
+   * Authenticates a user with email and password credentials
+   * Automatically stores session and refresh tokens in localStorage upon successful login
+   * @param {LoginCredentials} credentials - User login credentials (email and password)
+   * @returns {Promise<LoginResponse>} Promise resolving to login response with tokens and user data
+   * @throws {Error} Throws error if authentication fails or API returns non-OK response
    */
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -61,7 +70,7 @@ export class AuthApi {
 
     const data = await response.json();
 
-    // Stocke les tokens dans localStorage
+    // Store tokens in localStorage
     if (data.sessionToken) localStorage.setItem('session_token', data.sessionToken);
     if (data.refreshToken) localStorage.setItem('refresh_token', data.refreshToken);
 
@@ -69,7 +78,11 @@ export class AuthApi {
   }
 
   /**
-   * Sign in with nickname and email
+   * Registers a new user account with nickname and email
+   * Sends a confirmation email to complete the signup process
+   * @param {SignInCredentials} credentials - User registration credentials (nickname and email)
+   * @returns {Promise<SignInResponse>} Promise resolving to registration response
+   * @throws {Error} Throws error if registration fails or API returns non-OK response
    */
   async signIn(credentials: SignInCredentials): Promise<SignInResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -89,7 +102,11 @@ export class AuthApi {
   }
 
   /**
-   * Validate signup token
+   * Validates a signup confirmation token received via email
+   * Verifies that the token is valid and not expired
+   * @param {string} token - The signup confirmation token to validate
+   * @returns {Promise<TokenValidationResponse>} Promise resolving to validation response
+   * @throws {Error} Throws error if token is invalid, expired, or API returns non-OK response
    */
   async validateSignupToken(token: string): Promise<TokenValidationResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -109,8 +126,11 @@ export class AuthApi {
   }
 
   /**
-   * Confirm signup with token and password
-   * Stocke automatiquement le token si présent (connexion auto après signup)
+   * Completes the signup process by confirming the token and setting a password
+   * Automatically stores the session token in localStorage for auto-login after signup
+   * @param {ConfirmSignupCredentials} credentials - Confirmation credentials (token and password)
+   * @returns {Promise<SignInResponse>} Promise resolving to signup confirmation response
+   * @throws {Error} Throws error if confirmation fails or API returns non-OK response
    */
   async confirmSignup(credentials: ConfirmSignupCredentials): Promise<SignInResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -128,7 +148,7 @@ export class AuthApi {
 
     const data = await response.json();
 
-    // Stocke le token si présent (connexion automatique après signup)
+    // Store token if present (automatic login after signup)
     if (data.token) {
       localStorage.setItem('session_token', data.token);
     }
@@ -137,8 +157,11 @@ export class AuthApi {
   }
 
   /**
-   * Logout the user
-   * Supprime les tokens du localStorage
+   * Logs out the current user
+   * Removes session and refresh tokens from localStorage
+   * Makes HTTP POST request to logout endpoint
+   * @returns {Promise<void>} Promise resolving when logout is complete
+   * @throws {Error} Throws error if logout request fails
    */
   async logout(): Promise<void> {
     const response = await fetch(`${this.baseUrl}/user/v1/public/logout`, {
@@ -147,28 +170,31 @@ export class AuthApi {
     });
 
     if (!response.ok) {
-      throw new Error(`Erreur de déconnexion: ${response.status}`);
+      throw new Error(`Logout error: ${response.status}`);
     }
 
-    // Supprime les tokens du localStorage
+    // Remove tokens from localStorage
     localStorage.removeItem('session_token');
     localStorage.removeItem('refresh_token');
   }
 
   /**
-   * Check if session is valid and get user data
+   * Verifies the validity of the current session and retrieves user data
+   * Makes HTTP GET request to verify endpoint with Bearer token from localStorage
+   * @returns {Promise<User>} Promise resolving to user object with profile information
+   * @throws {Error} Throws error if session is invalid or expired
    */
   async checkSession(): Promise<User> {
     const response = await fetch(`${this.baseUrl}/user/v1/public/verify`, {
       headers: this.createAuthHeaders()
     });
 
-    if (!response.ok) throw new Error(`Session invalide: ${response.status}`);
+    if (!response.ok) throw new Error(`Invalid session: ${response.status}`);
 
     const data = await response.json();
     // console.log('\x1b[34m [API] - checkSession() - data :\x1b[0m', data);
 
-    // Construire l'objet User depuis la réponse
+    // Build User object from response
     return {
       user: {
         firstname: data.firstname,
@@ -179,34 +205,44 @@ export class AuthApi {
   }
 
   /**
-   * Get user profile with all information
+   * Retrieves the complete user profile with all information
+   * Makes HTTP GET request to profile endpoint with Bearer token
+   * @returns {Promise<ProfileResponse>} Promise resolving to complete profile data
+   * @throws {Error} Throws error if profile is inaccessible or user is not authenticated
    */
   async getProfile(): Promise<ProfileResponse> {
     const response = await fetch(`${this.baseUrl}/user/v1/public/profile`, {
       headers: this.createAuthHeaders()
     });
 
-    if (!response.ok)  throw new Error(`Profil inaccessible: ${response.status}`);
+    if (!response.ok)  throw new Error(`Profile inaccessible: ${response.status}`);
 
     return response.json();
   }
 
   /**
-   * Get Google OAuth2 authentication URL
+   * Retrieves the Google OAuth2 authentication URL for social login
+   * Makes HTTP GET request to Google auth endpoint
+   * @returns {Promise<GoogleAuthResponse>} Promise resolving to Google OAuth URL
+   * @throws {Error} Throws error if unable to retrieve Google auth URL
    */
   async getGoogleAuthUrl(): Promise<GoogleAuthResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const response = await fetch(`${this.baseUrl}/user/v1/auth/google`, { headers });
 
     if (!response.ok) {
-      throw new Error(`Impossible d'obtenir l'URL Google: ${response.status}`);
+      throw new Error(`Unable to retrieve Google URL: ${response.status}`);
     }
 
     return response.json();
   }
 
   /**
-   * Forgot password
+   * Initiates the password reset process by sending a reset email
+   * Makes HTTP POST request to forgot-password endpoint
+   * @param {string} email - Email address of the user requesting password reset
+   * @returns {Promise<{success: boolean, message: string}>} Promise resolving to success status and message
+   * @throws {Error} Throws error if password reset request fails
    */
   async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -217,14 +253,18 @@ export class AuthApi {
     });
 
     if (!response.ok) {
-      throw new Error(`Échec de réinitialisation: ${response.status}`);
+      throw new Error(`Reset failed: ${response.status}`);
     }
 
     return response.json();
   }
 
   /**
-   * Validate reset token
+   * Validates a password reset token received via email
+   * Verifies that the token is valid and not expired
+   * @param {string} token - The password reset token to validate
+   * @returns {Promise<TokenValidationResponse>} Promise resolving to validation response
+   * @throws {Error} Throws error if token is invalid, expired, or API returns non-OK response
    */
   async validateResetToken(token: string): Promise<TokenValidationResponse> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -244,7 +284,13 @@ export class AuthApi {
   }
 
   /**
-   * Reset password with token
+   * Resets the user's password using a valid reset token
+   * Makes HTTP POST request with token and new password
+   * @param {Object} credentials - Reset credentials object
+   * @param {string} credentials.token - Valid password reset token
+   * @param {string} credentials.password - New password to set
+   * @returns {Promise<{success: boolean, message: string}>} Promise resolving to success status and message
+   * @throws {Error} Throws error if password reset fails or token is invalid
    */
   async resetPassword(credentials: { token: string; password: string }): Promise<{ success: boolean; message: string }> {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -267,8 +313,9 @@ export class AuthApi {
   }
 
   /**
-   * Clear tokens from localStorage
-   * Appelé par le facade en cas d'erreur ou de logout
+   * Clears authentication tokens from localStorage
+   * Called by the facade service in case of error or logout
+   * Does not make any HTTP requests, only removes local data
    */
   clearTokens(): void {
     localStorage.removeItem('session_token');
