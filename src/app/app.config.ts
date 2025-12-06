@@ -6,6 +6,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import { AuthService } from '@services/auth.service';
 import { MaintenanceService } from '@services/maintenance.service';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { AnalyticsService } from '@services/analytics.service';
 
 
 registerLocaleData(localeFr, 'fr-FR');
@@ -26,6 +28,11 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       const authService = inject(AuthService);
       return authService.initialize();
+    }),
+    // Initialisation de Google Analytics
+    provideAppInitializer(() => {
+      const analyticsService = inject(AnalyticsService);
+      analyticsService.initialize();
     }),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
