@@ -4,6 +4,7 @@ import { Injectable, inject } from '@angular/core';
 import { FileApiService } from '@services/api/file-api.service';
 import { FileStore } from '@services/store/file-store.service';
 import { NotificationService } from './ui/notification.service';
+import { AnalyticsService } from './analytics.service';
 /**
  * FILE FACADE SERVICE - Orchestration Layer
  *
@@ -16,7 +17,8 @@ import { NotificationService } from './ui/notification.service';
 export class FileService {
   private readonly api = inject(FileApiService);
   private readonly store = inject(FileStore);
-  private readonly notification = inject(NotificationService)
+  private readonly notification = inject(NotificationService);
+  private readonly analytics = inject(AnalyticsService)
 
   /** Signal containing all files */
   readonly files = this.store.files;
@@ -76,6 +78,13 @@ export class FileService {
       this.store.setDownloading(fileId, true);
 
       const { blob, filename } = await this.api.downloadFile(fileId);
+
+      // Track download in Google Analytics
+      this.analytics.trackEvent('file_download', {
+        file_name: filename,
+        file_id: fileId,
+        event_category: 'engagement'
+      });
 
       // Create a download link
       const url = window.URL.createObjectURL(blob);
