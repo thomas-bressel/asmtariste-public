@@ -9,7 +9,7 @@ import { Card } from "@components/ui/card/card";
 import { ArticleService } from '@services/article.service';
 
 // Config imports
-import { CONTENT_API_URI } from 'src/app/shared/config-api';
+import { CONTENT_API_URI, CONTENT_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
 /**
  * Last articles section component that displays the most recent articles.
@@ -40,8 +40,9 @@ export class LastArticles implements OnInit {
    * Base URL for the content API.
    * @readonly
    */
-  public readonly baseUrlAPI = CONTENT_API_URI;
-
+  // public readonly baseUrlAPI = CONTENT_API_URI;
+    // public readonly baseUrlAPI = CONTENT_API_URI;
+  public readonly baseUrlAPI = CONTENT_STATIC_IMAGES_URI;
   /**
    * Injected router for navigation.
    * @private

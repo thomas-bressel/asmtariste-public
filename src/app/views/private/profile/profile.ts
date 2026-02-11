@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SeoService } from '@services/seo.service';
 import { AuthService } from '@services/auth.service';
-import { USER_API_URI } from 'src/app/shared/config-api';
+import { USER_API_URI, USER_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
 /**
  * User profile page component for the private area.
@@ -24,7 +24,8 @@ export class Profile implements OnInit {
    * @public
    * @type {string}
    */
-  public baseUrl = USER_API_URI;
+  // public baseUrl = USER_API_URI;
+  public baseUrl = USER_STATIC_IMAGES_URI;
 
   /**
    * Authentication service for managing user authentication and profile data.

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { TagData } from '@models/tag.model';
 
 // Config imports
-import { CONTENT_API_URI } from 'src/app/shared/config-api';
+import { CONTENT_API_URI, CONTENT_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
 /**
  * Article card component for displaying article summaries.
@@ -35,7 +35,8 @@ export class Card {
    * Base URL for the content API.
    * @readonly
    */
-  public readonly baseUrlAPI = CONTENT_API_URI;
+  // public readonly baseUrlAPI = CONTENT_API_URI;
+  public readonly baseUrlAPI = CONTENT_STATIC_IMAGES_URI;
 
   /**
    * Style variant for the card based on parent component context.

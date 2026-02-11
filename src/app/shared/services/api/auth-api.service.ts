@@ -11,7 +11,7 @@ import {
   ProfileResponse
 } from '@models/auth.model';
 
-import { USER_API_URI } from '../../config-api';
+import { USER_API_URI, PROJECT_ID } from '../../config-api';
 
 /**
  * Authentication API Service - Pure HTTP Operations + Token Storage
@@ -40,7 +40,10 @@ export class AuthApi {
    * @returns {Headers} Headers object with Content-Type and Authorization (if token exists)
    */
   private createAuthHeaders(): Headers {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
     const token = localStorage.getItem('session_token');
     if (token) {
       headers.append('Authorization', `Bearer ${token}`);
@@ -56,7 +59,10 @@ export class AuthApi {
    * @throws {Error} Throws error if authentication fails or API returns non-OK response
    */
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
     const response = await fetch(`${this.baseUrl}/user/v1/public/login`, {
       method: 'POST',
       headers,
@@ -85,7 +91,10 @@ export class AuthApi {
    * @throws {Error} Throws error if registration fails or API returns non-OK response
    */
   async signIn(credentials: SignInCredentials): Promise<SignInResponse> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/signin`, {
       method: 'POST',
@@ -109,7 +118,10 @@ export class AuthApi {
    * @throws {Error} Throws error if token is invalid, expired, or API returns non-OK response
    */
   async validateSignupToken(token: string): Promise<TokenValidationResponse> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/validate-signup-token`, {
       method: 'POST',
@@ -133,7 +145,10 @@ export class AuthApi {
    * @throws {Error} Throws error if confirmation fails or API returns non-OK response
    */
   async confirmSignup(credentials: ConfirmSignupCredentials): Promise<SignInResponse> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/confirm-signup`, {
       method: 'POST',
@@ -165,6 +180,7 @@ export class AuthApi {
    */
   async logout(): Promise<void> {
     const response = await fetch(`${this.baseUrl}/user/v1/public/logout`, {
+
       method: 'POST',
       headers: this.createAuthHeaders()
     });
@@ -227,7 +243,10 @@ export class AuthApi {
    * @throws {Error} Throws error if unable to retrieve Google auth URL
    */
   async getGoogleAuthUrl(): Promise<GoogleAuthResponse> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
     const response = await fetch(`${this.baseUrl}/user/v1/auth/google`, { headers });
 
     if (!response.ok) {
@@ -245,7 +264,10 @@ export class AuthApi {
    * @throws {Error} Throws error if password reset request fails
    */
   async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
     const response = await fetch(`${this.baseUrl}/user/v1/public/forgot-password`, {
       method: 'POST',
       headers,
@@ -267,7 +289,10 @@ export class AuthApi {
    * @throws {Error} Throws error if token is invalid, expired, or API returns non-OK response
    */
   async validateResetToken(token: string): Promise<TokenValidationResponse> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/validate-reset-token`, {
       method: 'POST',
@@ -293,7 +318,10 @@ export class AuthApi {
    * @throws {Error} Throws error if password reset fails or token is invalid
    */
   async resetPassword(credentials: { token: string; password: string }): Promise<{ success: boolean; message: string }> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
     const response = await fetch(`${this.baseUrl}/user/v1/public/reset-password`, {
       method: 'POST',

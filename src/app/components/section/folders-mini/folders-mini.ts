@@ -4,7 +4,7 @@ import { FolderService } from '@services/folder.service';
 import { ItemSelector } from '@services/selector.service';
 import { AuthService } from '@services/auth.service';
 
-import { CONTENT_API_URI } from 'src/app/shared/config-api';
+import { CONTENT_API_URI, CONTENT_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
 /**
  * Mini folders sidebar component that provides quick navigation to folders.
@@ -63,8 +63,8 @@ export class FoldersMini {
    * Base URL for the content API.
    * @readonly
    */
-  public readonly baseUrlAPI = CONTENT_API_URI;
-
+  // public readonly baseUrlAPI = CONTENT_API_URI;
+  public readonly baseUrlAPI = CONTENT_STATIC_IMAGES_URI;
   /**
    * Signal containing the list of active folders.
    * @readonly

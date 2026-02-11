@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { ContentData } from '@models/content.model';
-import { CONTENT_API_URI } from '../../config-api';
+import { CONTENT_API_URI, PROJECT_ID } from '../../config-api';
 
 /**
  * Content API Service for HTTP Operations
@@ -31,7 +31,10 @@ export class ContentApiService {
    */
   public async getContentByIdArticle(articleId: number): Promise<ContentData[]> {
     const response = await fetch(`${CONTENT_API_URI}/content/v1/public/content/view?id=${articleId}`, {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        'X-Project-ID': PROJECT_ID
+      }
     });
 
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -54,7 +57,10 @@ export class ContentApiService {
    */
   public async getContentByArticleSlug(articleSlug: string): Promise<ContentData[]> {
     const response = await fetch(`${CONTENT_API_URI}/content/v1/public/content/view?slug=${articleSlug}`, {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        'X-Project-ID': PROJECT_ID
+      }
     });
 
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);

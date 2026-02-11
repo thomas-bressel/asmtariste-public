@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { ArticleData } from '@models/article.model';
-import { CONTENT_API_URI } from '../../config-api';
+import { CONTENT_API_URI,PROJECT_ID } from '../../config-api';
 
 /**
  * Article API Service for HTTP Operations
@@ -30,7 +30,9 @@ export class ArticleApiService {
      * @throws {Error} Throws error if HTTP request fails
      */
     public async getAllArticles(): Promise<ArticleData[]> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const headers = new Headers({ 'Content-Type': 'application/json',
+            'X-Project-ID': PROJECT_ID
+         });
 
         // Retrieve token from cookie and add it to header
         const token = document.cookie
@@ -68,7 +70,10 @@ export class ArticleApiService {
      * @throws {Error} Throws error if HTTP request fails
      */
     public async getArticlesByCategory(category: string): Promise<ArticleData[]> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
         const response = await fetch(`${CONTENT_API_URI}/content/v1/public/articles?cat=${category}`, {
             method: 'GET',
@@ -96,7 +101,10 @@ export class ArticleApiService {
      * @throws {Error} Throws error if HTTP request fails or article not found
      */
     public async getArticleById(articleId: number): Promise<ArticleData> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
         const response = await fetch(`${CONTENT_API_URI}/content/v1/public/article?id=${articleId}`, {
             method: 'GET',
@@ -118,7 +126,10 @@ export class ArticleApiService {
      * @throws {Error} Throws error if HTTP request fails or article not found
      */
     public async getArticleBySlug(articleSlug: string): Promise<ArticleData> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
         const response = await fetch(`${CONTENT_API_URI}/content/v1/public/article?slug=${articleSlug}`, {
             method: 'GET',

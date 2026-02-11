@@ -1,4 +1,3 @@
-# dist/browser/robots.txt
 User-agent: *
 Allow: /
 Disallow: /admin/

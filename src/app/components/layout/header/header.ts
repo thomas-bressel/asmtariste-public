@@ -9,7 +9,7 @@ import { Notification, NotificationService } from '@services/ui/notification.ser
 
 // Component imports
 import { LoginModal } from '@components/ui/login-modal/login-modal';
-import { USER_API_URI } from 'src/app/shared/config-api';
+import { USER_API_URI, USER_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 import { NotExpr } from '@angular/compiler';
 
 /**
@@ -42,7 +42,8 @@ export class Header implements OnInit, OnDestroy {
   @ViewChild(LoginModal) loginModal!: LoginModal;
 
   /** Base URL for user avatar images from API configuration */
-  private readonly avatarBaseUrl = USER_API_URI;
+  // private readonly avatarBaseUrl = USER_API_URI;
+  private readonly avatarBaseUrl = USER_STATIC_IMAGES_URI;
 
   /** Injected AuthService for managing authentication state */
   public auth = inject(AuthService);

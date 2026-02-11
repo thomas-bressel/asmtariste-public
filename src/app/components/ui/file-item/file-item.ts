@@ -1,6 +1,6 @@
 import { Component, input, inject, signal } from '@angular/core';
 
-import { CONTENT_API_URI } from 'src/app/shared/config-api';
+import { CONTENT_API_URI, CONTENT_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
 import { ItemSelector } from '@services/selector.service';
 import { FileService } from '@services/file.service';
@@ -37,8 +37,8 @@ export class FileItem {
    * Base URL for the content API.
    * @public
    */
-  public baseUrl: string = CONTENT_API_URI;
-
+  // public readonly baseUrlAPI = CONTENT_API_URI;
+  public readonly baseUrlAPI = CONTENT_STATIC_IMAGES_URI;
   /**
    * Injected item selector service for managing selected items.
    * @public

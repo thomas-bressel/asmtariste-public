@@ -9,7 +9,7 @@ import { Pricing } from '@components/ui/pricing/pricing';
 import { FolderService } from '@services/folder.service';
 
 // Config imports
-import { CONTENT_API_URI } from 'src/app/shared/config-api';
+import { CONTENT_API_URI, CONTENT_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
 /**
  * Folders section component that displays a collection of resource folders.

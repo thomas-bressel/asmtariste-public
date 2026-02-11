@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FileData } from '@models/file.model';
-import { CONTENT_API_URI } from '../../config-api';
+import { CONTENT_API_URI, PROJECT_ID } from '../../config-api';
 
 /**
  * File API Service for HTTP Operations
@@ -26,7 +26,10 @@ export class FileApiService {
    * @returns {Headers} Headers object with Content-Type and Authorization (if token exists)
    */
   private createAuthHeaders(): Headers {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
     const token = localStorage.getItem('session_token');
     if (token) {
       headers.append('Authorization', `Bearer ${token}`);

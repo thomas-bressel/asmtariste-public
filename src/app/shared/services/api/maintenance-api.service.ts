@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MaintenanceStatus } from '@models/maintenance.model';
-import { USER_API_URI } from '../../config-api';
+import { USER_API_URI, PROJECT_ID } from '../../config-api';
 
 /**
  * Maintenance API Service for HTTP Operations
@@ -42,7 +42,10 @@ export class MaintenanceApiService {
    * @returns {MaintenanceStatus} Returns {enabled: true, message: string} if API fails or network error occurs
    */
   async getStatus(): Promise<MaintenanceStatus> {
-    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
     try {
       const response = await fetch(`${this.baseUrl}/user/v1/public/system/status`, {

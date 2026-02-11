@@ -9,7 +9,7 @@ import { PaginationService } from '@services/ui/pagination.service';
 
 import { PaginationComponent } from '@components/ui/pagination/pagination';
 
-import { CONTENT_API_URI } from 'src/app/shared/config-api';
+import { CONTENT_API_URI, CONTENT_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
 /**
  * Article detail page component for displaying individual articles.
@@ -75,8 +75,8 @@ export class Article implements OnInit, OnDestroy {
    * @public
    * @type {string}
    */
-  public baseUrlAPI = CONTENT_API_URI;
-
+  // public readonly baseUrlAPI = CONTENT_API_URI;
+  public readonly baseUrlAPI = CONTENT_STATIC_IMAGES_URI;
   /**
    * Signal containing the current article slug from route parameters.
    * @protected

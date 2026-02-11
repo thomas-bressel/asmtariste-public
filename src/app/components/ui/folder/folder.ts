@@ -1,7 +1,7 @@
 import { Component, input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ItemSelector } from '@services/selector.service';
-import { CONTENT_API_URI } from 'src/app/shared/config-api';
+import { CONTENT_API_URI, CONTENT_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
 /**
  * Folder card component for displaying and navigating to resource folders.
@@ -35,8 +35,8 @@ export class Folder {
    * Base URL for the content API.
    * @readonly
    */
-  public readonly baseUrlAPI = CONTENT_API_URI;
-
+  // public readonly baseUrlAPI = CONTENT_API_URI;
+  public readonly baseUrlAPI = CONTENT_STATIC_IMAGES_URI;
   /**
    * Injected router for navigation.
    * @private

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { UserPublicData } from '@models/user.model';
-import { USER_API_URI } from '../../config-api';
+import { USER_API_URI, PROJECT_ID } from '../../config-api';
 
 /**
  * User API Service for HTTP Operations
@@ -27,7 +27,10 @@ export class UserApiService {
      * @throws {Error} Throws error if HTTP request fails
      */
     public async getAllUsers(): Promise<UserPublicData[]> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const headers = new Headers({ 
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID 
+    });
 
         const response = await fetch(`${USER_API_URI}/user/v1/public/users`, {
             method: 'GET',
