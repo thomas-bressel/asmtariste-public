@@ -18,11 +18,13 @@ export const PROJECT_ID: string = 'proj_8k2h9f3l';
 const staticImages = {
     local: `http://localhost:8085/${PROJECT_ID}/content/`,
     staging: `https://staging.drawer.auroreia.fr/${PROJECT_ID}/content/`,
+    production: `https://drawer.auroreia.fr/${PROJECT_ID}/content/`,
     
 }
 const staticAvatars = {
     local: `http://localhost:8085/${PROJECT_ID}/users/`,
     staging: `https://staging.drawer.auroreia.fr/${PROJECT_ID}/users/`,
+    production: `https://drawer.auroreia.fr/${PROJECT_ID}/users/`,
     
 }
 
