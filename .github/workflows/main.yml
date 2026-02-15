@@ -46,23 +46,16 @@ jobs:
         key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
         port: ${{ secrets.VPS_PORT }}
         script: |
-          cd ~/asmtariste
-
-          # Créer le réseau si inexistant
-          docker network inspect asmtariste-net-production >/dev/null 2>&1 || \
-          docker network create asmtariste-net-production
-
-          # Arrêter seulement le dashboard
-          docker compose -f docker-compose.production.yml stop asmtariste-production
+          cd /var/www/applications/asmtariste/website/production
 
           # Récupérer la nouvelle image
-          docker compose -f docker-compose.production.yml pull asmtariste-production
+          docker compose pull asmtariste-website
 
-          # Relancer avec la nouvelle image
-          docker compose -f docker-compose.production.yml up -d asmtariste-production
+          # Recréer et relancer le container avec la nouvelle image
+          docker compose up -d --force-recreate --no-deps asmtariste-website
 
           # Vérifier le statut
-          docker compose -f docker-compose.production.yml ps asmtariste-production
+          docker compose ps asmtariste-website
 
           # Nettoyer les anciennes images
           docker image prune -f
