@@ -274,7 +274,7 @@ export class AuthApi {
     const response = await fetch(`${this.baseUrl}/user/v1/public/forgot-password`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email, clientUrl: window.location.origin })
     });
 
     if (!response.ok) {
