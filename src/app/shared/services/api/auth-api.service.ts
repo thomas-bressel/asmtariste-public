@@ -99,7 +99,10 @@ export class AuthApi {
     const response = await fetch(`${this.baseUrl}/user/v1/public/signin`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(credentials)
+      body: JSON.stringify({
+        ...credentials,
+        clientUrl: window.location.origin
+      })
     });
 
     if (!response.ok) {
