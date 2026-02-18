@@ -28,7 +28,7 @@ export class Pricing {
    * Signal containing the current funding amount in euros.
    * @protected
    */
-  protected currentAmount = signal(11.88);
+  protected currentAmount = signal(11.88 * 2);
 
   /**
    * Signal containing the target funding amount in euros.
