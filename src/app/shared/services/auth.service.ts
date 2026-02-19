@@ -303,6 +303,10 @@ export class AuthService {
       // 1. API call
       const profileData = await this.authApi.getProfile();
 
+      if (profileData && profileData.data.membership_end === undefined) {
+        profileData.data.membership_end = "null";
+      }
+
       // 2. Update store
       this.authStore.setProfile(profileData);
 

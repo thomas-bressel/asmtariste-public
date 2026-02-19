@@ -84,6 +84,8 @@ export class Profile implements OnInit {
   private async loadProfile(): Promise<void> {
     try {
       const profileData = await this.authService.getProfile();
+
+     
     } catch (err) {
       console.error('Error loading profile:', err);
     }

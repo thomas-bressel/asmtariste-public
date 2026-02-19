@@ -37,7 +37,7 @@ export interface Profile {
   role_color: string;
   membership_label: string;
   membership_start: string;
-  membership_end: string;
+  membership_end: string | undefined;
 }
 
 // ===== API RESPONSES =====

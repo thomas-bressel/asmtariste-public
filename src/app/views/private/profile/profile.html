@@ -75,7 +75,11 @@
 
             <div class="profile-info-row">
               <span class="profile-label">Fin de l'abonnement en cours</span>
-              <span class="profile-value">{{ formatDate(userProfile.membership_end) }}</span>
+              @if(userProfile.membership_end) {
+                <span class="profile-value">{{ formatDate(userProfile.membership_end) }}</span>
+              } @else {
+                <span class="profile-value">Pas d'abonnement</span>
+              }
             </div>
 
           </div>
