@@ -12,11 +12,16 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.85);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 9999;
   padding: space.$sm;
   backdrop-filter: blur(4px);
+  overflow-y: auto;
+
+  @media (min-width: 768px) {
+    align-items: center;
+  }
 }
 
 .modal {
@@ -27,6 +32,12 @@
   width: 100%;
   box-shadow: 0 0 40px rgba(0, 208, 132, 0.3);
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 100%;
+  overflow-y: auto;
+
+  @media (min-width: 768px) {
+    max-height: 90vh;
+  }
 }
 
 @keyframes slideUp {
@@ -41,7 +52,7 @@
 }
 
 .header {
-  padding: space.$md;
+  padding: space.$sm;
   border-bottom: 1px solid rgba(0, 208, 132, 0.2);
 }
 
@@ -55,7 +66,7 @@
 }
 
 .content {
-  padding: space.$md;
+  padding: space.$sm;
 }
 
 .text {
@@ -175,7 +186,7 @@
 .actions {
   display: flex;
   gap: space.$sm;
-  padding: 0 space.$md space.$md space.$md;
+  padding: space.$sm;
 }
 
 .btn {
