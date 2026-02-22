@@ -6,7 +6,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import { AuthService } from '@services/auth.service';
 import { MaintenanceService } from '@services/maintenance.service';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AnalyticsService } from '@services/analytics.service';
 
 
