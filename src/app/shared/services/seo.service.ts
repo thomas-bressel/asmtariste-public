@@ -59,7 +59,7 @@ export class SeoService {
     // Standard Meta Tags
     this.meta.updateTag({ name: 'description', content: seo.description });
     if (seo.keywords)  this.meta.updateTag({ name: 'keywords', content: seo.keywords });
-    if (seo.author)  this.meta.updateTag({ name: 'Zisquier', content: seo.author });
+    if (seo.author)  this.meta.updateTag({ name: 'author', content: seo.author });
 
     // Open Graph (Facebook, LinkedIn)
     this.meta.updateTag({ property: 'og:title', content: seo.title });

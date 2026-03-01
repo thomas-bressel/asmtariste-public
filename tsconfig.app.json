@@ -8,7 +8,7 @@
   },
   "include": [
     "src/**/*.ts"
-, "scripts/generate-map.ts"  ],
+  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

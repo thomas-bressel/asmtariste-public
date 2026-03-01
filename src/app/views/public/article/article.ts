@@ -6,6 +6,7 @@ import { ItemSelector } from '@services/selector.service';
 import { ContentService } from '@services/content.service';
 import { ArticleService } from '@services/article.service';
 import { PaginationService } from '@services/ui/pagination.service';
+import { SeoService } from '@services/seo.service';
 
 import { PaginationComponent } from '@components/ui/pagination/pagination';
 
@@ -69,6 +70,7 @@ export class Article implements OnInit, OnDestroy {
    * @type {PaginationService}
    */
   private paginationService = inject(PaginationService);
+  private seo = inject(SeoService);
 
   /**
    * Base URL for content API endpoints.
@@ -205,6 +207,17 @@ export class Article implements OnInit, OnDestroy {
           this.articleService.loadArticleBySlug(slugArticle),
           this.contentService.loadContentByArticleSlug(slugArticle)
         ]);
+
+        const article = this.articleService.articleById();
+        if (article) {
+          this.seo.updateSeo({
+            title: `${article.title} - ASMtariste`,
+            description: article.description,
+            image: article.cover ? `https://asmtariste.fr/assets/images/${article.cover}` : undefined,
+            keywords: article.tags?.map(t => t.label).join(', '),
+            type: 'article'
+          });
+        }
       }
     });
   }
