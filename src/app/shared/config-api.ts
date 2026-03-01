@@ -9,8 +9,8 @@ const contentApiEnv = {
     staging: 'https://staging.drawer.auroreia.fr/api/content',
 }
 
-export const USER_API_URI: string = userApiEnv.staging;
-export const CONTENT_API_URI: string = contentApiEnv.staging;
+export const USER_API_URI: string = userApiEnv.local;
+export const CONTENT_API_URI: string = contentApiEnv.local;
 // Multi-tenant Project ID (hardcoded for now)
 export const PROJECT_ID: string = 'proj_8k2h9f3l';
 
@@ -27,8 +27,7 @@ const staticAvatars = {
     
 }
 
-export const USER_STATIC_IMAGES_URI: string = staticAvatars.staging;
+export const USER_STATIC_IMAGES_URI: string = staticAvatars.local;
 
 
-export const CONTENT_STATIC_IMAGES_URI: string = staticImages.staging;
-
+export const CONTENT_STATIC_IMAGES_URI: string = staticImages.local;

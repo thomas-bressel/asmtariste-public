@@ -101,7 +101,9 @@ export class LoginModal implements OnInit, OnDestroy {
     this.loginForm = this.fb.group({
       nickname: new FormControl('', { validators: [Validators.required], nonNullable: true }),
       password: new FormControl('', { validators: [Validators.required], nonNullable: true }),
-      email: new FormControl('', { validators: [Validators.required, Validators.email], nonNullable: true })
+      email: new FormControl('', { validators: [Validators.required, Validators.email], nonNullable: true }),
+      acceptCgu: new FormControl(false, { nonNullable: true }),
+      acceptPrivacy: new FormControl(false, { nonNullable: true })
     });
 
     // Handle modal closure with ESC key
@@ -221,12 +223,18 @@ export class LoginModal implements OnInit, OnDestroy {
     if (this.mode() === 'login') {
       this.loginForm.get('email')?.clearValidators();
       this.loginForm.get('password')?.setValidators([Validators.required]);
+      this.loginForm.get('acceptCgu')?.clearValidators();
+      this.loginForm.get('acceptPrivacy')?.clearValidators();
     } else {
       this.loginForm.get('email')?.setValidators([Validators.required, Validators.email]);
       this.loginForm.get('password')?.clearValidators();
+      this.loginForm.get('acceptCgu')?.setValidators([Validators.requiredTrue]);
+      this.loginForm.get('acceptPrivacy')?.setValidators([Validators.requiredTrue]);
     }
     this.loginForm.get('email')?.updateValueAndValidity();
     this.loginForm.get('password')?.updateValueAndValidity();
+    this.loginForm.get('acceptCgu')?.updateValueAndValidity();
+    this.loginForm.get('acceptPrivacy')?.updateValueAndValidity();
   }
 
 

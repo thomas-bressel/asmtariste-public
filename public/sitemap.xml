@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Pages statiques -->
+  <url><loc>https://asmtariste.fr/</loc><priority>1.0</priority></url>
+  <url><loc>https://asmtariste.fr/coding</loc><priority>0.8</priority></url>
+  <url><loc>https://asmtariste.fr/tutoriel</loc><priority>0.8</priority></url>
+  <url><loc>https://asmtariste.fr/documentation</loc><priority>0.8</priority></url>
+  <url><loc>https://asmtariste.fr/actualite</loc><priority>0.8</priority></url>
+  <url><loc>https://asmtariste.fr/ressources</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/a-propos</loc><priority>0.5</priority></url>
+
+  <!-- Articles actualité -->
+  <url><loc>https://asmtariste.fr/actualite/article/asmtariste-est-ouvert</loc><priority>0.6</priority></url>
+  <url><loc>https://asmtariste.fr/actualite/article/miracle-boy-in-dragon-land-le-projet-dun-passionne</loc><priority>0.6</priority></url>
+  <url><loc>https://asmtariste.fr/actualite/article/c-est-la-rentree-et-des-choses-vont-changer</loc><priority>0.6</priority></url>
+  <url><loc>https://asmtariste.fr/actualite/article/bienvenue-sur-asmtariste-20</loc><priority>0.6</priority></url>
+
+  <!-- Articles coding -->
+  <url><loc>https://asmtariste.fr/coding/article/savoir-configurer-les-outils-de-developpement-pa</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/l-octet-sous-toutes-ses-formes</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/savoir-configurer-les-outils-de-developpement-pa-2</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/la-ram-et-la-rom</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/les-registres-du-68000</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/afficher-une-image</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/afficher-un-sprite-partie-1</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/masquage-de-sprite-partie-1</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/deplacer-un-sprite-partie-1</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/afficher-un-decor-avec-une-maptile</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/coding/article/collisions-avec-le-decor</loc><priority>0.7</priority></url>
+
+  <!-- Articles documentation -->
+  <url><loc>https://asmtariste.fr/documentation/article/a-propos-du-bios</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/documentation/article/le-systeme-dexploitation-tos</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/documentation/article/messages-d-erreur-du-bios-gemdos</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/documentation/article/les-modes-d-adressage-du-68000</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/documentation/article/a-propos-du-xbios-fonctions-de-l-ecran</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/documentation/article/a-propos-du-gemdos-fonctions-de-fichier</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/documentation/article/devpac-v310-les-raccourcis-clavier</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/documentation/article/a-propos-du-gemdos-date-et-heure</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/documentation/article/mapping-memoire-informations-generales</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/documentation/article/mapping-memoire-vecteurs-d-exception-variables</loc><priority>0.7</priority></url>
+
+  <!-- Articles tutoriel -->
+  <url><loc>https://asmtariste.fr/tutoriel/article/creer-un-disque-dur-virtuel-ou-ram-disk</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/tutoriel/article/capture-et-conversion-d-image-neo-pi1-et-pc1</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/tutoriel/article/creer-une-planche-de-sprites-avec-multipaint</loc><priority>0.7</priority></url>
+  <url><loc>https://asmtariste.fr/tutoriel/article/creer-un-tileset-avec-tiled</loc><priority>0.7</priority></url>
+
+</urlset>
+

@@ -47,6 +47,22 @@
                     <label for="email" class="label">Email</label>
                     <input id="email" type="email" formControlName="email" class="input" placeholder="votre@email.fr" autocomplete="email" inputmode="email" required />
                 </div>
+
+                <div class="checkboxGroup">
+                    <input type="checkbox" id="acceptCgu" formControlName="acceptCgu" class="checkbox" />
+                    <label for="acceptCgu" class="checkboxLabel">
+                        J'ai lu et j'accepte les
+                        <a [routerLink]="['/cgu']" class="link" (click)="close()" target="_blank">Conditions Générales d'Utilisation</a>
+                    </label>
+                </div>
+
+                <div class="checkboxGroup">
+                    <input type="checkbox" id="acceptPrivacy" formControlName="acceptPrivacy" class="checkbox" />
+                    <label for="acceptPrivacy" class="checkboxLabel">
+                        J'ai lu et j'accepte la
+                        <a [routerLink]="['/politique-de-confidentialite']" class="link" (click)="close()" target="_blank">Politique de confidentialité</a>
+                    </label>
+                </div>
                 }
 
                 @if (mode() === 'login') {
