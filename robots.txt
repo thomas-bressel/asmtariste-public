@@ -3,4 +3,64 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
+# Bots IA - OpenAI
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+# Bots IA - Google
+User-agent: Google-Extended
+Disallow: /
+
+# Bots IA - Anthropic
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+# Bots IA - Meta
+User-agent: FacebookBot
+Disallow: /
+
+# Bots IA - Apple
+User-agent: Applebot-Extended
+Disallow: /
+
+# Bots IA - Common Crawl (utilisé pour entraîner des IA)
+User-agent: CCBot
+Disallow: /
+
+# Bots IA - Cohere
+User-agent: cohere-ai
+Disallow: /
+
+# Bots IA - Perplexity
+User-agent: PerplexityBot
+Disallow: /
+
+# Bots IA - Amazon
+User-agent: Amazonbot
+Disallow: /
+
+# Bots IA - Bytedance
+User-agent: Bytespider
+Disallow: /
+
+# Bots IA - Diffbot
+User-agent: Diffbot
+Disallow: /
+
+# Bots IA - Omgili
+User-agent: omgili
+Disallow: /
+
 Sitemap: https://asmtariste.fr/sitemap.xml
