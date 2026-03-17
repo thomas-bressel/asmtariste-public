@@ -69,6 +69,16 @@ export const routes: Routes = [
                     (await import('./views/public/article/article')).Article
             },
             {
+                path: 'magazines',
+                loadComponent: async () =>
+                    (await import('./views/private/magazines/magazines')).Magazines
+            },
+            {
+                path: 'magazines/article/:slug',
+                loadComponent: async () =>
+                    (await import('./views/private/article/article')).Article
+            },
+            {
                 path: 'ressources/:slug',
                 loadComponent: async () =>
                     (await import('./views/public/ressources/ressources')).Ressources,

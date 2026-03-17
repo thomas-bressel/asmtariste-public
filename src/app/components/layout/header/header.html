@@ -20,6 +20,10 @@
     <a class="nav__item text-color-gray" [routerLink]="['/coding']" (click)="toggleMenu()">Coding</a>
     <a class="nav__item text-color-gray" [routerLink]="['/documentation']" (click)="toggleMenu()">Documentation</a>
     <a class="nav__item text-color-gray" [routerLink]="['/tutoriel']" (click)="toggleMenu()">Tutoriel</a>
+
+    @if(auth.isAuthenticated()) {
+        <a class="nav__item text-color-gray" [routerLink]="['/magazines']" (click)="toggleMenu()">Magazines</a>
+    }
     
     @if (auth.isAuthenticated()) {
         <button  class="nav__item btn btn--ghost text-color-dark"  (click)="handleLogout($event)" type="button">
