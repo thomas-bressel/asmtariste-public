@@ -1,5 +1,4 @@
-import { Injectable, inject } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { Injectable } from '@angular/core';
 import { ArticleData } from '@models/article.model';
 import { CONTENT_API_URI,PROJECT_ID } from '../../config-api';
 
@@ -20,8 +19,6 @@ import { CONTENT_API_URI,PROJECT_ID } from '../../config-api';
     providedIn: 'root'
 })
 export class ArticleApiService {
-    private readonly authService = inject(AuthService);
-
     /**
      * Retrieves the most recent articles from the server
      * Makes HTTP GET request with limit of 5 articles
@@ -34,11 +31,8 @@ export class ArticleApiService {
             'X-Project-ID': PROJECT_ID
          });
 
-        // Retrieve token from cookie and add it to header
-        const token = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('session_token='))
-            ?.split('=')[1];
+        // Retrieve token from localStorage and add it to header
+        const token = localStorage.getItem('session_token');
 
         if (token) {
             headers.append('Authorization', `Bearer ${token}`);
