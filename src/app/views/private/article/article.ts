@@ -72,7 +72,7 @@ export class Article implements OnInit, OnDestroy {
   private paginationService = inject(PaginationService);
   private seo = inject(SeoService);
 
-  /**
+  /**production
    * Base URL for content API endpoints.
    * @public
    * @type {string}

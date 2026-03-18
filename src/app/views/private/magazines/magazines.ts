@@ -112,7 +112,7 @@ export class Magazines implements OnInit {
    */
   public handleCardBtn(idArticle: number, slug: string, event: Event): void {
     this.selectorService.selectItem(idArticle, slug);
-    this.router.navigate(['/coding/article', slug]);
+    this.router.navigate(['/magazines/article', slug]);
 
   }
 }
