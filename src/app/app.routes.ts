@@ -130,6 +130,16 @@ export const routes: Routes = [
                     (await import('./views/private/profile/profile')).Profile,
                 canActivate: [authGuard]
             },
+            {
+                path: 'cancel',
+                loadComponent: async () =>
+                    (await import('./views/public/payment-cancel/payment-cancel')).PaymentCancel
+            },
+            {
+                path: 'completed',
+                loadComponent: async () =>
+                    (await import('./views/public/payment-completed/payment-completed')).PaymentCompleted
+            },
         ]
     },
     {
