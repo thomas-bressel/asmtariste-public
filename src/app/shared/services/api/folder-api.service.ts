@@ -1,11 +1,14 @@
 // Angular imports
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 // Model imports
 import { FolderData } from '@models/folder.model';
 
 // Config imports
-import { CONTENT_API_URI, PROJECT_ID } from '../../config-api';
+import { CONTENT_API_URI } from '../../config-api';
+
+// Service imports
+import { AuthApi } from './auth-api.service';
 
 /**
  * Folder API Service for HTTP Operations
@@ -22,23 +25,7 @@ import { CONTENT_API_URI, PROJECT_ID } from '../../config-api';
   providedIn: 'root'
 })
 export class FolderApiService {
-
-  /**
-   * Creates HTTP headers with Bearer token from localStorage
-   * @private
-   * @returns {Headers} Headers object with Content-Type and Authorization (if token exists)
-   */
-  private createAuthHeaders(): Headers {
-    const headers = new Headers({ 
-      'Content-Type': 'application/json',
-      'X-Project-ID': PROJECT_ID 
-    });
-    const token = localStorage.getItem('session_token');
-    if (token) {
-      headers.append('Authorization', `Bearer ${token}`);
-    }
-    return headers;
-  }
+  private readonly authApi = inject(AuthApi);
 
   /**
    * Retrieves all folders from the server
@@ -49,9 +36,8 @@ export class FolderApiService {
   async getAllFolders(): Promise<FolderData[]> {
     // console.log("\x1b[34m[API] - getAllFolders() called \x1b[0m");
 
-    const response = await fetch(`${CONTENT_API_URI}/content/v1/public/folders`, {
-      method: 'GET',
-      headers: this.createAuthHeaders()
+    const response = await this.authApi.fetchWithAuth(`${CONTENT_API_URI}/content/v1/public/folders`, {
+      method: 'GET'
     });
 
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);

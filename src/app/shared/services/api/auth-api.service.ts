@@ -40,15 +40,39 @@ export class AuthApi {
    * @returns {Headers} Headers object with Content-Type and Authorization (if token exists)
    */
   private createAuthHeaders(): Headers {
-    const headers = new Headers({ 
+    const headers = new Headers({
       'Content-Type': 'application/json',
-      'X-Project-ID': PROJECT_ID 
+      'X-Project-ID': PROJECT_ID
     });
     const token = localStorage.getItem('session_token');
     if (token) {
       headers.append('Authorization', `Bearer ${token}`);
     }
     return headers;
+  }
+
+  /**
+   * Authenticated fetch wrapper with automatic token refresh on 401
+   * Retries the request once with a new session token if the first attempt returns 401
+   * @param {string} url - The URL to fetch
+   * @param {RequestInit} [options={}] - Fetch options (method, body, etc.)
+   * @returns {Promise<Response>} The fetch response
+   * @throws {Error} Throws 'SESSION_EXPIRED' if refresh also fails
+   */
+  async fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
+    const response = await fetch(url, { ...options, headers: this.createAuthHeaders() });
+
+    if (response.status !== 401) return response;
+
+    // Token expired — attempt refresh
+    try {
+      await this.refreshSession();
+    } catch {
+      throw new Error('SESSION_EXPIRED');
+    }
+
+    // Retry with new token
+    return fetch(url, { ...options, headers: this.createAuthHeaders() });
   }
 
   /**
@@ -182,10 +206,8 @@ export class AuthApi {
    * @throws {Error} Throws error if logout request fails
    */
   async logout(): Promise<void> {
-    const response = await fetch(`${this.baseUrl}/user/v1/public/logout`, {
-
-      method: 'POST',
-      headers: this.createAuthHeaders()
+    const response = await this.fetchWithAuth(`${this.baseUrl}/user/v1/public/logout`, {
+      method: 'POST'
     });
 
     if (!response.ok) {
@@ -230,11 +252,9 @@ export class AuthApi {
    * @throws {Error} Throws error if profile is inaccessible or user is not authenticated
    */
   async getProfile(): Promise<ProfileResponse> {
-    const response = await fetch(`${this.baseUrl}/user/v1/public/profile`, {
-      headers: this.createAuthHeaders()
-    });
+    const response = await this.fetchWithAuth(`${this.baseUrl}/user/v1/public/profile`);
 
-    if (!response.ok)  throw new Error(`Profile inaccessible: ${response.status}`);
+    if (!response.ok) throw new Error(`Profile inaccessible: ${response.status}`);
 
     return response.json();
   }
@@ -341,6 +361,37 @@ export class AuthApi {
     }
 
     return response.json();
+  }
+
+  /**
+   * Refreshes the session using the refresh token stored in localStorage
+   * Stores new session and refresh tokens in localStorage upon success
+   * @returns {Promise<{ sessionToken: string; refreshToken?: string }>} New tokens
+   * @throws {Error} Throws error if refresh fails or no refresh token available
+   */
+  async refreshSession(): Promise<{ sessionToken: string; refreshToken?: string }> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (!refreshToken) throw new Error('No refresh token available');
+
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'X-Project-ID': PROJECT_ID
+    });
+
+    const response = await fetch(`${this.baseUrl}/user/v1/public/refresh`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ refreshToken })
+    });
+
+    if (!response.ok) throw new Error(`Refresh failed: ${response.status}`);
+
+    const data = await response.json();
+
+    if (data.sessionToken) localStorage.setItem('session_token', data.sessionToken);
+    if (data.refreshToken) localStorage.setItem('refresh_token', data.refreshToken);
+
+    return data;
   }
 
   /**

@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { FileData } from '@models/file.model';
-import { CONTENT_API_URI, PROJECT_ID } from '../../config-api';
+import { CONTENT_API_URI } from '../../config-api';
+import { AuthApi } from './auth-api.service';
 
 /**
  * File API Service for HTTP Operations
@@ -12,33 +13,14 @@ import { CONTENT_API_URI, PROJECT_ID } from '../../config-api';
  * Features:
  * - Retrieve files by folder ID
  * - Download files with proper headers and blob handling
- * - Automatic Bearer token authentication
+ * - Automatic Bearer token authentication with refresh on 401
  * - Error handling for access denied and not found scenarios
  */
 @Injectable({
   providedIn: 'root'
 })
 export class FileApiService {
-
-  /**
-   * Creates HTTP headers with Bearer token from localStorage
-   * @private
-   * @returns {Headers} Headers object with Content-Type and Authorization (if token exists)
-   */
-  private createAuthHeaders(): Headers {
-    const headers = new Headers({ 
-      'Content-Type': 'application/json',
-      'X-Project-ID': PROJECT_ID 
-    });
-    const token = localStorage.getItem('session_token');
-    if (token) {
-      headers.append('Authorization', `Bearer ${token}`);
-    }
-    return headers;
-  }
-
-
-
+  private readonly authApi = inject(AuthApi);
 
   /**
    * Retrieves all files belonging to a specific folder
@@ -48,9 +30,8 @@ export class FileApiService {
    * @throws {Error} Throws error if HTTP request fails or user is not authenticated
    */
   async getFilesByFolder(folderId: number): Promise<FileData[]> {
-    const response = await fetch(`${CONTENT_API_URI}/content/v1/public/files/folder/${folderId}`, {
-      method: 'GET',
-      headers: this.createAuthHeaders()
+    const response = await this.authApi.fetchWithAuth(`${CONTENT_API_URI}/content/v1/public/files/folder/${folderId}`, {
+      method: 'GET'
     });
 
     if (!response.ok) {
@@ -61,10 +42,6 @@ export class FileApiService {
     // console.log('getFileByFolder() : ', data)
     return Array.isArray(data) ? data : [];
   }
-
-
-
-
 
   /**
    * Downloads a file by its ID and returns the blob with filename
@@ -77,9 +54,8 @@ export class FileApiService {
    * @throws {Error} Throws generic error for other HTTP failures
    */
   async downloadFile(fileId: number): Promise<{ blob: Blob; filename: string }> {
-    const response = await fetch(`${CONTENT_API_URI}/content/v1/public/files/${fileId}/download`, {
-      method: 'GET',
-      headers: this.createAuthHeaders()
+    const response = await this.authApi.fetchWithAuth(`${CONTENT_API_URI}/content/v1/public/files/${fileId}/download`, {
+      method: 'GET'
     });
 
     if (!response.ok) {

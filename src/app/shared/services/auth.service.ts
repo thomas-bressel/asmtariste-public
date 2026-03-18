@@ -110,12 +110,19 @@ export class AuthService {
 
         // Verify if the token is valid and retrieve user data
         const userData = await this.authApi.checkSession();
-
         this.authStore.setAuthData(userData, token);
       } catch (error) {
-        console.error('Invalid token during initialization:', error);
-        this.authApi.clearTokens();
-        this.authStore.clearAuth();
+        // Session expired — attempt to refresh before clearing
+        try {
+          const refreshed = await this.authApi.refreshSession();
+          const userData = await this.authApi.checkSession();
+          const refreshToken = localStorage.getItem('refresh_token');
+          this.authStore.setAuthData(userData, refreshed.sessionToken, refreshToken);
+        } catch {
+          console.error('Session expired and refresh failed, logging out');
+          this.authApi.clearTokens();
+          this.authStore.clearAuth();
+        }
       }
     }
   }

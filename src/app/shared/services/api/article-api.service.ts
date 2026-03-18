@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ArticleData } from '@models/article.model';
-import { CONTENT_API_URI,PROJECT_ID } from '../../config-api';
+import { CONTENT_API_URI, PROJECT_ID } from '../../config-api';
+import { AuthApi } from './auth-api.service';
 
 /**
  * Article API Service for HTTP Operations
@@ -19,6 +20,8 @@ import { CONTENT_API_URI,PROJECT_ID } from '../../config-api';
     providedIn: 'root'
 })
 export class ArticleApiService {
+    private readonly authApi = inject(AuthApi);
+
     /**
      * Retrieves the most recent articles from the server
      * Makes HTTP GET request with limit of 5 articles
@@ -27,21 +30,9 @@ export class ArticleApiService {
      * @throws {Error} Throws error if HTTP request fails
      */
     public async getAllArticles(): Promise<ArticleData[]> {
-        const headers = new Headers({ 'Content-Type': 'application/json',
-            'X-Project-ID': PROJECT_ID
-         });
-
-        // Retrieve token from localStorage and add it to header
-        const token = localStorage.getItem('session_token');
-
-        if (token) {
-            headers.append('Authorization', `Bearer ${token}`);
-        }
-
-        const response = await fetch(`${CONTENT_API_URI}/content/v1/public/last-articles?q=5`, {
+        const response = await this.authApi.fetchWithAuth(`${CONTENT_API_URI}/content/v1/public/last-articles?q=5`, {
             method: 'GET',
-            headers,
-            credentials: 'include'  // Send cookies automatically
+            credentials: 'include'
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
