@@ -3,7 +3,7 @@ name: Deploy ASMtariSTe - website to VPS
 on:
   push:
     branches: [ main ]
- 
+  
 jobs:
 
   deploy:
