@@ -71,12 +71,14 @@ export const routes: Routes = [
             {
                 path: 'magazines',
                 loadComponent: async () =>
-                    (await import('./views/private/magazines/magazines')).Magazines
+                    (await import('./views/private/magazines/magazines')).Magazines,
+                canActivate: [authGuard]
             },
             {
                 path: 'magazines/article/:slug',
                 loadComponent: async () =>
-                    (await import('./views/private/article/article')).Article
+                    (await import('./views/private/article/article')).Article,
+                canActivate: [authGuard]
             },
             {
                 path: 'ressources/:slug',

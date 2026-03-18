@@ -5,12 +5,11 @@ import { filter } from 'rxjs/operators';
 
 // Service imports
 import { AuthService } from '@services/auth.service';
-import { Notification, NotificationService } from '@services/ui/notification.service';
+import { NotificationService } from '@services/ui/notification.service';
 
 // Component imports
 import { LoginModal } from '@components/ui/login-modal/login-modal';
-import { USER_API_URI, USER_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
-import { NotExpr } from '@angular/compiler';
+import { USER_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
 /**
  * Angular standalone header component for application navigation and authentication.
