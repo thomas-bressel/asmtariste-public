@@ -4,6 +4,7 @@ export const PROJECT_ID: string = 'proj_8k2h9f3l';
 // Definition of Types
 const environment: keyof EnvConfig = "production" 
 
+
 interface EnvConfig {
     local: string;
     production: string;
