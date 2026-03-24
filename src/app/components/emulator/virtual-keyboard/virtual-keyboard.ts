@@ -30,7 +30,7 @@ export class VirtualKeyboard {
     ],
   ];
 
-  private pressed = new Set<number>();
+  protected pressed = new Set<number>();
 
   private dispatch(type: 'keydown' | 'keyup', keyCode: number): void {
     document.dispatchEvent(new KeyboardEvent(type, { keyCode, which: keyCode, bubbles: true }));
