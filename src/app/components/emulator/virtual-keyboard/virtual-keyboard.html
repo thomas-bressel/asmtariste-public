@@ -5,10 +5,12 @@
         <button
           class="vkb__key"
           [class.vkb__key--wide]="vkey.wide"
-          (touchstart)="fire(vkey)"
-          (touchend)="release(vkey)"
-          (mousedown)="fire(vkey)"
-          (mouseup)="release(vkey)">
+          [class.vkb__key--active]="pressed.has(vkey.keyCode)"
+          (touchstart)="onTouchStart($event, vkey)"
+          (touchend)="onTouchEnd($event, vkey)"
+          (mousedown)="onMouseDown(vkey)"
+          (mouseup)="onMouseUp(vkey)"
+          (mouseleave)="onMouseUp(vkey)">
           {{ vkey.label }}
         </button>
       }

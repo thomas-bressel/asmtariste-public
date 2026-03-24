@@ -30,11 +30,35 @@ export class VirtualKeyboard {
     ],
   ];
 
-  fire(vkey: VKey): void {
-    document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: vkey.keyCode, which: vkey.keyCode, bubbles: true }));
+  private pressed = new Set<number>();
+
+  private dispatch(type: 'keydown' | 'keyup', keyCode: number): void {
+    document.dispatchEvent(new KeyboardEvent(type, { keyCode, which: keyCode, bubbles: true }));
   }
 
-  release(vkey: VKey): void {
-    document.dispatchEvent(new KeyboardEvent('keyup', { keyCode: vkey.keyCode, which: vkey.keyCode, bubbles: true }));
+  onTouchStart(event: TouchEvent, vkey: VKey): void {
+    event.preventDefault();
+    if (!this.pressed.has(vkey.keyCode)) {
+      this.pressed.add(vkey.keyCode);
+      this.dispatch('keydown', vkey.keyCode);
+    }
+  }
+
+  onTouchEnd(event: TouchEvent, vkey: VKey): void {
+    event.preventDefault();
+    this.pressed.delete(vkey.keyCode);
+    this.dispatch('keyup', vkey.keyCode);
+  }
+
+  onMouseDown(vkey: VKey): void {
+    if (!this.pressed.has(vkey.keyCode)) {
+      this.pressed.add(vkey.keyCode);
+      this.dispatch('keydown', vkey.keyCode);
+    }
+  }
+
+  onMouseUp(vkey: VKey): void {
+    this.pressed.delete(vkey.keyCode);
+    this.dispatch('keyup', vkey.keyCode);
   }
 }
