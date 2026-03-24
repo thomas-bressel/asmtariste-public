@@ -1,0 +1,56 @@
+@use "colors" as color;
+@use "fonts" as font;
+
+.vkb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem;
+  background: color.$bg-light;
+  border: 1px solid color.$border-white;
+  border-radius: 12px;
+  margin-top: 1rem;
+  user-select: none;
+
+  // Caché sur desktop
+  @media (min-width: 1024px) {
+    display: none;
+  }
+
+  &__row {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: center;
+  }
+
+  &__key {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    height: 52px;
+    background: color.$bg-light;
+    border: 1px solid color.$border-white;
+    border-radius: 8px;
+    color: color.$text-dark;
+    font-family: font.$orbitronBold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.1s ease, border-color 0.1s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+
+    &--wide {
+      min-width: 110px;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+
+    &:active {
+      background: rgba(0, 208, 132, 0.15);
+      border-color: color.$primary;
+      color: color.$primary;
+    }
+  }
+}

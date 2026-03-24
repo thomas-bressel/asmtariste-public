@@ -1,0 +1,67 @@
+<div class="emulator__bloc-top">
+
+  <div class="emulator__bloc-top-left">
+    <canvas class="emulator__atari-esty" id="EstyJsOutput" width="640" height="400"></canvas>
+    <app-virtual-keyboard />
+  </div>
+ <div class="emulator__bloc-top-right">
+    <div class="controls">
+      <div class="control-group">
+        <h3>Controls</h3>
+        <div class="control-btns">
+<button class="icon-btn" (click)="onReset()" title="Reset">
+            <img src="icons/green/ix--reset.svg" alt="Reset">
+          </button>
+          <button class="icon-btn" (click)="onPauseResume()" [title]="pauseLabel">
+            <img [src]="pauseLabel === 'Pause' ? 'icons/green/carbon--pause-outline.svg' : 'icons/green/carbon--play-outline.svg'" [alt]="pauseLabel">
+          </button>
+          <button class="icon-btn" (click)="onSoundToggle()" [title]="soundLabel">
+            <img [src]="soundLabel === 'Turn sound off' ? 'icons/green/ix--sound-loud.svg' : 'icons/green/ix--sound-off.svg'" [alt]="soundLabel">
+          </button>
+          <button class="icon-btn" (click)="onLockMouse()" [title]="mouseLockLabel">
+            <img [src]="mouseLockLabel === 'Lock mouse' ? 'icons/green/bx--mouse-alt.svg' : 'icons/green/material-symbols--mouse-lock-outline.svg'" [alt]="mouseLockLabel">
+          </button>
+          <button class="icon-btn" (click)="onToggleMonitor()" [title]="monoMonitor ? 'Monochrome' : 'Couleur'" [class.is-active]="monoMonitor">
+            <img [src]="monoMonitor ? 'icons/green/ic--twotone-monitor-mono.svg' : 'icons/green/ic--twotone-monitor-color.svg'" alt="Monitor">
+          </button>
+          <button class="icon-btn icon-btn--fullscreen" (click)="onToggleFullscreen()" [title]="fullscreen ? 'Exit fullscreen' : 'Fullscreen'" [class.is-active]="fullscreen">
+            <img src="icons/green/qlementine-icons--fullscreen-16.svg" alt="Fullscreen">
+          </button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <h3>Lecteur A</h3>
+        @if (selectedGame) {
+          <span class="drive-label">{{ selectedGame.label }}</span>
+          <button (click)="onEjectA()">⏏ Eject</button>
+        } @else {
+          <label class="file-btn" for="fileA">Choisir un fichier</label>
+          <input id="fileA" #fileA type="file" accept=".st,.msa,.sts,.zip" (change)="onFileA($event)" />
+        }
+      </div>
+
+      <div class="control-group">
+        <h3>Lecteur B</h3>
+        <label class="file-btn" for="fileB">Choisir un fichier</label>
+        <input id="fileB" #fileB type="file" accept=".st,.msa,.sts,.zip" (change)="onFileB($event)" />
+      </div>
+
+      <div class="control-group">
+        <h3>TOS ROM</h3>
+        @if (tosLabel) {
+          <span class="drive-label">{{ tosLabel }}</span>
+        }
+        <label class="file-btn" for="fileTos">Charger un TOS (.img)</label>
+        <input id="fileTos" type="file" accept=".img" (change)="onChangeTOS($event)" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-game-library-drawer
+  [isOpen]="libraryOpen"
+  [selectedGame]="selectedGame"
+  (toggled)="toggleLibrary()"
+  (gamePicked)="onGameClick($any($event))"
+/>

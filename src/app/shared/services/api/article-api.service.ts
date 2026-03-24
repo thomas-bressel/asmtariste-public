@@ -111,9 +111,9 @@ export class ArticleApiService {
      * @throws {Error} Throws error if HTTP request fails or article not found
      */
     public async getArticleBySlug(articleSlug: string): Promise<ArticleData> {
-        const headers = new Headers({ 
+        const headers = new Headers({
       'Content-Type': 'application/json',
-      'X-Project-ID': PROJECT_ID 
+      'X-Project-ID': PROJECT_ID
     });
 
         const response = await fetch(`${CONTENT_API_URI}/content/v1/public/article?slug=${articleSlug}`, {
@@ -126,5 +126,19 @@ export class ArticleApiService {
 
         const data = await response.json();
         return data;
+    }
+
+    public async getRssFeed(): Promise<string> {
+        const headers = new Headers({ 'X-Project-ID': PROJECT_ID });
+
+        const response = await fetch(`${CONTENT_API_URI}/content/v1/public/rss`, {
+            method: 'GET',
+            headers,
+            credentials: 'include'
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+        return response.text();
     }
 }

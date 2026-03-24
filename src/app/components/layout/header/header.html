@@ -20,6 +20,7 @@
     <a class="nav__item text-color-gray" [routerLink]="['/coding']" (click)="toggleMenu()">Coding</a>
     <a class="nav__item text-color-gray" [routerLink]="['/documentation']" (click)="toggleMenu()">Documentation</a>
     <a class="nav__item text-color-gray" [routerLink]="['/tutoriel']" (click)="toggleMenu()">Tutoriel</a>
+    <a class="nav__item text-color-gray" [routerLink]="['/emulator']" (click)="toggleMenu()">Jeux</a>
 
     @if(auth.isAuthenticated()) {
         <a class="nav__item text-color-gray" [routerLink]="['/magazines']" (click)="toggleMenu()">Magazines</a>

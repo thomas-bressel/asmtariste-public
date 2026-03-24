@@ -1,0 +1,17 @@
+<div class="vkb">
+  @for (row of rows; track $index) {
+    <div class="vkb__row">
+      @for (vkey of row; track vkey.keyCode) {
+        <button
+          class="vkb__key"
+          [class.vkb__key--wide]="vkey.wide"
+          (touchstart)="fire(vkey)"
+          (touchend)="release(vkey)"
+          (mousedown)="fire(vkey)"
+          (mouseup)="release(vkey)">
+          {{ vkey.label }}
+        </button>
+      }
+    </div>
+  }
+</div>

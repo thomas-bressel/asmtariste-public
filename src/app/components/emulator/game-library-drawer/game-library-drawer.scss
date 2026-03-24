@@ -1,0 +1,122 @@
+@use "colors" as color;
+@use "spacing" as space;
+@use "fonts" as font;
+
+.library-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 auto;
+    padding: 0.5rem 1.5rem;
+    background: color.$bg-light;
+    border: 1px solid color.$border-white;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    font-family: font.$orbitronBold;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: color.$text-gray;
+    transition: color 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      color: color.$primary;
+      border-color: color.$primary;
+    }
+  }
+
+  &__toggle-label {
+    color: inherit;
+  }
+
+  &__toggle-arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+
+    &.is-open {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__panel {
+    background: color.$bg-light;
+    border-top: 1px solid color.$border-white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &.is-open &__panel {
+    max-height: 220px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  &.is-open &__toggle {
+    color: color.$primary;
+    border-color: color.$primary;
+  }
+
+  &__list {
+    list-style: none;
+    display: flex;
+    gap: space.$sm;
+    padding: space.$sm;
+    width: max-content;
+  }
+
+  &__game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem;
+    background: color.$bg-light;
+    border: 1px solid color.$border-white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100px;
+    flex-shrink: 0;
+
+    img {
+      width: 56px;
+      height: 74px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    h3 {
+      font-size: 0.6rem;
+      font-family: font.$orbitronBold;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-align: center;
+      line-height: 1.3;
+      color: color.$text-dark;
+    }
+
+    &:hover {
+      border-color: color.$primary;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 208, 132, 0.15);
+
+      h3 { color: color.$primary; }
+    }
+
+    &.is-selected {
+      border-color: color.$primary;
+      box-shadow: 0 0 0 3px rgba(0, 208, 132, 0.2);
+
+      h3 { color: color.$primary; }
+    }
+  }
+}

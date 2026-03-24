@@ -81,6 +81,11 @@ export const routes: Routes = [
                 canActivate: [authGuard]
             },
             {
+                path: 'emulator', 
+                loadComponent: async () => 
+                    (await import('./views/public/emulator/emulator')).Emulator
+            },
+            {
                 path: 'ressources/:slug',
                 loadComponent: async () =>
                     (await import('./views/public/ressources/ressources')).Ressources,

@@ -1,0 +1,11 @@
+<div class="game-box-modal__backdrop" (click)="onClose()">
+  <button class="game-box-modal__close" (click)="onClose()" title="Fermer">✕</button>
+  <div class="game-box-modal__images" (click)="$event.stopPropagation()">
+    @if (frontVisible()) {
+      <img [src]="frontUrl" [alt]="game().label" (error)="frontVisible.set(false)" />
+    }
+    @if (backVisible()) {
+      <img [src]="backUrl" [alt]="game().label" (error)="backVisible.set(false)" />
+    }
+  </div>
+</div>

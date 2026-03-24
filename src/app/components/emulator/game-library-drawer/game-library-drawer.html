@@ -1,0 +1,24 @@
+<div class="library-drawer" [class.is-open]="isOpen()">
+  <button class="library-drawer__toggle" (click)="onToggle()">
+    <span class="library-drawer__toggle-label">Bibliothèque de Jeux</span>
+    <span class="library-drawer__toggle-arrow" [class.is-open]="isOpen()">▲</span>
+  </button>
+  <div class="library-drawer__panel">
+    <ul class="library-drawer__list">
+      @for (game of gameLibrary.games; track game.file) {
+      <li class="library-drawer__game"
+          [class.is-selected]="selectedGame() === game"
+          (click)="onGameClick(game)"
+          (contextmenu)="onGameRightClick($event, game)"
+          title="Clic gauche : lancer — Clic droit : voir la boîte">
+        <img [src]="miniUrl(game)" [alt]="game.label" />
+        <h3>{{ game.label }}</h3>
+      </li>
+      }
+    </ul>
+  </div>
+</div>
+
+@if (previewGame) {
+  <app-game-box-modal [game]="previewGame" (closed)="onModalClose()" />
+}
