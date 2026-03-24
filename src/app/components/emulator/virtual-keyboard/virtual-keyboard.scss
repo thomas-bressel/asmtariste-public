@@ -22,6 +22,26 @@
     display: flex;
     gap: 0.4rem;
     justify-content: center;
+    width: 100%;
+
+    &--left {
+      justify-content: flex-start;
+      padding-left: 0.25rem;
+    }
+  }
+
+  &__bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__arrows {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
   }
 
   &__key {
@@ -47,10 +67,22 @@
       letter-spacing: 0.05em;
     }
 
+    &--active {
+      background: rgba(0, 208, 132, 0.15);
+      border-color: color.$primary;
+      color: color.$primary;
+    }
+
     &:active {
       background: rgba(0, 208, 132, 0.15);
       border-color: color.$primary;
       color: color.$primary;
     }
+  }
+
+  &__spacer {
+    display: inline-block;
+    min-width: 52px;
+    height: 52px;
   }
 }

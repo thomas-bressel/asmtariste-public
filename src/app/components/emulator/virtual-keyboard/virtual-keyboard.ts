@@ -4,6 +4,7 @@ interface VKey {
   label: string;
   keyCode: number;
   wide?: boolean;
+  spacer?: boolean;
 }
 
 @Component({
@@ -19,6 +20,9 @@ export class VirtualKeyboard {
       { label: 'ESC',   keyCode: 27 },
       { label: 'Enter', keyCode: 13 },
       { label: 'SPACE', keyCode: 32, wide: true },
+    ],
+    [
+      { label: 'FIRE', keyCode: 17 },
     ],
     [
       { label: '↑', keyCode: 38 },

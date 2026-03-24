@@ -1,10 +1,27 @@
 <div class="vkb">
-  @for (row of rows; track $index) {
-    <div class="vkb__row">
-      @for (vkey of row; track vkey.keyCode) {
+
+  <div class="vkb__row">
+    @for (vkey of rows[0]; track vkey.keyCode) {
+      <button
+        class="vkb__key"
+        [class.vkb__key--wide]="vkey.wide"
+        [class.vkb__key--active]="pressed.has(vkey.keyCode)"
+        (touchstart)="onTouchStart($event, vkey)"
+        (touchend)="onTouchEnd($event, vkey)"
+        (mousedown)="onMouseDown(vkey)"
+        (mouseup)="onMouseUp(vkey)"
+        (mouseleave)="onMouseUp(vkey)">
+        {{ vkey.label }}
+      </button>
+    }
+  </div>
+
+  <div class="vkb__bottom">
+
+    <div class="vkb__row vkb__row--left">
+      @for (vkey of rows[1]; track vkey.keyCode) {
         <button
           class="vkb__key"
-          [class.vkb__key--wide]="vkey.wide"
           [class.vkb__key--active]="pressed.has(vkey.keyCode)"
           (touchstart)="onTouchStart($event, vkey)"
           (touchend)="onTouchEnd($event, vkey)"
@@ -15,5 +32,36 @@
         </button>
       }
     </div>
-  }
+
+    <div class="vkb__arrows">
+      @for (vkey of rows[2]; track vkey.keyCode) {
+        <button
+          class="vkb__key"
+          [class.vkb__key--active]="pressed.has(vkey.keyCode)"
+          (touchstart)="onTouchStart($event, vkey)"
+          (touchend)="onTouchEnd($event, vkey)"
+          (mousedown)="onMouseDown(vkey)"
+          (mouseup)="onMouseUp(vkey)"
+          (mouseleave)="onMouseUp(vkey)">
+          {{ vkey.label }}
+        </button>
+      }
+      <div class="vkb__row">
+        @for (vkey of rows[3]; track vkey.keyCode) {
+          <button
+            class="vkb__key"
+            [class.vkb__key--active]="pressed.has(vkey.keyCode)"
+            (touchstart)="onTouchStart($event, vkey)"
+            (touchend)="onTouchEnd($event, vkey)"
+            (mousedown)="onMouseDown(vkey)"
+            (mouseup)="onMouseUp(vkey)"
+            (mouseleave)="onMouseUp(vkey)">
+            {{ vkey.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+  </div>
+
 </div>
