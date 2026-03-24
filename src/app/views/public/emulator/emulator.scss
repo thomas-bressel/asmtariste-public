@@ -172,3 +172,33 @@
     }
   }
 }
+
+// ===== ESTYJS CREDIT =====
+
+.estyjs-credit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: space.$sm;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid color.$border-white;
+  border-radius: 8px;
+  text-decoration: none;
+  opacity: 0.45;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &__logo {
+    height: 20px;
+    width: auto;
+  }
+
+  &__label {
+    font-size: 0.65rem;
+    color: color.$text-gray;
+    letter-spacing: 0.04em;
+  }
+}
