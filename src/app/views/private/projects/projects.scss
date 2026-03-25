@@ -1,0 +1,276 @@
+@use "colors" as color;
+@use "spacing" as space;
+@use "fonts" as font;
+
+:host {
+  margin-top: 6.5rem;
+  display: block;
+}
+
+.diagonalWrapper {
+  padding: 2.5rem;
+  clip-path: polygon(0 100%, 100% 0%, 100% 100%, 0% 100%);
+  background: color.$bg-dark;
+  margin-bottom: -1px;
+}
+
+.pageHeader {
+  background: color.$bg-dark;
+  padding: 2rem 2rem 0;
+}
+
+.pageTitle {
+  font-family: font.$orbitronBlack;
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: color.$text-primary;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+.pageSubtitle {
+  font-family: font.$interRegular;
+  color: color.$text-white;
+  margin-top: space.$xs;
+  padding-bottom: space.$md;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+// ── Section mes projets ──────────────────────────────────────────
+
+.section {
+  padding: space.$md space.$sm space.$xs;
+  background: color.$bg-light;
+}
+
+.sectionTitle {
+  font-family: font.$orbitronBold;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: color.$text-gray;
+  margin-bottom: space.$sm;
+}
+
+.userProjects {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: space.$sm;
+}
+
+.userProjectCard {
+  background: color.$bg-light;
+  border: 1px solid color.$border-white;
+  border-radius: 12px;
+  padding: space.$sm;
+  display: flex;
+  flex-direction: column;
+  gap: space.$xs;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: color.$shadow-md;
+    border-color: color.$primary;
+  }
+}
+
+.userProjectTitle {
+  font-family: font.$orbitronBold;
+  font-size: 0.9rem;
+  color: color.$text-dark;
+  text-transform: uppercase;
+}
+
+.userProjectPhase {
+  font-family: font.$interRegular;
+  font-size: 0.8rem;
+  color: color.$text-gray;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: color.$border-white;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: color.$primary;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.progressLabel {
+  font-family: font.$interRegular;
+  font-size: 0.75rem;
+  color: color.$text-primary;
+  text-align: right;
+}
+
+.btnResume {
+  align-self: flex-start;
+  margin-top: space.$xs;
+  padding: 0.4rem 1rem;
+  background: color.$primary;
+  border: 2px solid color.$primary;
+  border-radius: 8px;
+  font-family: font.$orbitronBold;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: color.$text-dark;
+  transition: background 0.2s ease;
+
+  &:hover { background: color.$primary-hover; border-color: color.$primary-hover; }
+}
+
+// ── Catalogue des types de jeux ──────────────────────────────────
+
+.catalogGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: space.$sm;
+  padding: space.$xs space.$sm space.$lg;
+  background: color.$bg-light;
+}
+
+.templateCard {
+  background: color.$bg-light;
+  border: 1px solid color.$border-white;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+
+  &:hover {
+    border-color: color.$primary;
+    box-shadow: 0 8px 32px rgba(0, 208, 132, 0.15);
+    transform: translateY(-4px);
+  }
+}
+
+.templateImage {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  background: color.$border-white;
+}
+
+.templateBody {
+  padding: space.$sm;
+}
+
+.templateHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: space.$xs;
+  margin-bottom: 0.25rem;
+}
+
+.templateTitle {
+  font-family: font.$orbitronBold;
+  font-size: 0.95rem;
+  color: color.$text-dark;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.templateRef {
+  font-family: font.$interRegular;
+  font-size: 0.75rem;
+  color: color.$text-gray;
+  margin-bottom: space.$xs;
+}
+
+.templateDescription {
+  font-family: font.$interRegular;
+  font-size: 0.875rem;
+  color: color.$text-gray;
+  line-height: 1.5;
+  margin-bottom: space.$sm;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.templateSkills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-bottom: space.$sm;
+}
+
+.skill {
+  font-family: font.$interRegular;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: color.$bg-light;
+  color: color.$text-gray;
+  border: 1px solid color.$border-white;
+}
+
+.templateFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btnStart {
+  padding: 0.4rem 1rem;
+  background: transparent;
+  border: 2px solid color.$primary;
+  border-radius: 8px;
+  font-family: font.$orbitronBold;
+  font-size: 0.7rem;
+  color: color.$primary;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: color.$primary;
+    color: color.$bg-dark;
+  }
+}
+
+// ── Badges de niveau ─────────────────────────────────────────────
+
+.level {
+  font-family: font.$orbitronBold;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &--beginner        { background: rgba(0, 208, 132, 0.12); color: darken(#00D084, 10%); }
+  &--beginner-plus   { background: rgba(0, 208, 132, 0.08); color: darken(#00D084, 15%); }
+  &--intermediate    { background: rgba(255, 193, 7, 0.12);  color: darken(#FFC107, 15%); }
+  &--intermediate-plus { background: rgba(255, 152, 0, 0.12); color: darken(#FF9800, 10%); }
+  &--advanced        { background: rgba(244, 67, 54, 0.12);  color: darken(#F44336, 5%); }
+  &--expert          { background: rgba(156, 39, 176, 0.12); color: #9C27B0; }
+}
+
+// ── Responsive ───────────────────────────────────────────────────
+
+@media (min-width: 640px) {
+  .userProjects { grid-template-columns: repeat(2, 1fr); }
+  .catalogGrid  { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .pageTitle  { font-size: 2.5rem; }
+  .catalogGrid { grid-template-columns: repeat(4, 1fr); }
+}

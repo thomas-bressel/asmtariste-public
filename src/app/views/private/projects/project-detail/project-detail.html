@@ -1,0 +1,74 @@
+@if (template(); as tmpl) {
+
+  <div class="hero">
+    <img class="heroImage" [src]="tmpl.image" [alt]="tmpl.title" />
+    <div class="heroOverlay"></div>
+    <div class="heroContent">
+      <button class="btnBack" (click)="goBack()">← Retour</button>
+      <span class="level" [ngClass]="difficultyClass(tmpl.difficulty)">{{ tmpl.difficultyLabel }}</span>
+      <h1 class="heroTitle">{{ tmpl.title }}</h1>
+      <p class="heroRef">{{ tmpl.reference }}</p>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="mainCol">
+      <p class="description">{{ tmpl.description }}</p>
+
+      <h2 class="sectionTitle">Compétences mises en œuvre</h2>
+      <ul class="skillList">
+        @for (skill of tmpl.skills; track skill.label) {
+          <li class="skillItem">{{ skill.label }}</li>
+        }
+      </ul>
+
+      <h2 class="sectionTitle">Phases du projet</h2>
+      <div class="phaseList">
+        @for (phase of tmpl.phases; track phase.id; let i = $index) {
+          <div class="phaseRow">
+            <span class="phaseIndex">{{ i }}</span>
+            <div class="phaseInfo">
+              <div class="phaseTitle">{{ phase.title }}</div>
+              <div class="phaseDeliverable">Livrable : {{ phase.deliverableLabel }}</div>
+              <div class="phaseTaskCount">{{ phase.tasks.length }} tâches</div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="sideCol">
+      <div class="ctaBox">
+        <div class="ctaTitle">Prêt à te lancer ?</div>
+        <p class="ctaText">Ce projet comporte <strong>{{ tmpl.phases.length }} phases</strong> et <strong>{{ totalTasks(tmpl) }} tâches</strong> au total. Chaque phase se déverrouille après soumission d'un livrable.</p>
+        <button class="btnStart" (click)="openStartModal()">Démarrer ce projet</button>
+      </div>
+    </div>
+
+  </div>
+
+  @if (showStartModal()) {
+    <div class="modalBackdrop" (click)="closeStartModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h2 class="modalTitle">Configurer le projet</h2>
+        <p class="modalSubtitle">Sur quelle machine vas-tu développer ?</p>
+        <div class="machineOptions">
+          @for (option of machineOptions; track option.value) {
+            <label class="machineOption" [class.selected]="selectedMachine() === option.value">
+              <input type="radio" name="machine" [value]="option.value"
+                [checked]="selectedMachine() === option.value"
+                (change)="selectedMachine.set(option.value)" />
+              {{ option.label }}
+            </label>
+          }
+        </div>
+        <div class="modalActions">
+          <button class="btnCancel" (click)="closeStartModal()">Annuler</button>
+          <button class="btnConfirm" (click)="confirmStart()">C'est parti !</button>
+        </div>
+      </div>
+    </div>
+  }
+
+}

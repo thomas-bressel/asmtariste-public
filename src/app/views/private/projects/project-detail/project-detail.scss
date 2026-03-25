@@ -1,0 +1,365 @@
+@use "colors" as color;
+@use "spacing" as space;
+@use "fonts" as font;
+
+:host {
+  margin-top: 6.5rem;
+  display: block;
+}
+
+// ── Hero (fond sombre — section banner) ──────────────────────────
+
+.hero {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(15,15,15,0.3) 0%, rgba(15,15,15,0.88) 100%);
+}
+
+.heroContent {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: space.$md space.$sm;
+  gap: 0.4rem;
+}
+
+.btnBack {
+  position: absolute;
+  top: space.$sm;
+  left: space.$sm;
+  background: rgba(15,15,15,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  color: color.$text-white;
+  font-family: font.$interRegular;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: color.$bg-dark; }
+}
+
+.heroTitle {
+  font-family: font.$orbitronBlack;
+  font-size: 1.75rem;
+  color: color.$text-white;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+
+.heroRef {
+  font-family: font.$interRegular;
+  font-size: 0.85rem;
+  color: color.$text-light;
+}
+
+// ── Corps (fond clair — contenu) ─────────────────────────────────
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: space.$md;
+  padding: space.$md space.$sm;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  background: color.$bg-light;
+}
+
+.description {
+  font-family: font.$interRegular;
+  font-size: 1rem;
+  color: color.$text-dark;
+  line-height: 1.7;
+  margin-bottom: space.$md;
+}
+
+.sectionTitle {
+  font-family: font.$orbitronBold;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: color.$text-gray;
+  margin-bottom: space.$sm;
+}
+
+.skillList {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: space.$md;
+}
+
+.skillItem {
+  font-family: font.$interRegular;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  background: color.$bg-light;
+  color: color.$text-primary;
+  border: 1px solid rgba(0, 208, 132, 0.3);
+}
+
+.phaseList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.phaseRow {
+  display: flex;
+  align-items: flex-start;
+  gap: space.$sm;
+  padding: space.$xs space.$sm;
+  background: color.$bg-light;
+  border: 1px solid color.$border-white;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+
+  &:hover { border-color: color.$primary; }
+}
+
+.phaseIndex {
+  font-family: font.$orbitronBold;
+  font-size: 1rem;
+  color: color.$text-primary;
+  opacity: 0.5;
+  min-width: 1.5rem;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.phaseInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.phaseTitle {
+  font-family: font.$orbitronBold;
+  font-size: 0.8rem;
+  color: color.$text-dark;
+  text-transform: uppercase;
+}
+
+.phaseDeliverable {
+  font-family: font.$interRegular;
+  font-size: 0.78rem;
+  color: color.$text-gray;
+  font-style: italic;
+}
+
+.phaseTaskCount {
+  font-family: font.$interRegular;
+  font-size: 0.72rem;
+  color: color.$text-primary;
+}
+
+// ── CTA box (encart sombre pour contraste) ───────────────────────
+
+.ctaBox {
+  background: color.$bg-dark;
+  border: 1px solid rgba(0, 208, 132, 0.25);
+  border-radius: 12px;
+  padding: space.$md;
+  display: flex;
+  flex-direction: column;
+  gap: space.$sm;
+}
+
+.ctaTitle {
+  font-family: font.$orbitronBold;
+  font-size: 1rem;
+  color: color.$text-white;
+  text-transform: uppercase;
+}
+
+.ctaText {
+  font-family: font.$interRegular;
+  font-size: 0.9rem;
+  color: color.$text-white;
+  opacity: 0.75;
+  line-height: 1.6;
+
+  strong { color: color.$text-primary; font-family: font.$interBold; opacity: 1; }
+}
+
+.btnStart {
+  padding: 0.75rem 1.5rem;
+  background: color.$primary;
+  border: 2px solid color.$primary;
+  border-radius: 10px;
+  font-family: font.$orbitronBold;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: color.$bg-dark;
+  transition: background 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background: color.$primary-hover;
+    border-color: color.$primary-hover;
+    transform: translateY(-2px);
+  }
+}
+
+// ── Badge niveau ─────────────────────────────────────────────────
+
+.level {
+  font-family: font.$orbitronBold;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.7rem;
+  border-radius: 100px;
+  align-self: flex-start;
+
+  &--beginner        { background: rgba(0, 208, 132, 0.15); color: #00D084; }
+  &--beginner-plus   { background: rgba(0, 208, 132, 0.10); color: #00b872; }
+  &--intermediate    { background: rgba(255, 193, 7, 0.15);  color: #FFC107; }
+  &--intermediate-plus { background: rgba(255, 152, 0, 0.15); color: #FF9800; }
+  &--advanced        { background: rgba(244, 67, 54, 0.15);  color: #F44336; }
+  &--expert          { background: rgba(156, 39, 176, 0.15); color: #9C27B0; }
+}
+
+// ── Modal ────────────────────────────────────────────────────────
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: space.$sm;
+}
+
+.modal {
+  background: color.$bg-light;
+  border: 1px solid color.$border-white;
+  border-radius: 16px;
+  padding: space.$md;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: space.$sm;
+  box-shadow: color.$shadow-lg;
+}
+
+.modalTitle {
+  font-family: font.$orbitronBold;
+  font-size: 1.1rem;
+  color: color.$text-dark;
+  text-transform: uppercase;
+}
+
+.modalSubtitle {
+  font-family: font.$interRegular;
+  font-size: 0.9rem;
+  color: color.$text-gray;
+}
+
+.machineOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.machineOption {
+  display: flex;
+  align-items: center;
+  gap: space.$xs;
+  padding: 0.75rem space.$sm;
+  border: 1px solid color.$border-white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: font.$interRegular;
+  font-size: 0.9rem;
+  color: color.$text-dark;
+  transition: border-color 0.2s, background 0.2s;
+
+  input[type="radio"] { accent-color: color.$primary; }
+
+  &.selected {
+    border-color: color.$primary;
+    background: rgba(0, 208, 132, 0.05);
+  }
+
+  &:hover { border-color: color.$primary; }
+}
+
+.modalActions {
+  display: flex;
+  gap: space.$sm;
+  justify-content: flex-end;
+  margin-top: space.$xs;
+}
+
+.btnCancel {
+  padding: 0.5rem 1.2rem;
+  background: transparent;
+  border: 2px solid color.$border-white;
+  border-radius: 8px;
+  color: color.$text-gray;
+  font-family: font.$interRegular;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:hover { border-color: color.$text-dark; color: color.$text-dark; }
+}
+
+.btnConfirm {
+  padding: 0.5rem 1.5rem;
+  background: color.$primary;
+  border: 2px solid color.$primary;
+  border-radius: 8px;
+  font-family: font.$orbitronBold;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: color.$bg-dark;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: color.$primary-hover; border-color: color.$primary-hover; }
+}
+
+// ── Responsive ───────────────────────────────────────────────────
+
+@media (min-width: 768px) {
+  .hero { height: 360px; }
+  .heroTitle { font-size: 2.5rem; }
+
+  .body {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .mainCol { flex: 1; }
+
+  .sideCol {
+    width: 320px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 7rem;
+  }
+}

@@ -1,0 +1,56 @@
+<div class="diagonalWrapper index2"></div>
+<div class="pageHeader index2">
+  <h1 class="pageTitle">Projets</h1>
+  <p class="pageSubtitle">Choisis un type de jeu et guide-toi pas à pas jusqu'à la release.</p>
+</div>
+
+@if (userProjects().length > 0) {
+  <div class="section">
+    <h2 class="sectionTitle">Mes projets en cours</h2>
+    <div class="userProjects">
+      @for (up of userProjects(); track up.id) {
+        @if (templateForUserProject(up); as tmpl) {
+          <div class="userProjectCard">
+            <div class="userProjectTitle">{{ up.title }}</div>
+            <div class="userProjectPhase">{{ currentPhaseName(up) }}</div>
+            <div class="progressBar">
+              <div class="progressFill" [style.width.%]="projectProgress(up)"></div>
+            </div>
+            <div class="progressLabel">{{ projectProgress(up) }}%</div>
+            <button class="btnResume" (click)="resumeProject(up)">Reprendre</button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+}
+
+<div class="section">
+  <h2 class="sectionTitle">Choisir un type de projet</h2>
+</div>
+
+<div class="catalogGrid">
+  @for (tmpl of sortedTemplates(); track tmpl.slug) {
+    <div class="templateCard" (click)="goToTemplate(tmpl.slug)">
+      <img class="templateImage" [src]="tmpl.image" [alt]="tmpl.title" />
+      <div class="templateBody">
+        <div class="templateHeader">
+          <span class="templateTitle">{{ tmpl.title }}</span>
+          <span class="level" [ngClass]="difficultyClass(tmpl.difficulty)">{{ tmpl.difficultyLabel }}</span>
+        </div>
+        <div class="templateRef">{{ tmpl.reference }}</div>
+        <p class="templateDescription">{{ tmpl.description }}</p>
+        <div class="templateSkills">
+          @for (skill of tmpl.skills; track skill.label) {
+            <span class="skill">{{ skill.label }}</span>
+          }
+        </div>
+        <div class="templateFooter">
+          <button class="btnStart" (click)="goToTemplate(tmpl.slug); $event.stopPropagation()">
+            Voir le projet
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,178 @@
+@if (template(); as tmpl) {
+  @if (userProject(); as up) {
+
+    <div class="header">
+      <button class="btnBack" (click)="goBack()">← Retour</button>
+      <div class="headerInfo">
+        <h1 class="projectTitle">{{ up.title }}</h1>
+        <span class="machineTag">{{ up.machineConfig }}</span>
+      </div>
+      <div class="globalProgress">
+        <div class="globalProgressBar">
+          <div class="globalProgressFill" [style.width.%]="globalProgress()"></div>
+        </div>
+        <span class="globalProgressLabel">{{ globalProgress() }}% complété</span>
+      </div>
+    </div>
+
+    <div class="workflow">
+
+      @for (phase of tmpl.phases; track phase.id; let i = $index) {
+        @if (getPhaseState(phase.id); as state) {
+
+          <div class="phase" [class.phase--locked]="!state.unlocked" [class.phase--done]="!!state.completedAt">
+
+            <div class="phaseHeader" (click)="state.unlocked && togglePhase(phase.id)">
+              <div class="phaseLeft">
+                <span class="phaseNum">{{ i }}</span>
+                <div class="phaseMeta">
+                  <span class="phaseTitle">{{ phase.title }}</span>
+                  <span class="phaseStatus" [ngClass]="phaseStatusClass(state)">
+                    {{ phaseStatusLabel(state) }}
+                  </span>
+                </div>
+              </div>
+              <div class="phaseRight">
+                @if (state.unlocked && !state.completedAt) {
+                  <div class="miniProgress">
+                    <div class="miniProgressBar">
+                      <div class="miniProgressFill" [style.width.%]="phaseProgress(phase.id)"></div>
+                    </div>
+                    <span class="miniProgressLabel">{{ phaseProgress(phase.id) }}%</span>
+                  </div>
+                }
+                @if (!state.unlocked) {
+                  <span class="lockIcon">🔒</span>
+                }
+                @if (state.completedAt) {
+                  <span class="doneIcon">✓</span>
+                }
+                @if (state.unlocked) {
+                  <span class="chevron" [class.chevron--open]="isPhaseExpanded(phase.id)">▶</span>
+                }
+              </div>
+            </div>
+
+            @if (isPhaseExpanded(phase.id) && state.unlocked) {
+
+              <div class="phaseBody">
+
+                <!-- Tâches -->
+                <div class="taskList">
+                  @for (task of phase.tasks; track task.id) {
+                    <label class="taskRow" [class.taskRow--done]="isTaskChecked(phase.id, task.id)" [class.taskRow--disabled]="!!state.completedAt">
+                      <input type="checkbox"
+                        [checked]="isTaskChecked(phase.id, task.id)"
+                        [disabled]="!!state.completedAt"
+                        (change)="toggleTask(phase.id, task.id)" />
+                      <span class="taskLabel">{{ task.label }}</span>
+                    </label>
+                  }
+                </div>
+
+                <!-- Note -->
+                <div class="noteSection">
+                  @if (!showNoteEditor[phase.id] && !state.note) {
+                    <button class="btnNote" (click)="showNoteEditor[phase.id] = true">+ Ajouter une note</button>
+                  }
+                  @if (state.note && !showNoteEditor[phase.id]) {
+                    <div class="noteDisplay">
+                      <div class="noteHeader">
+                        <span class="noteLabel">Note</span>
+                        @if (state.noteUpdatedAt) {
+                          <span class="noteDate">{{ state.noteUpdatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                        }
+                        <button class="btnNoteEdit" (click)="showNoteEditor[phase.id] = true; noteInput[phase.id] = state.note ?? ''">Modifier</button>
+                      </div>
+                      <p class="noteText">{{ state.note }}</p>
+                    </div>
+                  }
+                  @if (showNoteEditor[phase.id]) {
+                    <div class="noteEditor">
+                      <textarea class="noteTextarea" [(ngModel)]="noteInput[phase.id]" placeholder="Tes observations, blocages, découvertes sur cette phase..."></textarea>
+                      <div class="noteActions">
+                        <button class="btnCancel" (click)="showNoteEditor[phase.id] = false">Annuler</button>
+                        <button class="btnSave" (click)="saveNote(phase.id)">Sauvegarder</button>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <!-- Livrable -->
+                @if (!state.completedAt) {
+                  <div class="deliverableSection">
+                    <div class="deliverableLabel">
+                      <span class="deliverableIcon">📎</span>
+                      <span>Livrable attendu : <em>{{ phase.deliverableLabel }}</em></span>
+                    </div>
+                    @if (!showDeliverableForm[phase.id]) {
+                      <button class="btnSubmitDeliverable" (click)="showDeliverableForm[phase.id] = true">
+                        Soumettre le livrable
+                      </button>
+                    }
+                    @if (showDeliverableForm[phase.id]) {
+                      <div class="deliverableForm">
+                        <label class="fileLabel">
+                          <input class="fileInput" type="file" accept=".st,.msa,.zip"
+                            (change)="onFileSelected(phase.id, $event)" />
+                          <span class="fileBtn">Choisir une disquette (.st)</span>
+                          @if (selectedFileName[phase.id]) {
+                            <span class="fileName">{{ selectedFileName[phase.id] }}</span>
+                          } @else {
+                            <span class="fileHint">Formats acceptés : .st, .msa, .zip</span>
+                          }
+                        </label>
+                        <div class="deliverableActions">
+                          <button class="btnCancel" (click)="showDeliverableForm[phase.id] = false; selectedFileName[phase.id] = ''">Annuler</button>
+                          <button class="btnConfirm"
+                            [disabled]="!canSubmitDeliverable(phase.id)"
+                            (click)="submitDeliverable(phase.id)">
+                            Valider — déverrouiller la phase suivante
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Livrable soumis -->
+                @if (state.completedAt && state.deliverableUrl) {
+                  <div class="deliverableDone">
+                    <span class="deliverableDoneIcon">✓</span>
+                    <span class="deliverableDoneLink">{{ state.deliverableUrl }}</span>
+                    <span class="deliverableDoneDate">{{ state.completedAt | date:'dd/MM/yyyy' }}</span>
+                  </div>
+                }
+
+                <!-- Difficulté ressentie -->
+                @if (showFeltDifficulty[phase.id]) {
+                  <div class="feltDifficulty">
+                    <p class="feltDifficultyLabel">Cette phase était...</p>
+                    <div class="feltDifficultyOptions">
+                      <button class="btnFelt btnFelt--easy" (click)="setFeltDifficulty(phase.id, 'easy')">🟢 Facile</button>
+                      <button class="btnFelt btnFelt--medium" (click)="setFeltDifficulty(phase.id, 'medium')">🟡 Moyenne</button>
+                      <button class="btnFelt btnFelt--hard" (click)="setFeltDifficulty(phase.id, 'hard')">🔴 Difficile</button>
+                    </div>
+                  </div>
+                }
+                @if (state.feltDifficulty && !showFeltDifficulty[phase.id]) {
+                  <div class="feltDifficultyDisplay">
+                    Difficulté ressentie :
+                    @if (state.feltDifficulty === 'easy') { <span>🟢 Facile</span> }
+                    @if (state.feltDifficulty === 'medium') { <span>🟡 Moyenne</span> }
+                    @if (state.feltDifficulty === 'hard') { <span>🔴 Difficile</span> }
+                  </div>
+                }
+
+              </div>
+            }
+
+          </div>
+
+        }
+      }
+
+    </div>
+
+  }
+}

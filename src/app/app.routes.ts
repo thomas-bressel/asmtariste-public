@@ -75,6 +75,24 @@ export const routes: Routes = [
                 canActivate: [authGuard]
             },
             {
+                path: 'projects',
+                loadComponent: async () =>
+                    (await import('./views/private/projects/projects')).Projects,
+                canActivate: [authGuard],
+            },
+            {
+                path: 'projects/:slug',
+                loadComponent: async () =>
+                    (await import('./views/private/projects/project-detail/project-detail')).ProjectDetail,
+                canActivate: [authGuard],
+            },
+            {
+                path: 'projects/:slug/:id',
+                loadComponent: async () =>
+                    (await import('./views/private/projects/project-workflow/project-workflow')).ProjectWorkflow,
+                canActivate: [authGuard],
+            },
+            {
                 path: 'magazines/article/:slug',
                 loadComponent: async () =>
                     (await import('./views/private/article/article')).Article,

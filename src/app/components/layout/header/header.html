@@ -20,26 +20,29 @@
     <a class="nav__item text-color-gray" [routerLink]="['/coding']" (click)="toggleMenu()">Coding</a>
     <a class="nav__item text-color-gray" [routerLink]="['/documentation']" (click)="toggleMenu()">Documentation</a>
     <a class="nav__item text-color-gray" [routerLink]="['/tutoriel']" (click)="toggleMenu()">Tutoriel</a>
-    <a class="nav__item text-color-gray" [routerLink]="['/emulator']" (click)="toggleMenu()">Jeux</a>
-
+    
     @if(auth.isAuthenticated()) {
         <a class="nav__item text-color-gray" [routerLink]="['/magazines']" (click)="toggleMenu()">Magazines</a>
     }
-    
+    @if(auth.isAuthenticated()) {
+        <a class="nav__item text-color-gray" [routerLink]="['/projects']" (click)="toggleMenu()">Projets</a>
+    }
+    <a class="nav__item text-color-gray" [routerLink]="['/emulator']" (click)="toggleMenu()"> | Jeux</a>
+
     @if (auth.isAuthenticated()) {
-        <button  class="nav__item btn btn--ghost text-color-dark"  (click)="handleLogout($event)" type="button">
-            Déconnexion
-        </button>
-        <a  class="nav__item avatar"  [routerLink]="['/profile']" [title]="userFullName()" (click)="toggleMenu()">
-            <img [src]="avatarUrl()" [alt]="userFullName()" class="avatar-img" />
-        </a>
+    <button class="nav__item btn btn--ghost text-color-dark" (click)="handleLogout($event)" type="button">
+        Déconnexion
+    </button>
+    <a class="nav__item avatar" [routerLink]="['/profile']" [title]="userFullName()" (click)="toggleMenu()">
+        <img [src]="avatarUrl()" [alt]="userFullName()" class="avatar-img" />
+    </a>
     } @else {
-        <a  class="nav__item btn btn--ghost text-color-dark"  href="#"  (click)="openLoginModal($event)">
-            Connexion
-        </a>
-        <a  class="nav__item btn btn--primary text-color-white"  href="#" (click)="openSignInModal($event)">
-            S'inscrire
-        </a>
+    <a class="nav__item btn btn--ghost text-color-dark" href="#" (click)="openLoginModal($event)">
+        Connexion
+    </a>
+    <a class="nav__item btn btn--primary text-color-white" href="#" (click)="openSignInModal($event)">
+        S'inscrire
+    </a>
     }
 </nav>
 
