@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { signupTokenGuard } from '@guards/signup-token-guard';
 import { authGuard } from '@guards/auth-guard';
 import { maintenanceGuard } from '@guards/maintenance.guard';
+import { tierGuard } from '@guards/tier-guard';
 
 
 export const routes: Routes = [
@@ -78,19 +79,19 @@ export const routes: Routes = [
                 path: 'projects',
                 loadComponent: async () =>
                     (await import('./views/private/projects/projects')).Projects,
-                canActivate: [authGuard],
+                canActivate: [authGuard, tierGuard(3)],
             },
             {
                 path: 'projects/:slug',
                 loadComponent: async () =>
                     (await import('./views/private/projects/project-detail/project-detail')).ProjectDetail,
-                canActivate: [authGuard],
+                canActivate: [authGuard, tierGuard(3)],
             },
             {
                 path: 'projects/:slug/:id',
                 loadComponent: async () =>
                     (await import('./views/private/projects/project-workflow/project-workflow')).ProjectWorkflow,
-                canActivate: [authGuard],
+                canActivate: [authGuard, tierGuard(3)],
             },
             {
                 path: 'magazines/article/:slug',

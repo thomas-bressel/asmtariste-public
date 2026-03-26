@@ -102,6 +102,8 @@ export class FileItem {
     const level = this.levelRequired();
     if (level === 0) return 'Gratuit';
     if (level === 1) return 'Freemium';
+    if (level === 2) return 'Premium';
+    if (level === 3) return 'Gold';
     return 'Premium';
   }
 
@@ -115,6 +117,8 @@ export class FileItem {
     const level = this.levelRequired();
     if (level === 0) return 'free';
     if (level === 1) return 'freemium';
+    if (level === 2) return 'premium';
+    if (level === 3) return 'gold';
     return 'premium';
   }
 

@@ -1,10 +1,12 @@
 // Angular imports
 import { Component, ViewChild, signal, inject, computed, OnInit, OnDestroy, effect } from '@angular/core';
 import { RouterLink, Router, NavigationEnd } from "@angular/router";
+import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 // Service imports
 import { AuthService } from '@services/auth.service';
+import { MenuService } from '@services/menu.service';
 import { NotificationService } from '@services/ui/notification.service';
 
 // Component imports
@@ -47,6 +49,9 @@ export class Header implements OnInit, OnDestroy {
   /** Injected AuthService for managing authentication state */
   public auth = inject(AuthService);
 
+  /** Injected MenuService for managing menu items */
+  public menu = inject(MenuService);
+
   /** Injected Router for navigation and route monitoring */
   private router = inject(Router);
 
@@ -60,6 +65,8 @@ export class Header implements OnInit, OnDestroy {
 
   /** Signal controlling the visibility of quick navigation on homepage */
   public showQuickNav = signal<boolean>(false);
+
+  private routerSub!: Subscription;
 
   /**
    * Computed signal that generates the user's avatar URL.
@@ -107,10 +114,11 @@ export class Header implements OnInit, OnDestroy {
    * and subscribes to router navigation events to update quick navigation visibility.
    */
   ngOnInit(): void {
+    this.menu.loadHeaderMenu();
     this.updateScrollProgress();
     window.addEventListener('scroll', this.updateScrollProgress);
 
-    this.router.events
+    this.routerSub = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
         this.showQuickNav.set(this.router.url === '/accueil');
@@ -126,6 +134,7 @@ export class Header implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     window.removeEventListener('scroll', this.updateScrollProgress);
+    this.routerSub?.unsubscribe();
   }
 
 

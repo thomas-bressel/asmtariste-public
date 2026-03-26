@@ -36,6 +36,7 @@ export interface Profile {
   role_name: string;
   role_color: string;
   membership_label: string;
+  level: number;
   membership_start: string;
   membership_end: string | undefined;
 }

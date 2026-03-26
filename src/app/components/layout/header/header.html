@@ -15,19 +15,10 @@
 </button>
 
 <nav class="nav" [class.nav__open]="isOpen()">
-    <a class="nav__item text-color-gray" [routerLink]="['/accueil']" (click)="toggleMenu()">Accueil</a>
-    <a class="nav__item text-color-gray" [routerLink]="['/actualite']" (click)="toggleMenu()">Actualité</a>
-    <a class="nav__item text-color-gray" [routerLink]="['/coding']" (click)="toggleMenu()">Coding</a>
-    <a class="nav__item text-color-gray" [routerLink]="['/documentation']" (click)="toggleMenu()">Documentation</a>
-    <a class="nav__item text-color-gray" [routerLink]="['/tutoriel']" (click)="toggleMenu()">Tutoriel</a>
-    
-    @if(auth.isAuthenticated()) {
-        <a class="nav__item text-color-gray" [routerLink]="['/magazines']" (click)="toggleMenu()">Magazines</a>
+
+    @for (item of menu.menus(); track item.place) {
+        <a class="nav__item text-color-gray" [routerLink]="[item.link]" (click)="toggleMenu()">{{ item.name }}</a>
     }
-    @if(auth.isAuthenticated()) {
-        <a class="nav__item text-color-gray" [routerLink]="['/projects']" (click)="toggleMenu()">Projets</a>
-    }
-    <a class="nav__item text-color-gray" [routerLink]="['/emulator']" (click)="toggleMenu()"> | Jeux</a>
 
     @if (auth.isAuthenticated()) {
     <button class="nav__item btn btn--ghost text-color-dark" (click)="handleLogout($event)" type="button">
