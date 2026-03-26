@@ -60,6 +60,20 @@
   text-transform: uppercase;
 }
 
+// ── Progress bars (global + mini) ────────────────────────────────
+
+%progress-bar {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+%progress-fill {
+  height: 100%;
+  background: color.$primary;
+  border-radius: 4px;
+}
+
 .globalProgress {
   display: flex;
   align-items: center;
@@ -68,17 +82,13 @@
 }
 
 .globalProgressBar {
+  @extend %progress-bar;
   flex: 1;
   height: 8px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 4px;
-  overflow: hidden;
 }
 
 .globalProgressFill {
-  height: 100%;
-  background: color.$primary;
-  border-radius: 4px;
+  @extend %progress-fill;
   transition: width 0.4s ease;
 }
 
@@ -111,13 +121,8 @@
   box-shadow: color.$shadow-sm;
   transition: border-color 0.2s;
 
-  &--done {
-    border-color: rgba(0, 208, 132, 0.4);
-  }
-
-  &--locked {
-    opacity: 0.5;
-  }
+  &--done   { border-color: rgba(0, 208, 132, 0.4); }
+  &--locked { opacity: 0.5; }
 }
 
 .phaseHeader {
@@ -192,17 +197,15 @@
 }
 
 .miniProgressBar {
+  @extend %progress-bar;
   width: 60px;
   height: 4px;
   background: color.$border-white;
-  border-radius: 2px;
-  overflow: hidden;
 }
 
 .miniProgressFill {
-  height: 100%;
+  @extend %progress-fill;
   background: #d97706;
-  border-radius: 2px;
   transition: width 0.3s ease;
 }
 
@@ -391,22 +394,6 @@
 
 .deliverableIcon { flex-shrink: 0; }
 
-.btnSubmitDeliverable {
-  align-self: flex-start;
-  padding: 0.5rem 1.2rem;
-  background: color.$primary;
-  border: 2px solid color.$primary;
-  border-radius: 8px;
-  font-family: font.$orbitronBold;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  color: color.$bg-dark;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover { background: color.$primary-hover; border-color: color.$primary-hover; }
-}
-
 .deliverableForm {
   display: flex;
   flex-direction: column;
@@ -421,9 +408,7 @@
   cursor: pointer;
 }
 
-.fileInput {
-  display: none;
-}
+.fileInput { display: none; }
 
 .fileBtn {
   padding: 0.45rem 1rem;
@@ -508,56 +493,11 @@
   flex-wrap: wrap;
 }
 
-.btnFelt {
-  padding: 0.4rem 1rem;
-  border: 1px solid color.$border-white;
-  border-radius: 8px;
-  background: color.$bg-light;
-  font-family: font.$interRegular;
-  font-size: 0.875rem;
-  color: color.$text-dark;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover { border-color: color.$primary; }
-}
-
 .feltDifficultyDisplay {
   font-family: font.$interRegular;
   font-size: 0.8rem;
   color: color.$text-gray;
   padding: 0.3rem 0;
-}
-
-// ── Boutons génériques ───────────────────────────────────────────
-
-.btnCancel {
-  padding: 0.4rem 1rem;
-  background: transparent;
-  border: 2px solid color.$border-white;
-  border-radius: 8px;
-  color: color.$text-gray;
-  font-family: font.$interRegular;
-  font-size: 0.82rem;
-  cursor: pointer;
-
-  &:hover { border-color: color.$text-dark; color: color.$text-dark; }
-}
-
-.btnSave, .btnConfirm {
-  padding: 0.4rem 1.2rem;
-  background: color.$primary;
-  border: 2px solid color.$primary;
-  border-radius: 8px;
-  font-family: font.$orbitronBold;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  color: color.$bg-dark;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover { background: color.$primary-hover; border-color: color.$primary-hover; }
-  &:disabled { opacity: 0.4; cursor: default; }
 }
 
 // ── Responsive ───────────────────────────────────────────────────

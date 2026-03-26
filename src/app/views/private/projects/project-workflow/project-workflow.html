@@ -91,8 +91,8 @@
                     <div class="noteEditor">
                       <textarea class="noteTextarea" [(ngModel)]="noteInput[phase.id]" placeholder="Tes observations, blocages, découvertes sur cette phase..."></textarea>
                       <div class="noteActions">
-                        <button class="btnCancel" (click)="showNoteEditor[phase.id] = false">Annuler</button>
-                        <button class="btnSave" (click)="saveNote(phase.id)">Sauvegarder</button>
+                        <button class="btn btn--ghost" (click)="showNoteEditor[phase.id] = false">Annuler</button>
+                        <button class="btn btn--primary" (click)="saveNote(phase.id)">Sauvegarder</button>
                       </div>
                     </div>
                   }
@@ -106,7 +106,7 @@
                       <span>Livrable attendu : <em>{{ phase.deliverableLabel }}</em></span>
                     </div>
                     @if (!showDeliverableForm[phase.id]) {
-                      <button class="btnSubmitDeliverable" (click)="showDeliverableForm[phase.id] = true">
+                      <button class="btn btn--primary" (click)="showDeliverableForm[phase.id] = true">
                         Soumettre le livrable
                       </button>
                     }
@@ -123,8 +123,8 @@
                           }
                         </label>
                         <div class="deliverableActions">
-                          <button class="btnCancel" (click)="showDeliverableForm[phase.id] = false; selectedFileName[phase.id] = ''">Annuler</button>
-                          <button class="btnConfirm"
+                          <button class="btn btn--ghost" (click)="showDeliverableForm[phase.id] = false; selectedFileName[phase.id] = ''">Annuler</button>
+                          <button class="btn btn--primary"
                             [disabled]="!canSubmitDeliverable(phase.id)"
                             (click)="submitDeliverable(phase.id)">
                             Valider — déverrouiller la phase suivante
@@ -149,9 +149,9 @@
                   <div class="feltDifficulty">
                     <p class="feltDifficultyLabel">Cette phase était...</p>
                     <div class="feltDifficultyOptions">
-                      <button class="btnFelt btnFelt--easy" (click)="setFeltDifficulty(phase.id, 'easy')">🟢 Facile</button>
-                      <button class="btnFelt btnFelt--medium" (click)="setFeltDifficulty(phase.id, 'medium')">🟡 Moyenne</button>
-                      <button class="btnFelt btnFelt--hard" (click)="setFeltDifficulty(phase.id, 'hard')">🔴 Difficile</button>
+                      <button class="btn btn--ghost btnFelt--easy" (click)="setFeltDifficulty(phase.id, 'easy')">🟢 Facile</button>
+                      <button class="btn btn--ghost btnFelt--medium" (click)="setFeltDifficulty(phase.id, 'medium')">🟡 Moyenne</button>
+                      <button class="btn btn--ghost btnFelt--hard" (click)="setFeltDifficulty(phase.id, 'hard')">🔴 Difficile</button>
                     </div>
                   </div>
                 }
