@@ -7,8 +7,10 @@ import { ContentService } from '@services/content.service';
 import { ArticleService } from '@services/article.service';
 import { PaginationService } from '@services/ui/pagination.service';
 import { SeoService } from '@services/seo.service';
+import { AuthService } from '@services/auth.service';
 
 import { PaginationComponent } from '@components/ui/pagination/pagination';
+import { ArchivePdf } from '../../private/article/archive-pdf/archive-pdf';
 
 import { CONTENT_API_URI, CONTENT_STATIC_IMAGES_URI } from 'src/app/shared/config-api';
 
@@ -23,7 +25,7 @@ import { CONTENT_API_URI, CONTENT_STATIC_IMAGES_URI } from 'src/app/shared/confi
  */
 @Component({
   selector: 'app-article',
-  imports: [CommonModule, PaginationComponent],
+  imports: [CommonModule, PaginationComponent, ArchivePdf],
   templateUrl: './article.html',
   styleUrl: './article.scss',
 })
@@ -73,6 +75,21 @@ export class Article implements OnInit, OnDestroy {
   private seo = inject(SeoService);
 
   /**
+   * Auth service for reading the membership level of the connected user.
+   * @private
+   * @type {AuthService}
+   */
+  private authService = inject(AuthService);
+
+  /**
+   * Membership level required to archive an article as a PDF file (Gold).
+   * @private
+   * @readonly
+   * @type {number}
+   */
+  private readonly ARCHIVE_REQUIRED_LEVEL = 3;
+
+  /**
    * Base URL for content API endpoints.
    * @public
    * @type {string}
@@ -108,6 +125,24 @@ export class Article implements OnInit, OnDestroy {
    * @type {ReadonlySignal<number>}
    */
   public readonly currentPage = this._currentPage.asReadonly();
+
+  /**
+   * Signal indicating whether the article is being archived as a PDF file.
+   * Renders the off-screen archive component while true.
+   * @protected
+   * @type {Signal<boolean>}
+   */
+  protected isArchiving = signal<boolean>(false);
+
+  /**
+   * Computed signal indicating whether the connected user is a Gold member,
+   * the only membership allowed to archive an article as a PDF file.
+   * @protected
+   * @type {Signal<boolean>}
+   */
+  protected isGold = computed(() =>
+    (this.authService.profile()?.data?.level ?? 0) >= this.ARCHIVE_REQUIRED_LEVEL
+  );
 
   /**
    * Computed signal containing the article metadata.
@@ -196,6 +231,11 @@ export class Article implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.paginationService.reset();
 
+    // Load the profile of the connected user to know his membership level (archive button)
+    if (this.authService.isAuthenticated() && !this.authService.profile()) {
+      this.authService.getProfile().catch(() => null);
+    }
+
     this.route.params.subscribe(async params => {
       this.slug.set(params['slug']);
 
@@ -231,5 +271,17 @@ export class Article implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.contentService.clearStore();
     this.paginationService.reset();
+  }
+
+  /**
+   * Starts archiving the whole article as an A4 PDF file.
+   * Only available for Gold members, and ignored while an archive is already in progress.
+   *
+   * @protected
+   * @returns {void}
+   */
+  protected archiveArticle(): void {
+    if (!this.isGold() || this.isArchiving() || this.totalPages() === 0) return;
+    this.isArchiving.set(true);
   }
 }

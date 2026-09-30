@@ -35,6 +35,8 @@ export type NotificationKey =
   | 'generic.success'
   | 'access.error'
   | 'file.error'
+  | 'archive.success'
+  | 'archive.error'
   ;
 
 /**
@@ -126,6 +128,14 @@ export class NotificationService {
     },
     'file.error': {
       message: '✓ Fichier inexistant !',
+      type: 'error'
+    },
+    'archive.success': {
+      message: '✓ Article archivé au format PDF avec succès !',
+      type: 'success'
+    },
+    'archive.error': {
+      message: '✗ Impossible d\'archiver l\'article au format PDF. Veuillez réessayer.',
       type: 'error'
     }
   };

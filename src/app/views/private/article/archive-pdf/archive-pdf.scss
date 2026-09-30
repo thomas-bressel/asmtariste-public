@@ -1,0 +1,36 @@
+@use 'article-colors.scss' as color;
+
+
+// Off-screen rendering area: the blocks are captured for the PDF but never visible to the user
+:host {
+    position: fixed;
+    top: 0;
+    left: -10000px;
+    width: 1000px;
+    margin: 0;
+    background-color: color.$white;
+}
+
+
+.archive {
+
+    &__block {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+
+// Print typography: text is justified in the PDF only (never on the web)
+.header__article-description {
+    text-align: justify !important;
+}
+
+.content__main {
+
+    &--left-text,
+    &--center-text,
+    &--right-text {
+        text-align: justify !important;
+    }
+}
