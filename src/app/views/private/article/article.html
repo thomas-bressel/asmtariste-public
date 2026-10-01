@@ -17,6 +17,24 @@
   @let imageUrl = baseUrlAPI + '/articles/' + article!.id_articles + '/';
 
   <article class="article">
+    <!-- Archive as PDF (Gold members only) -->
+    @if(isGold() && totalPages() > 0) {
+      <div class="archive">
+        <button class="btn btn--primary text-color-white archive__btn" type="button" [disabled]="isArchiving()" (click)="archiveArticle()">
+          <svg class="archive__icn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 16L7 11l1.4-1.4l2.6 2.6V4h2v8.2l2.6-2.6L17 11zm-6 4v-2h12v2z" />
+          </svg>
+          <span>{{ isArchiving() ? '[$PDF] Archivage en cours...' : '[$PDF] Archiver l\'article' }}</span>
+        </button>
+        <span class="archive__badge">Gold</span>
+      </div>
+    }
+
+    <!-- Off-screen rendering of the whole article for the PDF archive -->
+    @if(isArchiving()) {
+      <div app-archive-pdf [article]="article!" [pages]="contentsByPages()" [baseUrl]="baseUrlAPI" (exportDone)="isArchiving.set(false)"></div>
+    }
+
     <!-- Pagination (top) -->
     @if(totalPages() > 1) {
       <section app-pagination></section>
